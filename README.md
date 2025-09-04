@@ -12,12 +12,27 @@ Web-sovellus elokuvaharrastajille. Kurssi: *Web-ohjelmoinnin sovellusprojekti*. 
 ## Projektin rakenne
 ```
 MovieApp/
-  client/          # React frontend
-  server/          # Node/Express backend
-  docs/            # openapi.yaml, kaaviot, backlog-kuvat
+  client/            # React frontend
+   /components       # Uudelleenkäytettävät komponentit
+   /context          # Kontekstit, kuten käyttäjän tiedot
+   /screens          # Näkymät, jotka vastaavat reittejä. (Home, Login jne)
+  server/            # Node/Express backend
+   /controllers      # Sovelluslogiikka (esim. userController.js, reviewController.js)
+   /helpers          # Pienet apufunktiot
+   /middleware       # Esimerkiksi auth.js
+   /models           # Tietokantalogiikka
+   /service          # Ulkoiset integraatiot the Movie Databaseen ja Finnkinoon
+  docs/              # openapi.yaml, kaaviot, backlog-kuvat
   .gitignore
   README.md
 ```
+
+## Reitit
+Määritettävä yhdessä, esimerkiksi:
+   /home
+   /login
+
+
 ## Kloonaus ja alustus
 
 1. Kloonaa repo omalle koneellesi:
@@ -49,7 +64,7 @@ MovieApp/
    - Backend:
      ```bash
      cd server
-     npm run dev
+     npm run devStart
      ```
      → http://localhost:3001
 
