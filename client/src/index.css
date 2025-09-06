@@ -1,3 +1,12 @@
 :root {
+    --bg-color: #1d1d1d;
+    --effect-color: #5C5EFF;
+    --text-color: #eeeeee;
+    --text-font: Arial;
+}
 
+html, body{
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--text-font);
 }

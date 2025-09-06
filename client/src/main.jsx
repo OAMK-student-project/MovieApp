@@ -3,6 +3,12 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./screens/App.jsx";
+import Home from "./screens/Home.jsx"
+import Login from "./screens/Login.jsx";
+import Favorites from "./screens/Favorites.jsx";
+import Groups from "./screens/Groups.jsx";
+import Reviews from "./screens/Reviews.jsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -10,9 +16,12 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <div>Not Found</div>,
     children: [
-      { index: true, element: <div>Etusivu</div> },
-      { path: "login", element: <div>Kirjautumissivu</div> },
-    ]
+      { index: true, element: <Home/> },
+      { path: "login", element: <Login/> },
+      { path: "favorites", element: <Favorites/>},
+      { path: "groups", element: <Groups/>},
+      { path: "reviews", element: <Reviews/>},
+        ]
   }
 ]);
 
