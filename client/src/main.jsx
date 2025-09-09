@@ -8,6 +8,7 @@ import Login from "./screens/Login.jsx";
 import Favorites from "./screens/Favorites.jsx";
 import Groups from "./screens/Groups.jsx";
 import Reviews from "./screens/Reviews.jsx";
+import SearchScreen from "./screens/SearchScreen";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -21,7 +22,9 @@ const router = createBrowserRouter([
       { path: "favorites", element: <Favorites/>},
       { path: "groups", element: <Groups/>},
       { path: "reviews", element: <Reviews/>},
-        ]
+      { path: "search", element: <SearchScreen/>},
+           
+    ]
   }
 ]);
 
