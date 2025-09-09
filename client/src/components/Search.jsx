@@ -76,7 +76,7 @@ const handleGenre = async () => {
         <input
           type="text"
           value={query}
-          placeholder="Hae elokuvia..."
+          placeholder="Search movies..."
           onChange={(e) => setQuery(e.target.value)}/>
         <button type="submit">
           Search 
