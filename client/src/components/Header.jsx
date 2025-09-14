@@ -10,6 +10,7 @@ function Header(){
                 <NavLink to="/favorites">Favorites</NavLink>
                 <NavLink to="/groups">Groups</NavLink>
                 <NavLink to="/reviews">Reviews</NavLink>
+                <NavLink to="/theater">Theater</NavLink>
             </nav>
             <div className="loginArea">
                 <NavLink to="/login">Login</NavLink>

@@ -28,12 +28,21 @@ MovieApp/
 ```
 
 ## Reitit
-Määritettävä yhdessä, esimerkiksi:
+Määritetyt reitit
    /home
    /login
+   /theater
+   /theater/shows/?area=xxxx&dt=dd.mm.yyyy
+   /theater/locations/
 
 
 ## Kloonaus ja alustus
+
+### Playwright ja chromium asennukset
+Tämä on lisätty 14.9.2025
+Aja komennot:
+   npm i playwright fast-xml-parser
+   npx playwright install chromium
 
 1. Kloonaa repo omalle koneellesi:
    ```bash
@@ -72,6 +81,8 @@ Huomio:
 - `node_modules/`-kansiota ei ole repossa. Se luodaan aina `npm install` -komennolla.
 - Kaikki tarvittavat kirjastot ja niiden versiot on määritetty `package.json` + `package-lock.json` -tiedostoissa, joten `npm install` asentaa saman ympäristön kaikille.
 - `.env`-tiedosto täytyy jokaisen luoda itse `server/`-kansioon (tietokannan osoite, API-avaimet).
+
+
 
 
 ## Asennus ja käynnistys
