@@ -1,8 +1,7 @@
 button {
     background-color: var(--effect-color);
     border-radius: 4px;
-    margin-bottom: 1rem;
-    margin-left: 1rem;
+    margin: 1rem;
     border: none;
 }
 button:hover {
@@ -11,15 +10,16 @@ button:hover {
 }
 
 
+
 .results{
   margin: auto;
   width: 50%;
-/*  border: 3px solid green; /* otetaan pois*/
+ /*border: 3px solid green; /* otetaan pois*/
   padding: 1rem;
   text-align: center;
 }
 select{
-  margin-left: 0.75rem;
+  
 }
 
 .searchContainer{

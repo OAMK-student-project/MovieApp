@@ -1,114 +1,82 @@
-import React from 'react'
-import { Suspense, useState } from 'react';
-import { useEffect } from "react";
-import './Search.css';
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Search.css";
 
 export default function Search() {
-    const API_KEY = "api key here"; // Api key 
-    const BASE_URL = "https://api.themoviedb.org/3";
-    
-    const navigate = useNavigate();
+  const [titleQuery, setTitleQuery] = useState("");
+  const [directorQuery, setDirectorQuery] = useState("");
+  const [genre, setGenre] = useState("28"); // Action oletuksena
+  const navigate = useNavigate();
 
-    const [query, setQuery] = useState("");
-    const [movies, setMovies] = useState([]);
-    const [genre, setGenre] = useState("28"); // Action oletuksena
-    const [mode, setMode] = useState("popular"); // popular, search, genre
-   
-    useEffect(() => {
-    fetchMovies();
-  }, [mode, genre]);
-
-  const fetchMovies = async () => {
-    let url = "";
-  
-    if (mode === "popular") {
-      url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=fi-FI`;
-    } else if (mode === "search" && query) {
-      url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&language=fi-FI`;
-    } else if (mode === "genre") {
-      url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genre}&language=fi-FI`;
-    }
-
-    if (url) {
+  // Yleinen funktio, joka hoitaa haun ja navigoinnin
+  const fetchAndNavigate = async (url) => {
+    try {
       const res = await fetch(url);
       const data = await res.json();
-      setMovies(data.results || []);
+      const results = data.results || [];
+      navigate("/search", { state: { results } });
+    } catch (err) {
+      console.error("Fetch error:", err);
     }
   };
 
-  const handleSearch  = async (e) => {
-  e.preventDefault();
-  setMode("search");
-  let url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&language=fi-FI`;
-  const res = await fetch(url);
-  const data = await res.json();
-  setMovies(data.results || []);
-  navigate("/search", { state: { results: data.results || [] } });
+  // hakufunktiot
+  const searchByTitle = () => {
+    fetchAndNavigate(`http://localhost:3001/api/movies?q=${encodeURIComponent(titleQuery)}`);
   };
 
-const handlePopular  = async (e) => {
-  e.preventDefault();
-  setMode("popular");
-  let url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=fi-FI`;
-  const res = await fetch(url);
-  const data = await res.json();
-  setMovies(data.results || []);
-  navigate("/search", { state: { results: data.results || [] } });
+  const searchByDirector = () => {
+    fetchAndNavigate(`http://localhost:3001/api/movies?director=${encodeURIComponent(directorQuery)}`);
   };
 
-const handleGenre = async () => {
-  setMode("genre");
-  let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genre}&language=fi-FI`;
-  const res = await fetch(url);
-  const data = await res.json();
-  setMovies(data.results || []);
-  navigate("/search", { state: { results: data.results || [] } });
-};
+  const searchByGenre = () => {
+    fetchAndNavigate(`http://localhost:3001/api/movies?genre=${encodeURIComponent(genre)}`);
+  };
 
+  const getPopular = () => {
+    fetchAndNavigate(`http://localhost:3001/api/movies`);
+  };
 
   return (
     <div className="searchContainer">
-      <h2> Search movies</h2>
+      <h3>Search movies</h3>
 
-      {/* Hakulomake */}
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={query}
-          placeholder="Search movies..."
-          onChange={(e) => setQuery(e.target.value)}/>
-        <button type="submit">
-          Search 
-        </button>
-      </form>
+      {/* Hakusana */}
+      <input
+        placeholder="Search by title..."
+        value={titleQuery}
+        onChange={(e) => setTitleQuery(e.target.value)}
+      />
+      <button type="button" onClick={searchByTitle}>
+        Search
+      </button>
 
-      {/* Painikkeet eri hakutiloihin */}
-      <div>
-        <button type="button" onClick={handlePopular}>
-          Popular
-        </button>
-        <button  type="button" onClick={handleGenre}>
-          Select genre
-        </button>
+      {/* Ohjaajahaku */}
+      <input
+        placeholder="Search by director..."
+        value={directorQuery}
+        onChange={(e) => setDirectorQuery(e.target.value)}
+      />
+      <button type="button" onClick={searchByDirector}>
+        Search by Director
+      </button>
 
-        
-          <select
-            value={genre}
-            onChange={(e) => setGenre(e.target.value)}>
-            <option value="28">Action</option>
-            <option value="35">Comedy</option>
-            <option value="18">Drama</option>
-            <option value="27">Horror</option>
-          </select>
-        
-      </div>
+      {/* Genrehaku */}
+      <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+        <option value="28">Action</option>
+        <option value="35">Comedy</option>
+        <option value="18">Drama</option>
+        <option value="27">Horror</option>
+      </select>
+      <button type="button" onClick={searchByGenre}>
+        Search by Genre
+      </button>
 
-      </div>
-    
+      {/* Suositut */}
+      <button type="button" onClick={getPopular}>
+        Popular
+      </button>
+    </div>
   );
 }
-
-
-
-  
