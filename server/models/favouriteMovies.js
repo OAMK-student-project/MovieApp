@@ -3,12 +3,12 @@ const db = require('../database');
 const favouriteMovies = {
     //id auto-incremented
 
-    // Get all favourite movies
+//-----Get all favourite movies
     getAll: function (callback) {
         return db.query('SELECT * FROM Favourite_movies', callback);
     },
 
-    //Add a movie to a favourite list
+//-----Add a movie to a favourite list
     //To keep me sane: favouriteMovieData = { movie_id, name, genre, favourite_id }
     add: function (favouriteMovieData, callback) {
         const timestamp = new Date();
@@ -24,13 +24,13 @@ const favouriteMovies = {
         callback);
     },
 
-    // Delete a favourite movie (only if it belongs to the user’s list) ----- ! Not sure if this works !
+//-----Delete a favourite movie (only if it belongs to the user’s list) ----- ! Not sure if this works !
     delete: function (favouriteMovieId, userId, callback) {
         return db.query(
             `DELETE FROM Favourite_movies 
                 USING Favourite_lists
                 WHERE Favourite_movies.id = $1
-                AND Favourite_movies.favourite_id = Favourite_lists.id
+                AND Favourite_movies.favourite_id = Favourite_lists.id 
                 AND Favourite_lists.user_id = $2
              RETURNING Favourite_movies.*`,
             [favouriteMovieId, userId],

@@ -3,18 +3,19 @@ const db = require('../database');
 const reviews = {
     //id auto-incremented
 
-    // Get all reviews
+//-----Get all reviews
     getAll: function (callback) {
         return db.query('SELECT * FROM Reviews', callback);
     },
 
-    // Get user's reviews
+//-----Get user's reviews
     getByUserId: function (user_id, callback) {
         return db.query('SELECT * FROM Reviews WHERE user_id = $1', [user_id], callback);
     },
 
-    //Add review
+//-----Add review
     //from my undestanding review id (id) should be automagically added to the database by postgres, thus it's "missing". Tested in query. 
+    //reviewData = { user_id, movie_id, rating, review_text }
     //We (should) get user_id from login/signup -> router -> model
     add: function (reviewData, callback) {
         const timestamp = new Date();
@@ -30,7 +31,7 @@ const reviews = {
         callback);
     },
 
-    //Delete review
+//-----Delete review
     //Not sure if this is functional. This should make sure that the review can only be deleted by the one who created it (user_id). reviewId = id which is added automatically (via postgres auto-increment)
     deleteByUser: function (reviewId, reviewData, callback) {
         return db.query(
@@ -39,7 +40,7 @@ const reviews = {
         callback);
     },
 
-    //Update review
+//-----Update review
     //reviewId = id which is added automatically on review creation (via postgres auto-increment)
     update: function (reviewId, reviewData, callback) {
         return db.query(

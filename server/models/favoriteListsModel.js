@@ -3,28 +3,29 @@ const db = require('../database');
 const favouriteLists = {
     //id auto-incremented
 
-    // Get all favourite lists
+//-----Get all favourite lists
      getAll: function (callback) {
         return db.query('SELECT * FROM Favourite_lists', callback);
     },
 
-    // Get user's favourite lists
+//-----Get user's favourite lists
     getByUserId: function (user_id, callback) {
         return db.query('SELECT * FROM Favourite_lists WHERE user_id = $1', [user_id], callback);
     },
 
-    // Get list by name
+//-----Get list by name
     getByListName: function (name, callback) {
         return db.query('SELECT * FROM Favourite_lists WHERE name = $1', [name], callback);
     },
 
-    // Get list by name and user_id
+//-----Get list by name and user_id
     getByListNameAndId: function (name, user_id, callback) {
         return db.query('SELECT * FROM Favourite_lists WHERE name = $1 AND user_id = $2', [name, user_id], callback);
     },
 
-    //Add favlist
+//-----Add favlist
     //from my undestanding favouriteListId (id) should be automagically added to the database by postgres (via postgres auto-increment), thus it's "missing".
+    //favouriteListData = { user_id, name }
     add: function (favouriteListData, callback) {
         const timestamp = new Date();
         return db.query(
@@ -37,7 +38,7 @@ const favouriteLists = {
         callback);
     },
 
-    //Delete favlist
+//-----Delete favlist
     //Not sure if this is functional. This should make sure that the review can only be deleted by the one who created it (user_id). favouriteListId = id which is added automatically (via postgres auto-increment)
     deleteByUser: function (favouriteListId, favouriteListData, callback) {
         return db.query(
@@ -46,7 +47,7 @@ const favouriteLists = {
         callback);
     },
 
-    //Update favlist --- ! Only allows changing the name of the list for now !
+//-----Update favlist --- ! Only allows changing the name of the list for now !
     //favouriteListId = id which is added automatically on review creation (via postgres auto-increment).
     update: function (favouriteListId, favouriteListData, callback) {
         return db.query(
