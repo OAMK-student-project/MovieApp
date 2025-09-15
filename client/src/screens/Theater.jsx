@@ -11,7 +11,8 @@ const toFinnkino = (isoDate) => {
 const timeOf = (iso) => iso.slice(11, 16);
 
 function Theater() {
-  const url = "http://localhost:3001/theater";
+  const baseURL = import.meta.env.VITE_API_URL;
+  const url = `${baseURL}/theater`;
   const [theaters, setTheaters] = useState([]);
   const [events, setEvents] = useState([]);
   const [dateIso, setDateIso] = useState(() => new Date().toISOString().slice(0, 10));
