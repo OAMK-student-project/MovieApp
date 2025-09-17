@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import { XMLParser } from "fast-xml-parser";
 import "./Theater.css";
 import ShowCard from "../components/ShowCard";
 
@@ -8,109 +8,157 @@ const toFinnkino = (isoDate) => {
   return `${d}.${m}.${y}`;
 };
 
-const timeOf = (iso) => iso.slice(11, 16);
+const timeOf = (iso) =>
+  typeof iso === "string" && iso.length >= 16 ? iso.slice(11, 16) : null;
+
+function createXMLParser(arrayName) {
+  return new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
+    parseTagValue: true,
+    parseAttributeValue: true,
+    trimValues: true,
+    isArray: (name) => name === arrayName,
+  });
+}
 
 function Theater() {
-  const baseURL = import.meta.env.VITE_API_URL;
-  const url = `${baseURL}/theater`;
-  const [theaters, setTheaters] = useState([]);
+  const url = import.meta.env.VITE_API_FINNKINO_URL;
+  const [theaters, setTheaters] = useState([{ ID: "", Name: "Ladataan…" }]);
+  const [theaterCode, setTheaterCode] = useState("");
   const [events, setEvents] = useState([]);
   const [dateIso, setDateIso] = useState(() => new Date().toISOString().slice(0, 10));
-  const [theaterCode, setTheaterCode] = useState(0);
+  
   const [sortBy, setSortBy] = useState("earliest");
   const [status, setStatus] = useState("idle"); //Tilat: idle, loading, success/error
   //const [showTimes, setShowTimes] = useState([]);
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     (async () => {
       try {
-        const { data } = await axios.get(`${url}/locations`);
-        setTheaters([, ...(Array.isArray(data) ? data : [])]);
+        const response = await fetch(url+`/TheatreAreas/`, {
+          signal: abortController.signal,
+          headers: { Accept: "application/xml,text/xml;q=0.9,*/*;q=0.8" }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const xml = await response.text();
+        const parser = createXMLParser("TheatreArea");
+        const json = parser.parse(xml);
+        const locations = json.TheatreAreas.TheatreArea;
+        if (locations.length === 0) throw new Error("Tyhjä tulos");
+        setTheaters(locations);
+        setTheaterCode(0);
+        console.log(locations);
       } catch (err) {
-        alert(err.message);
+        if (abortController.signal.aborted) return;
+        console.error("Finnkino Theatres haku epäonnistui:", err);
+        setTheaters([{ id: "", name: "Virhe haussa" }]);
+        setTheaterCode("");
       }
     })();
+
+    return () => abortController.abort();
   }, []);
 
-  const fetchMovies = async (areaCode) => {
-    const area = Number(String(areaCode).trim());
-    if (!Number.isFinite(area) || area === 0) {
-      setStatus("idle");
-      setEvents([]);
-      return;
+const fetchMovies = async (areaCode) => {
+  const area = Number(String(areaCode).trim());
+  if (!Number.isFinite(area) || area === 0) {
+    setStatus("idle");
+    setEvents([]);
+    return;
+  }
+
+  const dt = toFinnkino(dateIso); // esim. "17.09.2025"
+  setStatus("loading");
+
+  try {
+    const res = await fetch(`${url}/Schedule/?area=${area}&dt=${dt}`, {
+      headers: { Accept: "application/xml,text/xml;q=0.9,*/*;q=0.8" }
+    });
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status} ${res.statusText}${body ? ` – ${body.slice(0,160)}` : ""}`);
     }
-    const dt = toFinnkino(dateIso);
-    setStatus("loading");
-    try {
-      const { data } = await axios.get(`${url}/shows`, { params: { area, dt } });
-      setStatus("success");
-      setEvents(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setStatus("error");
-      console.error(err.response?.status, err.message);
-      setEvents([]);
-      alert(err.message);
-    }
-  };
+
+    const xml = await res.text();
+    const parser = createXMLParser("Show");
+    const json = parser.parse(xml);
+    const shows = json.Schedule.Shows.Show;
+    console.log(shows);
+    setEvents(Array.isArray(shows) ? shows : []);
+    setStatus("success");
+  } catch (err) {
+    console.error(err);
+    setEvents([]);
+    setStatus("error");
+    alert(err.message);
+  }
+};
+
 
   useEffect(()=>{
     fetchMovies(theaterCode);
   },[theaterCode, dateIso]);
 
-  const { showTimes, groupedByTime } = useMemo(() => {
-    const groups = events.reduce((acc, ev) => {
-      const t = timeOf(ev.start);
-      (acc[t] ||= []).push(ev);
-      return acc;
-    }, {});
+const { showTimes, groupedByTime } = useMemo(() => {
+  const valid = events.filter((ev) => timeOf(ev.dttmShowStart));
+  const groups = valid.reduce((acc, ev) => {
+    const t = timeOf(ev.dttmShowStart);        // t on aina "HH:MM"
+    (acc[t] ||= []).push(ev);
+    return acc;
+  }, {});
 
-    const toMinutes = (t) => {
-      const [h, m] = t.split(":").map(Number);
-      return h * 60 + m;
-    };
+  const toMinutes = (t) => {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  };
 
-    const times = Object.keys(groups).sort((a, b) =>
-      sortBy === "earliest"
-        ? toMinutes(a) - toMinutes(b)   // aikaisin ensin
-        : toMinutes(b) - toMinutes(a)   // myöhäisin ensin
-    );
-    return { showTimes: times, groupedByTime: groups };
-  }, [events, sortBy]);
+  const times = Object.keys(groups).sort((a, b) =>
+    sortBy === "earliest" ? toMinutes(a) - toMinutes(b) : toMinutes(b) - toMinutes(a)
+  );
 
-  const handleStatus = () => {
-    if (status === "loading") {
-      return <div>Loading...</div>
-    } else if(status === "error") {
-      return <div>Error. Please try again</div>
-    } else if(status === "success" && showTimes.length===0) {
-      return <div>No movies to show</div>
-    } else {
-      return(
+  return { showTimes: times, groupedByTime: groups };
+}, [events, sortBy]);
+
+const handleStatus = () => {
+  switch (status) {
+    case "idle":
+      return null;
+    case "loading":
+      return <div>Loading...</div>;
+    case "error":
+      return <div>Error. Please try again</div>;
+    case "success":
+      return showTimes.length === 0 ? (
+        <div>No movies to show</div>
+      ) : (
         showTimes.map((t) => (
           <div key={t} className="showSlot">
             <div className="showTime">{t}</div>
             <div className="shows">
               {groupedByTime[t].map((event) => (
-                <ShowCard
-                  key={event.uuid}
-                  show={event}
-                />
+                <ShowCard key={`${event.ID}-${event.dttmShowStart}`} show={event} />
               ))}
             </div>
           </div>
-        )));
-    }
+        ))
+      );
+    default:
+      return null;
   }
+};
 
   return (
     <div className="finnkino">
       <div className="inputArea">
-        <select defaultValue={0} onChange={(e) => setTheaterCode(e.target.value)}>
-          {theaters.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
+        <select value={theaterCode} onChange={(e) => setTheaterCode(e.target.value)}>
+          {theaters.map(theater=>{
+          return <option key={theater.ID} value={theater.ID}>{theater.Name}</option> 
+          })}
         </select>
         <input
           type="date"
