@@ -31,7 +31,6 @@ function Theater() {
   
   const [sortBy, setSortBy] = useState("earliest");
   const [status, setStatus] = useState("idle"); //Tilat: idle, loading, success/error
-  //const [showTimes, setShowTimes] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -51,11 +50,10 @@ function Theater() {
         if (locations.length === 0) throw new Error("Tyhjä tulos");
         setTheaters(locations);
         setTheaterCode(0);
-        console.log(locations);
       } catch (err) {
         if (abortController.signal.aborted) return;
         console.error("Finnkino Theatres haku epäonnistui:", err);
-        setTheaters([{ id: "", name: "Virhe haussa" }]);
+        setTheaters([{ ID: "", Name: "Virhe haussa" }]);
         setTheaterCode("");
       }
     })();
@@ -64,8 +62,9 @@ function Theater() {
   }, []);
 
 const fetchMovies = async (areaCode) => {
+  const abortController = new AbortController();
   const area = Number(String(areaCode).trim());
-  if (!Number.isFinite(area) || area === 0) {
+  if (!Number.isFinite(area) || area === 0) { //isFinite tarkistaa onko area numero
     setStatus("idle");
     setEvents([]);
     return;
@@ -75,20 +74,20 @@ const fetchMovies = async (areaCode) => {
   setStatus("loading");
 
   try {
-    const res = await fetch(`${url}/Schedule/?area=${area}&dt=${dt}`, {
+    const response = await fetch(`${url}/Schedule/?area=${area}&dt=${dt}`, {
+      signal: abortController.signal,
       headers: { Accept: "application/xml,text/xml;q=0.9,*/*;q=0.8" }
     });
 
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${res.statusText}${body ? ` – ${body.slice(0,160)}` : ""}`);
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      throw new Error(`HTTP ${response.status} ${response.statusText}${body ? ` – ${body.slice(0,160)}` : ""}`);
     }
 
-    const xml = await res.text();
+    const xml = await response.text();
     const parser = createXMLParser("Show");
     const json = parser.parse(xml);
     const shows = json.Schedule.Shows.Show;
-    console.log(shows);
     setEvents(Array.isArray(shows) ? shows : []);
     setStatus("success");
   } catch (err) {
@@ -97,24 +96,24 @@ const fetchMovies = async (areaCode) => {
     setStatus("error");
     alert(err.message);
   }
+  return () => abortController.abort();
 };
 
-
-  useEffect(()=>{
+useEffect(()=>{
     fetchMovies(theaterCode);
   },[theaterCode, dateIso]);
 
 const { showTimes, groupedByTime } = useMemo(() => {
-  const valid = events.filter((ev) => timeOf(ev.dttmShowStart));
-  const groups = valid.reduce((acc, ev) => {
-    const t = timeOf(ev.dttmShowStart);        // t on aina "HH:MM"
-    (acc[t] ||= []).push(ev);
+  const valid = events.filter((event) => timeOf(event.dttmShowStart));
+  const groups = valid.reduce((acc, event) => {
+    const t = timeOf(event.dttmShowStart);        // t on aina "HH:MM"
+    (acc[t] ||= []).push(event);
     return acc;
   }, {});
 
-  const toMinutes = (t) => {
-    const [h, m] = t.split(":").map(Number);
-    return h * 60 + m;
+  const toMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
   };
 
   const times = Object.keys(groups).sort((a, b) =>
