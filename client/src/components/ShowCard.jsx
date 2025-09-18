@@ -8,7 +8,7 @@ function ShowCard({ show }) {
     <div className="showCard">
       <img
         className="photo"
-        src={show.images.large}
+        src={show.Images.EventLargeImagePortrait}
         onClick={() => setShowDetails(true)}
       />
       {showDetails && (<MovieDetailsCard onClose={() => setShowDetails(false)} show={show} />
