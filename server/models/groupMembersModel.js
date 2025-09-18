@@ -9,7 +9,7 @@ const groupMembers = {
     },
 
 //-----Get Group Members by group
-    getByName: function(groupId,callback) {
+    getByGroup: function(groupId,callback) {
         return db.query('SELECT * FROM Group_members WHERE group_id=$1', [groupId],callback)
     },
 
