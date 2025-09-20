@@ -1,56 +1,63 @@
-const db = require('../database');
-
-const groupJoin = {
-    //id auto-incremented
+import { pool } from '../helpers/db.js'
+//id auto-incremented
 
 //-----Get all requests from table
-    getAll: function(callback) {
-        return db.query('SELECT * FROM Group_join_requests', callback);
-    },
+    const getAllRequests = async() => {
+        const result = await pool.query('SELECT * FROM "Group_join_requests"')
+        return result.rows;
+    }
 
 //-----Get requests by group id
-    getById: function(groupJoinId,callback) {
-        return db.query('SELECT * FROM Group_join_requests WHERE group_id=$1', [groupJoinId],callback);
-    },
+    const getRequestsById = async(groupJoinId) => {
+        const result = await pool.query('SELECT * FROM "Group_join_requests" WHERE group_id=$1', [groupJoinId])
+        return result.rows;
+    }
 
 //-----Get join requests from a specific group and return group info
-    getRequestsByGroup: function (groupJoinId, callback) {
-        return db.query(
+    const getRequestsByGroup = async(groupJoinId) => {
+        const result = await pool.query(
             'SELECT * FROM "Group_join_requests" gjr ' + //gjr and g are just aliases, for example: "Group_join_requests" gjr <- defines the alias
             'LEFT JOIN "Groups" g ON gjr.group_id = g.id ' +
             'WHERE gjr.group_id = $1',
-            [groupJoinId],
-        callback);
-},
-
+            [groupJoinId])
+        return result.rows;
+    }
+ 
 //-----Add request
     //groupJoinData = { group_id, requester_id, status }
-    add: function (groupJoinData, callback) {
+    const addRequest = async(groupJoinData) => {
         const timestamp = new Date();
-        return db.query(
-            'INSERT INTO Group_join_requests (group_id, requester_id, status, created_at) VALUES ($1, $2, $3, $4) RETURNING *',
+        const result = await pool.query(
+            'INSERT INTO "Group_join_requests" (group_id, requester_id, status, created_at) VALUES ($1, $2, $3, $4) RETURNING *',
             [
                 groupJoinData.group_id,
                 groupJoinData.requester_id,
                 groupJoinData.status,
                 timestamp
-            ],
-        callback);
-    },
-
-//-----Update request
-    update: function(groupJoinId, groupJoinData, callback) {
-        return db.query(
-            'UPDATE Group_join_requests SET status = $1 WHERE id = $2 RETURNING *', [ groupJoinData.status, groupJoinId ], 
-        callback);
-    },
-
-//-----Delete request
-    delete: function(groupJoinId, callback) {
-        return db.query(
-            'DELETE FROM Group_join_requests WHERE id=$1 RETURNING *', [groupJoinId],
-            callback);
+            ])
+        return result.rows[0];
     }
 
-}; //END
-module.exports = groupJoin;
+
+//-----Update request
+    const updateRequest = async(groupJoinId, groupJoinData) => {
+        const result = await pool.query(
+            'UPDATE "Group_join_requests" SET status = $1 WHERE id = $2 RETURNING *', [ groupJoinData.status, groupJoinId ])
+            return result.rows[0];
+    }
+
+//-----Delete request
+    const deleteRequest = async(groupJoinId) => {
+        const result = await pool.query(
+            'DELETE FROM "Group_join_requests" WHERE id=$1 RETURNING *', [groupJoinId])
+        return result.rows[0];
+    }
+
+export {
+  getAllRequests,
+  getRequestsById,
+  getRequestsByGroup,
+  addRequest,
+  updateRequest,
+  deleteRequest
+};
