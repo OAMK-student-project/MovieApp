@@ -1,0 +1,89 @@
+.mc-card {
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+}
+
+.mc-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mc-title { 
+    margin: 0; font-size: 1rem; line-height: 1.2; 
+}
+
+.mc-year { 
+    color: #aaa; font-size: 0.9rem; margin: 0; 
+}
+
+.mc-overview {
+  color: #ddd;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mc-btn {
+  margin-top: auto;
+  display: inline-block;
+  padding: 8px 12px;
+  background: color: #5C5EFF;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mc-btn:hover { 
+    filter: brightness(1.07); 
+}
+
+.mc-btn-secondary {
+  background: #333;
+}
+
+.mc-expand {
+  margin-top: 10px;
+  padding: 12px;
+  background: #181818;
+  border-radius: 10px;
+}
+
+.mc-hero {
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.mc-meta .mc-sub, .mc-meta .mc-genres {
+  color: #ccc;
+  margin: 4px 0;
+}
+
+.mc-cast h4 {
+    margin: 8px 0 4px; 
+}
+
+.mc-cast ul { 
+    margin: 0; padding-left: 18px; 
+}
+
+.mc-muted { 
+    color: #aaa; 
+}

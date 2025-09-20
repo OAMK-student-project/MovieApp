@@ -5,7 +5,7 @@ import './Search.css';
 import { useNavigate } from "react-router-dom";
 
 export default function Search() {
-    const API_KEY = "api key here"; // Api key 
+    const API_KEY = "Api key here"; // Api key 
     const BASE_URL = "https://api.themoviedb.org/3";
     
     const navigate = useNavigate();
