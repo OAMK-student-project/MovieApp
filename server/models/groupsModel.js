@@ -1,55 +1,63 @@
-const db = require('../database');
+import { pool } from '../helpers/db.js'
 
-const groups = {
-    //id auto-incremented
+//id auto-incremented
 
 //-----Get all groups
-    getAll: function(callback) {
-        return db.query('SELECT * FROM Groups', callback);
-    },
+    const getAllGroups = async() => {
+        const result = await pool.query('SELECT * FROM "Groups"')
+        return result.rows;
+    }
 
 //-----Get groups by name
-    getByName: function(groupData,callback) {
-        return db.query('SELECT * FROM Groups WHERE name=$1', [groupData.name],callback)
-    },
+    const getGroupByName = async(groupData) => {
+        const result = await pool.query('SELECT * FROM "Groups" WHERE name=$1', [groupData.name])
+        return result.rows;
+    }
 
 //-----Get groups by name and created by (owner)
-    getByListNameAndCreator: function (groupData, callback) {
-        return db.query('SELECT * FROM Groups WHERE name = $1 AND created_by = $2', [groupData.name, groupData.created_by], callback);
-    },
+    const getByGroupNameAndCreator = async(groupData) => {
+        const result = await pool.query('SELECT * FROM "Groups" WHERE name = $1 AND created_by = $2', [groupData.name, groupData.created_by])
+        return result.rows;
+    }
 
 //-----Add group
     //groupData = { name, created_by }
-    add: function (groupData, callback) {
+    const addGroup = async(groupData) => {
         const timestamp = new Date();
-        return db.query(
-            'INSERT INTO Groups (name, created_by, created_at) VALUES ($1, $2, $3) RETURNING *',
+        const result = await pool.query(
+            'INSERT INTO "Groups" (name, created_by, created_at) VALUES ($1, $2, $3) RETURNING *',
             [
                 groupData.name,
                 groupData.created_by, //this should come from logged-in user (Users.id)
                 timestamp
-            ],
-        callback);
-    },
+            ])
+        return result.rows[0];
+    }
 
 //-----Update Group (only by creator)
-    update: function(id, groupData, callback) {
-        return db.query(
-            'UPDATE Groups SET name = $1 WHERE id = $2 AND created_by = $3 RETURNING *',
+    const updateGroup = async(id, groupData) => {
+        const result = await pool.query(
+            'UPDATE "Groups" SET name = $1 WHERE id = $2 AND created_by = $3 RETURNING *',
             [
                 groupData.name,
                 id,
                 groupData.created_by //this must match with logged-in user
-            ], 
-        callback);
-    },
-
-//-----Delete Group
-    delete: function(id, callback) {
-        return db.query(
-            'DELETE FROM Groups WHERE id=$1 RETURNING *', [id],
-            callback);
+            ])
+        return result.rows[0];
     }
 
-}; //END
-module.exports = groups;
+//-----Delete Group
+    const deleteGroup = async(id) => {
+        const result = await pool.query(
+            'DELETE FROM "Groups" WHERE id=$1 RETURNING *', [id])
+        return result.rows[0];
+    }
+
+export { 
+    getAllGroups, 
+    getGroupByName, 
+    getByGroupNameAndCreator, 
+    addGroup, 
+    updateGroup, 
+    deleteGroup 
+};
