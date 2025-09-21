@@ -2,6 +2,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .navArea {
@@ -10,13 +14,17 @@
   border-radius: 6px;
   overflow: hidden;
   background-color: var(--effect-color);
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .navArea a {
+  display: block;
   padding: 0.75rem 2rem;
   text-decoration: none;
   color: var(--text-color);
   border-left: 1px solid black;
+  white-space: nowrap;
 }
 
 .navArea a:first-child {
@@ -33,15 +41,40 @@
   border-radius: 6px;
   overflow: hidden;
   background-color: var(--effect-color);
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .loginArea a {
+  display: block;
   padding: 0.75rem 2rem;
   text-decoration: none;
   color: var(--text-color);
   border-left: 1px solid black;
+  white-space: nowrap;
 }
 
 .loginArea a.active{
     background-color: #666666;
+}
+
+@media (max-width: 640px) {
+  .header {
+    justify-content: end;
+  }
+
+  .navArea {
+    width:100%
+  }
+
+  .navArea a{
+    padding: 0.75rem 1rem;
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  .loginArea a {
+    padding: 0.75rem 1rem;
+    flex: 1 1 auto;
+    text-align: end;
+  }
 }
