@@ -10,11 +10,7 @@ export default function Search() {
   const [genre, setGenre] = useState("28"); // Action oletuksena
   const navigate = useNavigate();
 
-    const API_KEY = "Api key here"; // Api key 
-    const BASE_URL = "https://api.themoviedb.org/3";
     
-   
-
 
   // Yleinen funktio, joka hoitaa haun ja navigoinnin
   const fetchAndNavigate = async (url) => {

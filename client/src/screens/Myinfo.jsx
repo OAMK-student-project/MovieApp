@@ -101,7 +101,7 @@ useEffect(() => {
     if (window.confirm("By deleting account you will lose all access to it, are you sure you want to delete it?")) {
       if (users.length > 0) {
         deleteUser(users[0].id);
-      alert("Your profile has been deleted."); 
+      
       }}
   }}>
 

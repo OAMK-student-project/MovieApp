@@ -32,16 +32,21 @@ router.get("/", async (req, res) => {
 
     const data = await response.json();
 
-    // Jos haettiin ohjaajaa
+
+    // Jos haettiin ohjaajaa etsitään id:llä
     if (director) {
       const personId = data.results[0]?.id;
       if (personId) {
-        const moviesByDirectorRes = await fetch(
-          `${TMDB_API_URL}/discover/movie?with_crew=${personId}&language=en-US`,
-          { headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}` } }
+        const creditsRes = await fetch(
+          `${TMDB_API_URL}/person/${personId}/movie_credits?language=en-US`,
+          {
+            headers: { Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}` },
+          }
         );
-        const moviesByDirector = await moviesByDirectorRes.json();
-        return res.json(moviesByDirector);
+        const credits = await creditsRes.json();
+        // Suodatetaan vain ohjaajan rooli
+        const directedMovies = credits.crew.filter(c => c.job === "Director");
+        return res.json({ results: directedMovies });
       }
       return res.json({ results: [] });
     }
@@ -51,6 +56,6 @@ router.get("/", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}); 
 
 export default router;
