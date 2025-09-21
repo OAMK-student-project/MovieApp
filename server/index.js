@@ -1,16 +1,24 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
+import userRouter from "./routes/userRouter.js";
 
 //Router imports here
 
 const app = express();
-app.use(cors());
+const port = process.env.PORT || 3001;
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json());
+
 //routes here, healthz is for initial testing
 app.get("/healthz", (req,res)=>res.send("ok"));
-
-const port = process.env.PORT || 3001;
+app.use("/user", userRouter);
 
 app.use((req, res, next) => {
     next({

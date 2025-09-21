@@ -8,7 +8,6 @@ export default function App() {
       <Header/>
       <Search/>
       <Outlet/>
-
     </div>
   );
 }
