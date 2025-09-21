@@ -23,7 +23,19 @@ useEffect(() => {
  })
 }, [])
   
-  
+  const deleteUser = async (id) => { // käyttäjän poistava funktio axioksella
+  try {
+    const res = await axios.delete(`http://localhost:3001/users/${id}`);
+    console.log("Deleted:", res.data);
+    alert("Your profile has been deleted.");
+    // esim. ohjaa käyttäjä kirjautumissivulle
+    window.location.href = "/login";
+  } catch (err) {
+    console.error("Error deleting user:", err.response?.data || err.message);
+    alert("Failed to delete profile");
+  }
+};
+
   return (
   
   <>
@@ -87,9 +99,10 @@ useEffect(() => {
   type="button"
   onClick={() => {
     if (window.confirm("By deleting account you will lose all access to it, are you sure you want to delete it?")) {
-      //  call your delete API or logic here
+      if (users.length > 0) {
+        deleteUser(users[0].id);
       alert("Your profile has been deleted."); 
-    }
+      }}
   }}>
 
   Delete my profile
