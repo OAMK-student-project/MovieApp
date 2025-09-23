@@ -6,22 +6,24 @@ import './Myinfo.css'
 
 export default function Myinfo() {
   const [users, setUsers] = useState([])
-  
-useEffect(() => {
-  axios.get('http://localhost:3001/users/me', {
-    headers: {
-      Accept: 'application/json'
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/users/me', {
+        headers: { Accept: 'application/json' }
+      });
+      setUsers([response.data]);
+    } catch (error) {
+      console.error(error);
     }
-  })
-  .then(response => {
-    console.log(response.data)
-    setUsers([response.data])
-    
-  })
- .catch(error=> {
-  console.log(error)
- })
-}, [])
+  };
+
+  fetchUser();
+}, []);
   
   const deleteUser = async (id) => { // käyttäjän poistava funktio axioksella
   try {
@@ -55,24 +57,24 @@ useEffect(() => {
 ) : (
   <p>No user found</p>
 )}</div>
-        <input type="text" placeholder="Current firstname" />
+        <input type="text" value={firstname} placeholder="Current firstname" onChange={e => setFirstname(e.target.value)} />
         <p>Last name:</p>
        {users.length > 0 ? (
   <div> {users[0].lastname}</div>
 ) : (
   <p>No user found</p>
 )}
-        <input type="text" placeholder="Current lastname" />
+        <input type="text" value={lastname} placeholder="Current lastname"onChange={e => setLastname(e.target.value)} />
         <p>Email Address:</p>
         <div>{users.length > 0 ? (
   <div>{users[0].email} </div>
 ) : (
   <p>No user found</p>
 )}</div>
-        <input type="text" placeholder="Current email" />
+        <input type="text" value={email} placeholder="Current email"onChange={e => setEmail(e.target.value)} />
         <button type="button">Save changes</button>
       </div>
-
+  
       {/* Right side */}
       <div className="container">
         <h3>Reset password</h3>

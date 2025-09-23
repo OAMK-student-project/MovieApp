@@ -7,11 +7,6 @@ import moviesRouter from "./routes/moviesRouter.js"
 import userRouter from "./routes/userRouter.js"
 
 
-
-
-
-
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -23,7 +18,7 @@ app.use("/users", userRouter);
 //routes here, healthz is for initial testing
 app.get("/healthz", (req,res)=>res.send("ok"));
 
-
+   
 
 const port = process.env.PORT || 3001;
 

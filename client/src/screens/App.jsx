@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Search from "../components/Search.jsx";
-
+//import Groupnav from "../components/Groupnav.jsx";
 
   export default function App() {
     
@@ -12,6 +12,7 @@ import Search from "../components/Search.jsx";
     return (
     <div>
       <Header/>
+      
       {!hideSearchOn.includes(location.pathname) && <Search />}  
      
       <Outlet/>
