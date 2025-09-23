@@ -8,7 +8,7 @@ export default function SearchScreen() {
     return (
   
      <div>
-      <h2>Searchresults</h2>
+      <h2>Search results</h2>
       <div className="results">
         {results.length === 0 && <p>No results</p>}
         {results.map((m) => (

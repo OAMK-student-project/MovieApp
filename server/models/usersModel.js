@@ -1,4 +1,4 @@
-const db = require('../database');
+import { db } from "../database.js";
 
 const users = {
     //id auto-incremented
@@ -33,11 +33,14 @@ const users = {
             ],
         callback);
     },
-
-//-----Delete user
-    delete: function (id, callback) {
-        return db.query('DELETE FROM Users WHERE id = $1', [id], callback);
-    },
+delete: function(id, callback) {
+  // ensin poista käyttäjän kaikki arviot
+  db.query('DELETE FROM Reviews WHERE user_id = $1', [id], (err) => {
+    if (err) return callback(err);
+    // sitten poista käyttäjä
+    db.query('DELETE FROM Users WHERE id = $1 RETURNING *', [id], callback);
+  });
+},
 
 //-----Update user
     update: function (id, userAccountData, callback) {
@@ -52,4 +55,4 @@ const users = {
         callback);
     }
 }; // END
-module.exports = users;
+export default users;
