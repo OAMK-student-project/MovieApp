@@ -1,9 +1,16 @@
 import { useState } from "react"
 import { getMovieDetails } from "../services/movieService"
 import { posterUrl, backdropUrl } from "../helpers/images"
+import { addToFavourites } from "../helpers/favouriteHelper.js"
 import "./movieCard.css"
 
-export default function MovieCard({ movie }) {
+//FontAwesome Imports
+//npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons'
+import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons'
+
+export default function MovieCard({ movie, isFavorited }) {
   const [isOpen, setIsOpen] = useState(false)
   const [details, setDetails] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -27,16 +34,20 @@ export default function MovieCard({ movie }) {
 
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
+  
 
   /** mc = moviecard*/
   return (
     <div className="mc-card">
+      
       <img
         className="mc-poster"
         src={posterUrl(movie.poster_path)}  
         alt={movie.title}
         loading="lazy"
       />
+
+      <FontAwesomeIcon icon={isFavorited ? faBookmarkSolid : faBookmarkRegular} size="lg" className="mc-fav-icon" role="button" onClick={() => (addToFavourites(movie), handleFavourite(movie))}/>
 
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>

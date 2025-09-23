@@ -18,6 +18,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: 15em;
 }
 
 .mc-title { 
@@ -87,3 +88,18 @@
 .mc-muted { 
     color: #aaa; 
 }
+
+.mc-fav-icon {
+  position: absolute;
+  margin-left: 10em;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  color: #5C5EFF;
+  height: 1.2em;
+  width: 1.2em;
+}
+
+  .mc-fav-icon:hover {
+    color: #393cff;
+    cursor: pointer;
+  }
