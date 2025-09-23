@@ -2,15 +2,26 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 
-//Router imports here
+
+import moviesRouter from "./routes/moviesRouter.js"
+import userRouter from "./routes/userRouter.js"
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+//Router imports here
+app.use("/api/movies", moviesRouter);
+app.use("/users", userRouter);
+
 //routes here, healthz is for initial testing
 app.get("/healthz", (req,res)=>res.send("ok"));
 
+   
+
 const port = process.env.PORT || 3001;
+
 
 app.use((req, res, next) => {
     next({
@@ -28,4 +39,8 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(port, ()=>console.log(`Server running at port ${port}`));
+app.listen(port, () =>
+  console.log(` Backend running at http://localhost:${port}`)
+);
+
+
