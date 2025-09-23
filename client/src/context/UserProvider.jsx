@@ -45,7 +45,6 @@ function UserProvider({ children }) {
         { email, password, firstname, lastname },
         headers
         );
-        console.log(data);
         return true;
     } catch (error) {
         console.error(error);
@@ -63,7 +62,7 @@ function UserProvider({ children }) {
             setUser(prev => ({ ...(prev ?? {}), userID: Number(uid), identifiedUser: true }));
         return;
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -105,7 +104,6 @@ function UserProvider({ children }) {
 
         const takeAction = Math.max((secondsLeft - 60)* 1000, 0);
         timeoutId = setTimeout(()=>{
-            console.log(`Access token vanhenee alle 60 sekunnin päästä`)
             refreshTokens();
         }, takeAction);
 
@@ -121,7 +119,6 @@ function UserProvider({ children }) {
     }, [accessToken]);
 
     useEffect(()=>{
-        console.log("Käyttäjä", user);
     }, [user]);
     return (
         <UserContext.Provider value={{ user, signin, signout, signup }}>

@@ -18,12 +18,14 @@ function signAccessToken(dbUser) {
   );
 }
 
+//Tämä token annetaan asiakkaalle
 function generateRefreshToken() {
-    return crypto.randomBytes(48).toString("base64url"); // tämä annetaan asiakkaalle
+    return crypto.randomBytes(48).toString("base64url");
 }
 
+//tämä tallennetaan kantaan
 function hashRefreshToken(token) {
-    return crypto.createHash("sha256").update(token).digest("base64"); // tämä talletetaan kantaan
+    return crypto.createHash("sha256").update(token).digest("base64");
 }
 
 async function storeRefreshToken(userID, plain) {

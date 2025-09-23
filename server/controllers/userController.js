@@ -4,38 +4,33 @@ import { generateRefreshToken, revokeRefreshToken, signAccessToken, storeRefresh
 
 const isProduction= process.env.NODE_ENV === "production";
 
-const test = async (req, res, next) => {
-  try {
-    const result = await users.getAll();
-    res.status(200).json(result.rows); 
-  } catch (err) {
-    next(err);
-  }
-};
-
 const signUp = async(req, res, next) => {
     try {
-        const newUser = req.body;
-        if(!newUser) return next({error: "new user info needed"});
-        newUser.password_hash = await hash(newUser.password, 10);
-        delete newUser.password;
-        const result = await users.add(newUser);
-        res.status(201).json(result);
+      const newUser = req.body;
+      if(!newUser) return res.status(400).json({error: "User info is missing"});
+      const requiredFields = ["firstname", "lastname", "email", "password"];
+      for(const field of requiredFields) {
+        if(!newUser[field]) return res.status(400).json({error: `${field} is missing`});
+      }
+      newUser.password_hash = await hash(newUser.password, 10);
+      delete newUser.password;
+      const result = await users.add(newUser);
+      res.status(201).json(result);
     } catch (error) {
         next(error);
     }
 }
 
-
 const signIn = async(req, res, next) => {
     try {
         const {email, password, remember} = req.body;
+        if(!email || !password) return res.status(401).json({error: "email or password info is missing"});
         const result = await users.getByEmail(email);
         const dbUser = result.rows[0];
-        if(!dbUser) return next({error: "Kirjautuminen epäonnistui"});
-        //const hashToCompare = dbUser?.password_hash ?? process.env.DUMMY_HASH;
-        const isPasswordCorrect = await compare(password, dbUser.password_hash);
-        if(!isPasswordCorrect) return next({error: "Kirjautuminen epäonnistui"});
+        if(!dbUser) return res.status(401).json({error: "Sign in failed"});
+        const hashToCompare = dbUser?.password_hash ?? process.env.DUMMY_HASH;
+        const isPasswordCorrect = await compare(password, hashToCompare);
+        if(!isPasswordCorrect) return res.status(401).json({error: "Sign in failed"});
         
         const token = signAccessToken(dbUser);
         const refreshTokenPlain = generateRefreshToken();
@@ -46,7 +41,7 @@ const signIn = async(req, res, next) => {
           httpOnly: true,
           secure: isProduction,
           sameSite: "lax",
-          path: "/user",
+          path: "/",
         };
         if (remember) {
           const max = Number(process.env.REFRESH_TOKEN_MS);
@@ -63,10 +58,12 @@ const signIn = async(req, res, next) => {
 const refresh = async (req, res, next) => {
   try {
     const userID = req.body?.userID;
+    if(!userID) return res.status(400).json({error: "Missing necessary info"});
     const refreshToken = req.cookies?.rt;
+    if(!refreshToken) return res.status(401).json({error: "Unauthorized"});
     const remember = Boolean(req.body?.remember);
     if (!userID || !refreshToken) {
-      return next({ status: 400, message: "Missing fields" });
+      return res.status(400).json({error: "Missing fields" });
     }
 
     const checkToken = await verifyRefreshToken(userID, refreshToken);
@@ -83,7 +80,7 @@ const refresh = async (req, res, next) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: "lax",
-      path: "/user",
+      path: "/",
     };
     if (remember) {
       const max = Number(process.env.REFRESH_TOKEN_MS);
@@ -98,16 +95,17 @@ const refresh = async (req, res, next) => {
   }
 };
 
-
 const signout = async (req, res, next) => {
   try {
     const userID = req.body?.userID;
+    if(!userID) return res.status(400).json({error: "Missing user info"});
     const refreshToken = req.cookies?.rt;
+    if (!refreshToken) return res.status(400).json({error: "Missing cookies"});
     if (userID && refreshToken) {
       await revokeRefreshToken(userID, refreshToken);
     }
     res.clearCookie("rt", {
-      path: "/user",
+      path: "/",
       httpOnly: true,
       sameSite: "lax",
       secure: isProduction,
@@ -119,4 +117,4 @@ const signout = async (req, res, next) => {
 };
 
 
-export {signUp, signIn, signout, refresh, test};
+export {signUp, signIn, signout, refresh};
