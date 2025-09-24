@@ -10,7 +10,6 @@ export default function Search() {
   const [genre, setGenre] = useState("28"); // Action oletuksena
   const navigate = useNavigate();
 
-    
   // Yleinen funktio, joka hoitaa haun ja navigoinnin
   const fetchAndNavigate = async (url) => {
     try {

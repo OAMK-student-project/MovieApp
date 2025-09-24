@@ -18,7 +18,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 15em;
 }
 
 .mc-title { 
@@ -42,7 +41,7 @@
   margin-top: auto;
   display: inline-block;
   padding: 8px 12px;
-  background: color: #5C5EFF;
+  background-color: #5C5EFF;
   color: #fff;
   border: 0;
   border-radius: 8px;
