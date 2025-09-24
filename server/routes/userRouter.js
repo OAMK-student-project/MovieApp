@@ -9,12 +9,10 @@ router.post("/signin", signIn);
 router.post("/refresh", refresh);
 router.post("/signout", signout);
 
-export default router;
-
 import express from "express";
-import { pool } from "../helpers/db.js"; 
+//import { pool } from "../helpers/db.js"; 
 
-const router = express.Router();
+//const router = express.Router();
 
 // GET /users  fetch all users
 router.get("/", async (req, res) => {

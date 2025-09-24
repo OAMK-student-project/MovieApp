@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import userRouter from "./routes/userRouter.js";
+import moviesRouter from "./routes/moviesRouter.js";
 
 //Router imports here
 const app = express();
