@@ -2,7 +2,14 @@
 
 function Groups(){
     return(
-        <div>Groups</div>
+        <>
+        <div className="groupcontainer">
+        
+
+        </div>
+        
+        </>
+    
     );
 }
 

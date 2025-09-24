@@ -11,6 +11,7 @@ import Groups from "./screens/Groups.jsx";
 import Reviews from "./screens/Reviews.jsx";
 import SearchScreen from "./screens/SearchScreen";
 import Theater from "./screens/Theater.jsx";
+import Myinfo from "./screens/Myinfo.jsx";
 import "./index.css";
 import UserProvider from "./context/UserProvider.jsx";
 
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       { path: "search", element: <SearchScreen/>},
       { path: "theater", element: <Theater/>},
       { path: "signup", element: <Signup/>},
-           
+      { path:"myinfo", element:<Myinfo/>}      
     ]
   }
 ]);

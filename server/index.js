@@ -5,7 +5,6 @@ import "dotenv/config";
 import userRouter from "./routes/userRouter.js";
 
 //Router imports here
-
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -19,6 +18,7 @@ app.use(express.json());
 //routes here, healthz is for initial testing
 app.get("/healthz", (req,res)=>res.send("ok"));
 app.use("/user", userRouter);
+app.use("/api/movies", moviesRouter);
 
 app.use((req, res, next) => {
     next({
