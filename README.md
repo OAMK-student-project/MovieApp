@@ -4,8 +4,27 @@ Student project – Fullstack
 Web-sovellus elokuvaharrastajille. Kurssi: *Web-ohjelmoinnin sovellusprojekti*. Hyödynnetään The Movie Database (TMDB) ja Finnkino -rajapintoja.
 
 ## Teknologiat
-- Frontend: React (Vite), Axios, React Router
-- Backend: Node.js, Express, PostgreSQL (pg)
+#### Frontend:
+<ol>
+   <li>Node.js</li>
+   <li>React (Vite)</li>
+   <li>React Router DOM</li>
+   <li>React DOM</li>
+   <li>Axios</li>
+</ol>
+
+#### Backend
+<ol>
+   <li>Node.js</li>
+   <li>Express</li>
+   <li>cors</li>
+   <li>bcrypt</li>
+   <li>fast-xml-parser</li>
+   <li>jsonwebtoken</li>
+   <li>npx</li>
+   <li>pg</li>
+</ol>
+
 - Dokumentaatio: OpenAPI (Swagger), dbdiagram.io
 - Versionhallinta: GitHub
 
@@ -15,7 +34,8 @@ MovieApp/
   client/            # React frontend
    /components       # Uudelleenkäytettävät komponentit
    /context          # Kontekstit, kuten käyttäjän tiedot
-   /screens          # Näkymät, jotka vastaavat reittejä. (Home, Login jne)
+   /screens          # Näkymät, jotka vastaavat reittejä. (Home jne)
+      /account       # Käyttäjän hallinta, Login, Signup jne.
   server/            # Node/Express backend
    /controllers      # Sovelluslogiikka (esim. userController.js, reviewController.js)
    /helpers          # Pienet apufunktiot
@@ -37,13 +57,6 @@ Määritetyt reitit
 
 
 ## Kloonaus ja alustus
-
-### Playwright ja chromium asennukset
-Tämä on lisätty 14.9.2025
-Aja komennot:
-   npm i playwright fast-xml-parser
-   npx playwright install chromium
-
 1. Kloonaa repo omalle koneellesi:
    ```bash
    git clone <repo-url>
@@ -99,10 +112,40 @@ Huomio:
 
 
 ### Ympäristömuuttujat
-Luo `server/.env`:
+#### Frontend
+Luo .env tiedosto polkuun: `/client/`
+
+VITE_API_URL=http://localhost:3001
+VITE_API_FINNKINO_URL=https://www.finnkino.fi/xml
+VITE_TMDB_TOKEN=xxxx
+VITE_TMDB_KEY=xxxx
+
+#### Backend
+Luo .env tiedosto polkuun: `server/`:
 ```
-DATABASE_URL=xxx
-PORT=xxx
+PORT=3001
+
+#Frontend addres
+FRONTEND_URL=http://localhost:5173
+
+#In http this is "development"
+#in production this is "production"
+NODE_ENV=false
+
+# Render Postgres connection
+DB_HOST=xxx
+DB_PORT=xxxx
+DB_USER=xxx
+DB_PASSWORD=xxxx
+DB_NAME=xxxx
+DUMMY_HASH=xxxx
+
+#JWT
+JWT_SECRET_KEY=Salaisuus
+REFRESH_TOKEN_MS=2592000000
+
+TEST_DB_NAME = testMovieApp
+TMDB_BEARER_TOKEN=xxxxx
 ```
 
 ## Dokumentaatio
