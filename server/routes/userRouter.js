@@ -1,59 +1,47 @@
 import express from "express";
-import { pool } from "../helpers/db.js"; 
+import users from "../models/usersModel.js";  // polku sun modeliin
 
 const router = express.Router();
 
-// GET /users  fetch all users
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query(
-      'SELECT id, firstname, lastname, email FROM "Users";'
-    );
+// GET /users - fetch all users
+router.get("/", (req, res) => {
+  users.getAll((err, result) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
     res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching users:", err);
-    res.status(500).json({ error: "Database error" });
-  }
+  });
 });
 
-// get user by id 
-router.get("/me", async (req, res) => {
-  try {
-    // For demo, assume current user ID is 1
-    const currentUserId = 1;
-
-    const result = await pool.query(
-      'SELECT id, firstname, lastname, email FROM "Users" WHERE id = $1',
-      [currentUserId]
-    );
-
+// GET /users/me - get user by ID (esim. hardkoodattu ID = 1)
+router.get("/me", (req, res) => {
+  const currentUserId = 1;
+  users.getById(currentUserId, (err, result) => {
+    if (err) {
+      console.error("Error fetching user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "User not found" });
     }
-
     res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  });
 });
 
-// DELETE /users/:id  delete user by ID
-router.delete("/:id", async (req, res) => {
+// DELETE /users/:id
+router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  try {
-    const result = await pool.query(
-      'DELETE FROM "Users" WHERE id = $1 RETURNING *;',
-      [id]
-    );
+  users.delete(id, (err, result) => {
+    if (err) {
+      console.error("Error deleting user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "User not found" });
     }
     res.json({ message: "User deleted", user: result.rows[0] });
-  } catch (err) {
-    console.error("Error deleting user:", err);
-    res.status(500).json({ error: "Database error" });
-  }
+  });
 });
 
 export default router;

@@ -5,7 +5,7 @@ import "dotenv/config";
 
 import moviesRouter from "./routes/moviesRouter.js"
 import userRouter from "./routes/userRouter.js"
-
+import groupsRouter from './routes/groupsRouter.js';
 
 const app = express();
 app.use(cors());
@@ -14,7 +14,7 @@ app.use(express.json());
 //Router imports here
 app.use("/api/movies", moviesRouter);
 app.use("/users", userRouter);
-
+app.use('/groups', groupsRouter);
 //routes here, healthz is for initial testing
 app.get("/healthz", (req,res)=>res.send("ok"));
 
