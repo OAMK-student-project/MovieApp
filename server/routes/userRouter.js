@@ -1,7 +1,20 @@
 import express from "express";
 import users from "../models/usersModel.js";  // polku sun modeliin
+import { Router } from "express";
+import { signUp, signIn, refresh, signout } from "../controllers/userController.js";
+import { auth } from "../helpers/auth.js";
 
-const router = express.Router();
+const router = Router();
+
+router.post("/signup", signUp);
+router.post("/signin", signIn);
+router.post("/refresh", refresh);
+router.post("/signout", signout);
+
+import express from "express";
+//import { pool } from "../helpers/db.js"; 
+
+//const router = express.Router();
 
 // GET /users - fetch all users
 router.get("/", (req, res) => {

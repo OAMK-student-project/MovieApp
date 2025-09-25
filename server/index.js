@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
+
 
 
 import moviesRouter from "./routes/moviesRouter.js"
@@ -15,13 +17,26 @@ app.use(express.json());
 app.use("/api/movies", moviesRouter);
 app.use("/users", userRouter);
 app.use('/groups', groupsRouter);
-//routes here, healthz is for initial testing
-app.get("/healthz", (req,res)=>res.send("ok"));
 
-   
+//import userRouter from "./routes/userRouter.js";
+//import moviesRouter from "./routes/moviesRouter.js";
 
+//Router imports here
+//const app = express();
 const port = process.env.PORT || 3001;
 
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+app.use(cookieParser());
+app.use(express.json());
+
+
+//routes here, healthz is for initial testing
+app.get("/healthz", (req,res)=>res.send("ok"));
+app.use("/user", userRouter);
+app.use("/api/movies", moviesRouter);
 
 app.use((req, res, next) => {
     next({
@@ -39,8 +54,4 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(port, () =>
-  console.log(` Backend running at http://localhost:${port}`)
-);
-
-
+app.listen(port, ()=>console.log(`Server running at port ${port}`));
