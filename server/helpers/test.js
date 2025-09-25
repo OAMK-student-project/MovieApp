@@ -18,7 +18,7 @@ async function initializeTestDb() {
 
 // Clean up between tests
 async function clearDb() {
-  //await pool.query('TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE') //ENABLE TO CLEAR TEST DATA
+  await pool.query('TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE') //ENABLE TO CLEAR TEST DATA
 }
 
 // Insert test user, no bcrypt for test (yet)

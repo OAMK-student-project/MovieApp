@@ -9,12 +9,11 @@ describe('Database tests', function () {
   this.timeout(10000) // 10 seconds for DB setup
 
   const testUser = {
-  email: 'foo@foo.com',
-  password_hash: 'password123',
-  firstname: 'Foo',
-  lastname: 'Bar'
-}
-
+    email: 'foo@foo.com',
+    password_hash: 'password123',
+    firstname: 'Foo',
+    lastname: 'Bar'
+  }
 
   before(async function () {
     // confirm connection
@@ -45,4 +44,27 @@ describe('Database tests', function () {
     expect(rows[0].email).to.equal(inserted.email)
     expect(rows[0].password_hash).to.equal(testUser.password_hash)
   })
+
+  it('should delete a user', async () => {
+    // 1. Insert test user
+    const inserted = await insertTestUser(testUser)
+
+    // 2. Delete that user
+    const { rows: deletedRows } = await pool.query(
+      'DELETE FROM "Users" WHERE id = $1 RETURNING *',
+      [inserted.id]
+    )
+
+    expect(deletedRows.length).to.equal(1)
+    expect(deletedRows[0].id).to.equal(inserted.id)
+
+    // 3. Confirm user is no longer in DB
+    const { rows: checkRows } = await pool.query(
+      'SELECT id FROM "Users" WHERE id = $1',
+      [inserted.id]
+    )
+
+    expect(checkRows.length).to.equal(0)
+  })
+
 })
