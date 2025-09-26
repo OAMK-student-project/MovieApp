@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { getMovieDetails } from "../services/movieService"
 import { posterUrl, backdropUrl } from "../helpers/images"
-import { addToFavourites } from "../helpers/favouriteHelper.js"
+import { addToFavourites, removeFavourite } from "../helpers/favouriteHelper.js"
 import "./movieCard.css"
 
 //FontAwesome Imports
@@ -10,10 +10,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons'
 
-export default function MovieCard({ movie, isFavorited }) {
+export default function MovieCard({ movie }) {
   const [isOpen, setIsOpen] = useState(false)
   const [details, setDetails] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [isFavorited, setIsFavorited] = useState(false)
 
   async function toggle() {
     if (isOpen) {
@@ -35,6 +36,20 @@ export default function MovieCard({ movie, isFavorited }) {
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
   
+  const handleFavourite = async () => {
+    try {
+      if(!isFavorited) {
+      await addToFavourites(movie)
+      setIsFavorited(true) //change icon when favorited
+      }
+      else {
+        await removeFavourite(movie)
+        setIsFavorited(false) //change icon when removing
+      }
+    } catch (err) {
+      console.error("Failed to add to favourites", err)
+    }
+  }
 
   /** mc = moviecard*/
   return (
@@ -47,7 +62,7 @@ export default function MovieCard({ movie, isFavorited }) {
         loading="lazy"
       />
 
-      <FontAwesomeIcon icon={isFavorited ? faBookmarkSolid : faBookmarkRegular} size="lg" className="mc-fav-icon" role="button" onClick={() => (addToFavourites(movie), handleFavourite(movie))}/>
+      <FontAwesomeIcon icon={isFavorited ? faBookmarkSolid : faBookmarkRegular} size="lg" className="mc-fav-icon" role="button" onClick={() => (handleFavourite(movie))}/>
 
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>

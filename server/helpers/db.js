@@ -19,37 +19,3 @@ if (process.env.DB_PASSWORD) {
 const pool = new Pool(config)
 
 export { pool }
-
-
-
-
-/*
-import pkg from 'pg'
-import dotenv from 'dotenv'
-
-const enviroment = process.env.NODE_ENV || 'development'
-dotenv.config()
-
-const port = process.env.port //server port
-const { Pool } = pkg
-
-const openDb = () => {
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.NODE_ENV === "development" ? process.env.DB_NAME :
-    process.env.TEST_DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
-    })
-return pool
-}
-
-const pool = openDb()
-
-export {pool}
-*/
-//______________________
-/* MODULES EXPLAINED
-- PG is used to access Postgres database from NodeJS app.
-*/

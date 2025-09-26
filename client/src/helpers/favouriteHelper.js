@@ -6,3 +6,10 @@ export async function addToFavourites(movie) {
   const data = await getMovieDetails(movie.id)
   console.log("Movie details:", data)
 }
+
+export async function removeFavourite(movie) {
+  console.log("Removing favourites:", movie.title)
+  //fetch details
+  const data = await getMovieDetails(movie.id)
+  console.log("Movie details:", data)
+}
