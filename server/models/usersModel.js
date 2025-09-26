@@ -1,5 +1,5 @@
 
-import db from "../helpers/db.js";
+import db from '../helpers/db.js';
 
 const users = {
     //id auto-incremented

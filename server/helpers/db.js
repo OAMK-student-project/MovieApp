@@ -9,7 +9,7 @@ const config = {
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432, // ensure number
   user: process.env.DB_USER || process.env.USER,
   database: isTest ? process.env.TEST_DB_NAME : process.env.DB_NAME,
-  ssl: { rejectUnauthorized: false },
+  ssl: { rejectUnauthorized: false }, // can be removed for local test without ssl Dont remove if online
 }
 
 // only set password if defined

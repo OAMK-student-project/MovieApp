@@ -1,4 +1,4 @@
-import db from "../helpers/db.js";
+import db from '../helpers/db.js';
 
 const refreshTokens = {
     add: async function (userID, hashedToken, expiration) {

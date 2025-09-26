@@ -1,7 +1,7 @@
 import 'dotenv/config' // load .env before anything else
 
 import { expect } from 'chai'
-import { pool } from './helpers/db.js'
+import db from '../server/helpers/db.js';
 import { initializeTestDb, clearDb, insertTestUser } from './helpers/test.js'
 
 // Use function() syntax to access this.timeout()
@@ -17,7 +17,7 @@ describe('Database tests', function () {
 
   before(async function () {
     // confirm connection
-    const { rows } = await pool.query('SELECT current_database(), current_user')
+    const { rows } = await db.query('SELECT current_database(), current_user')
     console.log('Connected to DB:', rows[0])
 
     await initializeTestDb()
@@ -29,13 +29,13 @@ describe('Database tests', function () {
 
   after(async () => {
     await clearDb()
-    await pool.end()   // close connections
+    await db.end()   // close connections
   })
 
   it('should insert and retrieve a user', async () => {
     const inserted = await insertTestUser(testUser)
 
-    const { rows } = await pool.query(
+    const { rows } = await db.query(
       'SELECT id, email, password_hash FROM "Users" WHERE email = $1',
       [testUser.email]
     )
@@ -50,7 +50,7 @@ describe('Database tests', function () {
     const inserted = await insertTestUser(testUser)
 
     // 2. Delete that user
-    const { rows: deletedRows } = await pool.query(
+    const { rows: deletedRows } = await db.query(
       'DELETE FROM "Users" WHERE id = $1 RETURNING *',
       [inserted.id]
     )
@@ -59,7 +59,7 @@ describe('Database tests', function () {
     expect(deletedRows[0].id).to.equal(inserted.id)
 
     // 3. Confirm user is no longer in DB
-    const { rows: checkRows } = await pool.query(
+    const { rows: checkRows } = await db.query(
       'SELECT id FROM "Users" WHERE id = $1',
       [inserted.id]
     )

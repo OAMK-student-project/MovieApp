@@ -1,9 +1,7 @@
-import express from "express";
+/*import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-
-
 
 import moviesRouter from "./routes/moviesRouter.js"
 import userRouter from "./routes/userRouter.js"
@@ -18,11 +16,7 @@ app.use("/api/movies", moviesRouter);
 app.use("/users", userRouter);
 app.use('/groups', groupsRouter);
 
-//import userRouter from "./routes/userRouter.js";
-//import moviesRouter from "./routes/moviesRouter.js";
 
-//Router imports here
-//const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(cors({
@@ -54,4 +48,49 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(port, ()=>console.log(`Server running at port ${port}`));
+app.listen(port, ()=>console.log(`Server running at port ${port}`));*/
+
+
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import "dotenv/config";
+
+import moviesRouter from "./routes/moviesRouter.js";
+import userRouter from "./routes/userRouter.js";
+import groupsRouter from "./routes/groupsRouter.js";
+
+const app = express();
+
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173", // change if needed
+  credentials: true
+}));
+
+
+app.use(cookieParser());
+app.use(express.json());
+
+
+app.get("/healthz", (req, res) => res.send("ok"));
+
+app.use("/api/movies", moviesRouter);
+app.use("/users", userRouter);
+app.use("/groups", groupsRouter);
+app.use("/api/user", userRouter);
+
+app.use((req, res, next) => {
+  next({ status: 404, message: "Not found" });
+});
+
+
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    error: { message: err.message, status: statusCode }
+  });
+});
+
+const port = process.env.PORT || 3001;
+app.listen(port, () => console.log(`Server running at port ${port}`));

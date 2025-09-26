@@ -7,10 +7,15 @@ function Header(){
     const identified = Boolean(user?.identifiedUser);
 
     function signInOrOut(){
-        return identified
-        ? <NavLink onClick={signOut} to="/">Logout</NavLink>
-        : <NavLink to="/login">Login</NavLink>;
-    }
+      return identified ? (
+      <>
+        <NavLink to="/myinfo">My Info</NavLink>
+        <NavLink onClick={signOut} to="/">Logout</NavLink>
+      </>
+    ) : (
+      <NavLink to="/login">Login</NavLink>
+    );
+  }
 
     function signOut(){
         signout();
