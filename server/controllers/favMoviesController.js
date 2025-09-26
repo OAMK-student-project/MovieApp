@@ -1,8 +1,4 @@
-import {
-    getAllFavourites,
-    addFavouriteMovie,
-    deleteFavouriteMovie
-} from "./models/favouriteMoviesModel.js";
+import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie } from "../models/favouriteMoviesModel.js";
 
 const getFavourites = async (req, res,next) => {
     try {

@@ -1,4 +1,5 @@
-import { pool } from '../helpers/db.js'
+import pool from '../helpers/db.js'
+
 
 //id auto-incremented
 

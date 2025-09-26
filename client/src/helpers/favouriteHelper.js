@@ -1,15 +1,32 @@
 import { getMovieDetails } from "../services/movieService"
 
-export async function addToFavourites(movie) {
-  console.log("Adding to favourites:", movie.title)
-  //fetch details
-  const data = await getMovieDetails(movie.id)
-  console.log("Movie details:", data)
+// favouriteHelper.js
+export async function addToFavourites(favouriteMovieData) {
+  try {
+    const response = await fetch("/api/favourites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(favouriteMovieData),
+    })
+
+    if (!response.ok) throw new Error("Failed to add movie")
+    return await response.json()
+  } catch (err) {
+    console.error("Error adding favourite:", err)
+    throw err
+  }
 }
 
-export async function removeFavourite(movie) {
-  console.log("Removing favourites:", movie.title)
-  //fetch details
-  const data = await getMovieDetails(movie.id)
-  console.log("Movie details:", data)
+export async function removeFavourite(movieId) {
+  try {
+    const response = await fetch(`/api/favourites/${movieId}`, {
+      method: "DELETE",
+    })
+
+    if (!response.ok) throw new Error("Failed to remove movie")
+    return await response.json()
+  } catch (err) {
+    console.error("Error removing favourite:", err)
+    throw err
+  }
 }

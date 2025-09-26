@@ -5,7 +5,7 @@ import { getFavourites, addFavourite, removeFavourite } from '../controllers/fav
 const router = Router();
 
 router.get("/",getFavourites);
-router.post('/create',auth,addFavourite);
-router.delete(`/delete/:id`, removeFavourite);
+router.post("/", auth,addFavourite);
+router.delete("/removeFacourite/:id", removeFavourite);
 
 export default router;

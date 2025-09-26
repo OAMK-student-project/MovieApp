@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import userRouter from "./routes/userRouter.js";
 import moviesRouter from "./routes/moviesRouter.js";
+import favMoviesRouter from "./routes/favMoviesRouter.js";
 
 //Router imports here
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 app.get("/healthz", (req,res)=>res.send("ok"));
 app.use("/user", userRouter);
 app.use("/api/movies", moviesRouter);
+app.use("/api/favourites", favMoviesRouter);
 
 app.use((req, res, next) => {
     next({

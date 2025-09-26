@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { getMovieDetails } from "../services/movieService"
 import { posterUrl, backdropUrl } from "../helpers/images"
-import { addToFavourites, removeFavourite } from "../helpers/favouriteHelper.js"
+import { addFavourite, removeFavourite } from "../helpers/favouriteHelper.js"
 import "./movieCard.css"
 
 //FontAwesome Imports
@@ -36,20 +36,19 @@ export default function MovieCard({ movie }) {
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
   
-  const handleFavourite = async () => {
-    try {
-      if(!isFavorited) {
-      await addToFavourites(movie)
-      setIsFavorited(true) //change icon when favorited
-      }
-      else {
-        await removeFavourite(movie)
-        setIsFavorited(false) //change icon when removing
-      }
-    } catch (err) {
-      console.error("Failed to add to favourites", err)
+const handleFavourite = async () => {
+  try {
+    if (isFavorited) {
+      await removeFavourite(movie.id)
+      setIsFavorited(false)
+    } else {
+      await addFavourite(movie) // movie already has all necessary fields
+      setIsFavorited(true)
     }
+  } catch (err) {
+    console.error(err)
   }
+}
 
   /** mc = moviecard*/
   return (
