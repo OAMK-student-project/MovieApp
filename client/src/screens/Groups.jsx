@@ -5,7 +5,7 @@ import "./Groups.css";
 function Groups() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [requests, setRequests] = useState([]);// track requests sent
   
   useEffect(() => {
     const fetchGroups = async () => {
@@ -24,17 +24,21 @@ function Groups() {
     fetchGroups();
   }, []);
 
-  const joinGroup = async (groupId) => {
+   const requestJoinGroup = async (groupId) => {
     try {
-      // Esimerkki kutsu – toteuta backendissa vastaava POST /groups/:id/join
       const res = await axios.post(
-        `http://localhost:3001/groups/${groupId}/join`,
-        { user_id: 1 } // kovakoodattu testikäyttäjä
+        `http://localhost:3001/groups/${groupId}/request-join`,
+        { user_id: 1 } // replace with actual logged-in user ID   NEED TO CHANGE for logged in users only
       );
-      alert(`Joined group: ${res.data.name}`);
+      alert(res.data.message || "Join request sent");
+      setRequests((prev) => [...prev, groupId]); // mark group as requested
     } catch (err) {
-      console.error("Error joining group:", err);
-      alert("Failed to join group");
+      console.error("Error sending join request:", err);
+      if (err.response && err.response.data) {
+        alert(err.response.data); // show backend error message
+      } else {
+        alert("Failed to send join request");
+      }
     }
   };
 
@@ -53,7 +57,7 @@ function Groups() {
           {groups.map((group) => (
             <div key={group.id} className="groups-card">
               {group.name}{" "}
-              <button className="groups-button" onClick={() => joinGroup(group.id)}>Join</button>
+              <button className="groups-button" onClick={() => requestJoinGroup(group.id)}>Join</button>
             </div>
           ))}
         </div>
