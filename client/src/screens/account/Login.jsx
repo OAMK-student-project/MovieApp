@@ -1,0 +1,50 @@
+import {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+
+import { useUser } from "../../context/useUser";
+import "./Login.css";
+
+function Login(){
+    const { signin } = useUser();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [remember, setRemember] = useState(false);
+    const navigate = useNavigate();
+    const url = import.meta.env.VITE_API_URL+"/user";
+
+    async function handleClick(e) {
+        e.preventDefault();
+        try {
+            const user = await signin(email, password, remember);
+            if (user) navigate("/");
+        } catch (error) {
+            alert(error.message || error);
+        }
+    }
+
+    function toFrontpageWhenClosed(){
+        navigate("/");
+    }
+    
+    return(
+        <div className="overlay" onClick={toFrontpageWhenClosed}>
+            <div className="modal" onClick={(e)=>e.stopPropagation()}>
+                <form>
+                    <label>Login</label>
+                    <input type="email" placeholder="enter email" onChange={e=>setEmail(e.target.value)}></input>
+                    <input type="password" placeholder="enter password" onChange={e=>setPassword(e.target.value)}></input>
+                    <button type="submit" onClick={e=>handleClick(e)}>Submit</button>
+                    <NavLink to="/signup">No account? Sign in</NavLink>
+                    <label>
+                        <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.value)}/>
+                        Remember me
+                    </label>
+                    <Link to="/myinfo"><h4>To My info</h4></Link> 
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export default Login;
