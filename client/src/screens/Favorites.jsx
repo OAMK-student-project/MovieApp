@@ -1,9 +1,15 @@
+import "./Favorites.css";
+import FavoriteList from "../components/FavoriteList.jsx";
 
+function Favorites() {
 
-function Favorites(){
-    return(
-        <div>Favorites</div>
-    );
+  return (
+    <div className="container">
+
+        <FavoriteList />
+
+    </div>
+  );
 }
 
 export default Favorites;

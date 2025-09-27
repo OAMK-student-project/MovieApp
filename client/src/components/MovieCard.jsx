@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { getMovieDetails } from "../services/movieService"
 import { posterUrl, backdropUrl } from "../helpers/images"
-import { addFavourite, removeFavourite } from "../helpers/favouriteHelper.js"
+import { addFavourites, removeFavourite } from "../helpers/favouriteHelper.js"
 import "./movieCard.css"
 
 //FontAwesome Imports
@@ -42,7 +42,7 @@ const handleFavourite = async () => {
       await removeFavourite(movie.id)
       setIsFavorited(false)
     } else {
-      await addFavourite(movie) // movie already has all necessary fields
+      await addFavourites(movie)
       setIsFavorited(true)
     }
   } catch (err) {

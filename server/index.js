@@ -5,6 +5,7 @@ import "dotenv/config";
 import userRouter from "./routes/userRouter.js";
 import moviesRouter from "./routes/moviesRouter.js";
 import favMoviesRouter from "./routes/favMoviesRouter.js";
+import favListRouter from "./routes/favListRouter.js";
 
 //Router imports here
 const app = express();
@@ -22,6 +23,7 @@ app.get("/healthz", (req,res)=>res.send("ok"));
 app.use("/user", userRouter);
 app.use("/api/movies", moviesRouter);
 app.use("/api/favourites", favMoviesRouter);
+app.use("/favourite-lists", favListRouter);
 
 app.use((req, res, next) => {
     next({

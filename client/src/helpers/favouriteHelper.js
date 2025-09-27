@@ -1,9 +1,9 @@
 import { getMovieDetails } from "../services/movieService"
 
 // favouriteHelper.js
-export async function addToFavourites(favouriteMovieData) {
+export async function addFavourites(favouriteMovieData) {
   try {
-    const response = await fetch("/api/favourites", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/favourites`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(favouriteMovieData),
