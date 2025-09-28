@@ -6,7 +6,7 @@ const getLists = async (req, res, next) => {
     const userId = req.user?.id; //get user ID from token
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const result = await getListByUser(userId); // model expects userId
+    const result = await getListByUser(userId); //model expects userId
     return res.status(200).json(result);
   } catch (error) {
     console.error("Error in getLists:", error);

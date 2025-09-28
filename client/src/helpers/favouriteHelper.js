@@ -1,25 +1,36 @@
-import { getMovieDetails } from "../services/movieService"
+import axios from "axios";
 
-// favouriteHelper.js
-export async function addFavourites(favouriteMovieData) {
+export async function addFavorites(favouriteMovieData, accessToken) {
+  if (!accessToken) throw new Error("User is not authenticated");
+
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/favourites`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(favouriteMovieData),
-    })
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/favourite`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(favouriteMovieData),
+      }
+    );
 
-    if (!response.ok) throw new Error("Failed to add movie")
-    return await response.json()
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to add movie: ${errorText}`);
+    }
+
+    return await response.json();
   } catch (err) {
-    console.error("Error adding favourite:", err)
-    throw err
+    console.error("Error adding favourite:", err);
+    throw err;
   }
-}
+};
 
-export async function removeFavourite(movieId) {
+export async function removeFavorite(movieId) {
   try {
-    const response = await fetch(`/api/favourites/${movieId}`, {
+    const response = await fetch(`/favourite/${movieId}`, {
       method: "DELETE",
     })
 
@@ -30,3 +41,42 @@ export async function removeFavourite(movieId) {
     throw err
   }
 }
+
+export async function getLists(userID, accessToken) {
+  if (!userID || !accessToken) return [];
+
+  try {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/favourite-lists`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log("Fetched lists:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching lists:", error);
+    return [];
+  }
+}
+
+export async function favouritesByUser(accessToken) {
+  if (!accessToken) return [];
+
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/favourite`, {
+      headers: { "Authorization": `Bearer ${accessToken}` },
+    });
+    if (!res.ok) throw new Error("Failed to fetch favourites");
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+

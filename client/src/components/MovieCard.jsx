@@ -1,20 +1,14 @@
 import { useState } from "react"
 import { getMovieDetails } from "../services/movieService"
 import { posterUrl, backdropUrl } from "../helpers/images"
-import { addFavourites, removeFavourite } from "../helpers/favouriteHelper.js"
+import AddFavoriteBtn from "../components/AddFavoriteBtn.jsx";
 import "./movieCard.css"
 
-//FontAwesome Imports
-//npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons'
-import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons'
 
 export default function MovieCard({ movie }) {
   const [isOpen, setIsOpen] = useState(false)
   const [details, setDetails] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [isFavorited, setIsFavorited] = useState(false)
 
   async function toggle() {
     if (isOpen) {
@@ -36,20 +30,6 @@ export default function MovieCard({ movie }) {
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
   
-const handleFavourite = async () => {
-  try {
-    if (isFavorited) {
-      await removeFavourite(movie.id)
-      setIsFavorited(false)
-    } else {
-      await addFavourites(movie)
-      setIsFavorited(true)
-    }
-  } catch (err) {
-    console.error(err)
-  }
-}
-
   /** mc = moviecard*/
   return (
     <div className="mc-card">
@@ -60,9 +40,7 @@ const handleFavourite = async () => {
         alt={movie.title}
         loading="lazy"
       />
-
-      <FontAwesomeIcon icon={isFavorited ? faBookmarkSolid : faBookmarkRegular} size="lg" className="mc-fav-icon" role="button" onClick={() => (handleFavourite(movie))}/>
-
+      <AddFavoriteBtn movie={movie}/>
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
         <p className="mc-year">{movie.release_date?.slice(0, 4) || "-"}</p>

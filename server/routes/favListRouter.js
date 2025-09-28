@@ -4,7 +4,7 @@ import { getLists, addLists, removeLists } from '../controllers/favListControlle
 
 const router = Router();
 
-router.get("/",getLists);
+router.get("/",auth,getLists);
 router.post("/", auth,addLists);
 router.delete("/removeList/:id", removeLists);
 

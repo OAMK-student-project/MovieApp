@@ -1,4 +1,11 @@
-.container {
+.favorite-container {
   display: flex;
   align-items: center;
+  margin: auto;
+  padding: auto;
+  
+  border: 1px solid;
+  border-color: var(--bg-second-color);
+  border-radius: 0;
+  padding: 1.5rem;
 }

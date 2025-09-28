@@ -1,11 +1,11 @@
 import { auth } from '../helpers/auth.js';
 import { Router } from 'express';
-import { getFavourites, addFavourite, removeFavourite } from '../controllers/favMoviesController.js';
+import { addFavourite, removeFavourite, favouritesByUser } from '../controllers/favMoviesController.js';
 
 const router = Router();
 
-router.get("/",getFavourites);
+router.get("/",auth, favouritesByUser);
 router.post("/", auth,addFavourite);
-router.delete("/removeFacourite/:id", removeFavourite);
+router.delete("/removeFavourite/:id", removeFavourite);
 
 export default router;

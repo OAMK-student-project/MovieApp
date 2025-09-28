@@ -1,4 +1,4 @@
-import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie } from "../models/favouriteMoviesModel.js";
+import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie, getAllFavouritesByUser } from "../models/favouriteMoviesModel.js";
 
 const getFavourites = async (req, res,next) => {
     try {
@@ -10,16 +10,26 @@ const getFavourites = async (req, res,next) => {
     }
 }
 
-const addFavourite = async (req,res,next) => {
-    try {
-        const favouriteMovieData = req.body; //Store (or copy) express request object data to variable where body contains data sent by the client
-        const newfav = await addFavouriteMovie(favouriteMovieData); //call model with data for insert
-        return res.status(201).json(newFav);
-    } 
-    catch(error) {
-        return next(error)
-    }
-}
+const addFavourite = async (req, res, next) => {
+    
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { movie_id, movie_title, genre, favourite_id } = req.body;
+    if (!movie_id || !movie_title || !favourite_id)
+      return res.status(400).json({ error: "Missing required fields" });
+
+    const favouriteMovieData = { movie_id, movie_title, genre, favourite_id };
+    const newFav = await addFavouriteMovie(favouriteMovieData);
+
+    return res.status(201).json(newFav[0]);
+  } catch (error) {
+    console.error("Error adding favourite movie:", error);
+    return next(error);
+  }
+};
+
 
 const removeFavourite = async(req,res,next) => {
     try {
@@ -33,5 +43,23 @@ const removeFavourite = async(req,res,next) => {
     }
 
 }
+
+export const favouritesByUser = async (req, res, next) => {
+  try {
+    //DEBGUG console.log("User in favouritesByUser controller:", req.user);
+
+    const userId = req.user?.id; // Must be set by auth middleware
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const favourites = await getAllFavouritesByUser(userId);
+
+    return res.status(200).json(favourites);
+  } catch (err) {
+    console.error("Error fetching user favourites:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 export { getFavourites, addFavourite, removeFavourite }

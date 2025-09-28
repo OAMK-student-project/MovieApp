@@ -22,7 +22,7 @@ app.use(express.json());
 app.get("/healthz", (req,res)=>res.send("ok"));
 app.use("/user", userRouter);
 app.use("/api/movies", moviesRouter);
-app.use("/api/favourites", favMoviesRouter);
+app.use("/favourite", favMoviesRouter);
 app.use("/favourite-lists", favListRouter);
 
 app.use((req, res, next) => {

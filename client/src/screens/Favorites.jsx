@@ -4,7 +4,7 @@ import FavoriteList from "../components/FavoriteList.jsx";
 function Favorites() {
 
   return (
-    <div className="container">
+    <div className="favorite-container">
 
         <FavoriteList />
 
