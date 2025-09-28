@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus as faPlusIcon } from '@fortawesome/free-solid-svg-icons';
 import "./FavoriteList.css";
 
-//Had to expose accessToken in UserProvider to authenticate
-
 function FavoriteList() {
   const { user, accessToken } = useContext(UserContext); 
   const [newListName, setNewListName] = useState("");

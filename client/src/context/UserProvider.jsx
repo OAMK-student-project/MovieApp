@@ -121,7 +121,6 @@ function UserProvider({ children }) {
     useEffect(()=>{
     }, [user]);
     return (
-        //Had to expose accessToken in UserProvider to authenticate elsewhere. Couldn't figure out how to do it otherwise.
         <UserContext.Provider value={{ user, accessToken, signin, signout, signup }}>
             {children}
         </UserContext.Provider>
