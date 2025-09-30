@@ -7,13 +7,13 @@ import Search from "../components/Search.jsx";
     
     const location = useLocation();
       
-    const hideSearchOn = ["/myinfo"]; // muuttuja joka piilotta serch komponentin tietyllä sivulla
+    const hideSearchOn = ["/myinfo", "/grouppage", "/managegroup"]; // muuttuja joka piilotta serch komponentin tietyillä sivuilla
 
     return (
     <div>
       <Header/>
       
-      {!hideSearchOn.includes(location.pathname) && <Search />}  
+     {!hideSearchOn.some(path => location.pathname.startsWith(path)) && <Search />}
      
       <Outlet/>
       

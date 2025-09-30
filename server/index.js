@@ -55,19 +55,18 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-
 import moviesRouter from "./routes/moviesRouter.js";
 import userRouter from "./routes/userRouter.js";
 import groupsRouter from "./routes/groupsRouter.js";
+import myGroupsRoutes from "./routes/myGroupsRouter.js";
 
 const app = express();
-
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:5173", // change if needed
   credentials: true
-}));
 
+}));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -79,7 +78,7 @@ app.use("/api/movies", moviesRouter);
 app.use("/users", userRouter);
 app.use("/groups", groupsRouter);
 app.use("/api/user", userRouter);
-
+app.use("/", myGroupsRoutes);
 app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });
 });
