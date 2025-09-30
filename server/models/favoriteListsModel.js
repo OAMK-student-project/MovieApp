@@ -41,13 +41,27 @@ import pool from '../helpers/db.js'
     }
 
 //-----Delete favlist
-    //Not sure if this is functional. This should make sure that the review can only be deleted by the one who created it (user_id). favouriteListId = id which is added automatically (via postgres auto-increment)
-    const deleteList = async(favouriteListId, listData) => {
+    const deleteList = async (favouriteListId, userId) => {
+    try {
+        //Delete all movies in this list
+        await pool.query(
+        'DELETE FROM "Favourite_movies" WHERE favourite_id = $1',
+        [favouriteListId]
+        );
+
+        //Delete the list itself
         const result = await pool.query(
-            'DELETE FROM "Favourite_lists" WHERE id = $1 AND user_id = $2 RETURNING *',
-            [favouriteListId, listData.user_id])
+        'DELETE FROM "Favourite_lists" WHERE id = $1 AND user_id = $2 RETURNING *',
+        [favouriteListId, userId]
+        );
+
         return result.rows[0];
+    } catch (err) {
+        console.error("DB delete error:", err);
+        throw err;
     }
+};
+
 
 //-----Update favlist --- ! Only allows changing the name of the list for now !
     //favouriteListId = id which is added automatically on review creation (via postgres auto-increment).

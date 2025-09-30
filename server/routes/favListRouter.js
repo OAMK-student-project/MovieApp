@@ -6,6 +6,6 @@ const router = Router();
 
 router.get("/",auth,getLists);
 router.post("/", auth,addLists);
-router.delete("/removeList/:id", removeLists);
+router.delete("/:id", auth,removeLists);
 
 export default router;

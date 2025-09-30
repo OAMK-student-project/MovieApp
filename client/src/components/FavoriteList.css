@@ -39,6 +39,54 @@
         border-width: 2px;
     }
 
+.actionButtons {
+    display: flex;
+    gap: 0.5em;
+    margin-left: auto;
+}
+
+.trashBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: white;
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .trashBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+.editBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: white;
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .editBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
 .listInput {
     max-height: 2.5em;
     height: 2em;
@@ -68,7 +116,10 @@
     padding: 0.6em 1em;
     border-radius: 0;
     text-align: left;
+    justify-content: space-between;
+    align-items:center;
     white-space: nowrap;
+    display: flex;
     transition-duration: 0.1s;
 }
 

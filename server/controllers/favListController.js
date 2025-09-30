@@ -35,17 +35,27 @@ const addLists = async (req, res, next) => {
 
 // Remove a favorite list
 const removeLists = async (req, res, next) => {
+  
   try {
     const listId = req.params.id;
-    const userId = req.user?.id; //get user ID from token
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const userId = req.user?.id; // from token middleware
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     const deletedFav = await deleteList(listId, userId);
-    return res.status(200).json(deletedFav);
+
+    if (!deletedFav) {
+      return res.status(404).json({ error: "List not found or not owned by user" });
+    }
+
+    return res.status(200).json({ message: "List deleted", deleted: deletedFav });
   } catch (error) {
     console.error("Error in removeLists:", error);
     return next(error);
   }
 };
+
 
 export { getLists, addLists, removeLists }

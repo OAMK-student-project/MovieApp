@@ -5,7 +5,7 @@ import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 
 import UserContext from "../context/UserContext";
-import { addFavorites, getLists, favouritesByUser } from "../helpers/favouriteHelper.js";
+import { addFavorites, getLists, favouritesByUser } from "../helpers/favoriteHelper.js";
 import "./AddFavoriteBtn.css";
 
 export default function AddFavoriteBtn({ movie }) {

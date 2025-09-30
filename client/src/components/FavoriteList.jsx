@@ -3,6 +3,8 @@ import { useContext, useState, useEffect } from "react";
 import UserContext from "../context/UserContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus as faPlusIcon } from '@fortawesome/free-solid-svg-icons';
+import { faTrash as faTrashIcon } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare as faEditIcon } from '@fortawesome/free-solid-svg-icons';
 import "./FavoriteList.css";
 
 function FavoriteList() {
@@ -71,7 +73,33 @@ function FavoriteList() {
     }
   };
 
-  
+  const editList = async () => {
+
+  }
+
+  const removeList = async (listId) => {
+    if (!user?.userID || !accessToken) return; // must have access token
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/favourite-lists/${listId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Update state by filtering out the deleted list
+      setLists(prev => prev.filter(list => list.id !== listId));
+
+      console.log("List deleted:", listId);
+    } catch (error) {
+      console.error("Error deleting list:", error);
+      alert("Could not delete list");
+    }
+    getLists(); // optional if you want to refresh from server
+  };
 
 //Show text if user not logged in and show text if logged in but user data has not been fethed
   if (loadingUser) {
@@ -85,8 +113,7 @@ function FavoriteList() {
 return (
     <div className="favorite-list-container">
       <div className="favourite-list-row">
-        <button className="addBtn" onClick={addList}>
-          <FontAwesomeIcon icon={faPlusIcon} size="lg" />
+        <button className="addBtn" onClick={addList}> <FontAwesomeIcon icon={faPlusIcon} role="button" size="lg" />
         </button>
 
         <input
@@ -99,7 +126,14 @@ return (
       </div>
       <ul className="favListUl">
         {lists.map((list) => (
-          <li className="favListLi" key={list.id}>{list.name}</li>
+          <li className="favListLi" key={list.id}>{list.name}
+            <div className="actionButtons">
+              <button className="editBtn" onClick={editList}> <FontAwesomeIcon icon={faEditIcon} role="button" size="lg" />
+              </button>
+              <button className="trashBtn" onClick={() => removeList(list.id)}> <FontAwesomeIcon icon={faTrashIcon} role="button" size="lg" />
+              </button>
+            </div>
+          </li>
         ))}
       </ul>
     </div>

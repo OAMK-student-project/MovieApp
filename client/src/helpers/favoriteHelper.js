@@ -35,10 +35,10 @@ export async function removeFavorite(movieId) {
     })
 
     if (!response.ok) throw new Error("Failed to remove movie")
-    return await response.json()
+      return await response.json()
   } catch (err) {
     console.error("Error removing favourite:", err)
-    throw err
+      throw err
   }
 }
 
