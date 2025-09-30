@@ -13,7 +13,7 @@ import db from '../helpers/db.js';
         return result.rows;
     }
 
-//-----Get join requests from a specific group and return group info
+/*//-----Get join requests from a specific group and return group info
     const getRequestsByGroup = async(groupJoinId) => {
         const result = await db.query(
             'SELECT * FROM "Group_join_requests" gjr ' + //gjr and g are just aliases, for example: "Group_join_requests" gjr <- defines the alias
@@ -21,7 +21,54 @@ import db from '../helpers/db.js';
             'WHERE gjr.group_id = $1',
             [groupJoinId])
         return result.rows;
-    }
+    }*/
+
+/*const getRequestsByGroup = async (groupJoinId) => {
+  const result = await db.query(
+    `SELECT 
+       gjr.id AS request_id,
+       gjr.status,
+       gjr.created_at,
+       gjr.requester_id,
+       u.email,
+       u.first_name,
+       u.last_name,
+       g.name AS group_name
+     FROM "Group_join_requests" gjr
+     LEFT JOIN "Users" u ON gjr.requester_id = u.id
+     JOIN "Groups" g ON gjr.group_id = g.id
+     WHERE gjr.group_id = $1`,
+    [groupJoinId]
+  );
+  return result.rows;
+};*/
+const getRequestsByGroup = async (groupJoinId) => {
+  try {
+    const result = await db.query(
+      `SELECT 
+         gjr.id AS request_id,
+         gjr.status,
+         gjr.created_at,
+         gjr.requester_id,
+         u.email,
+         u.firstname,
+         u.lastname,
+         g.name AS group_name
+       FROM "Group_join_requests" gjr
+       LEFT JOIN "Users" u ON gjr.requester_id = u.id
+       JOIN "Groups" g ON gjr.group_id = g.id
+       WHERE gjr.group_id = $1`,
+      [groupJoinId]
+    );
+    console.log("SQL result:", result.rows);
+    return result.rows;
+  } catch (err) {
+    console.error("Error in getRequestsByGroup:", err);
+    throw err; // jotta middleware palauttaa 500
+  }
+};
+
+
  
 //-----Add request
     //groupJoinData = { group_id, requester_id, status }

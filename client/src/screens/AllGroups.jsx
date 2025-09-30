@@ -46,8 +46,7 @@ function AllGroups() {
 
   return (
    
-   
-   
+  
    <div className="allgroups-container">
       <h2>All Groups</h2>
      

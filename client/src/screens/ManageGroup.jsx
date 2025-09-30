@@ -23,7 +23,7 @@ export default function ManageGroup() {
   }, [id]);
 
   if (loading) return <p>Loading join requests...</p>;
-
+console.log("group id from URL:", id);// debug pätkä
   return (
     <div>
       <h2>Manage Group</h2>
@@ -32,14 +32,21 @@ export default function ManageGroup() {
       {requests.length === 0 ? (
         <p>No join requests for this group.</p>
       ) : (
-        <ul>
-          {requests.map((req) => (
-            <li key={req.id}>
-              {req.username} ({req.email})
-              {/* Voit lisätä hyväksy/hylkää -napit tähän */}
-            </li>
-          ))}
-        </ul>
+        
+      <ul>
+  {requests.map((req) => (
+    <li key={req.request_id}>
+  {req.firstname ?? "Unknown"} {req.lastname ?? ""} ({req.email ?? "No email"}) – <strong>{req.status}</strong>
+  {req.status === "pending" && (
+    <>
+      <button onClick={() => handleRequest(req.request_id, "approved")}>Approve</button>
+      <button onClick={() => handleRequest(req.request_id, "rejected")}>Reject</button>
+    </>
+  )}
+</li>
+  ))}
+</ul>
+        
       )}
     </div>
   );
