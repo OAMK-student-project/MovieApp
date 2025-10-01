@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./AllGroups.css"; // vaihda myös CSS-tiedoston nimi
+import "./AllGroups.css";
 
 function AllGroups() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [requests, setRequests] = useState([]); // track requests sent
-  
+  const [requestedGroups, setRequestedGroups] = useState([]); // ryhmät, joihin pyyntö lähetetty
+
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/groups", {
-          headers: { Accept: "application/json" },
-        });
+        const res = await axios.get("http://localhost:3001/groups");
         setGroups(res.data);
       } catch (err) {
         console.error("Error fetching groups:", err);
+        alert("Failed to load groups");
       } finally {
         setLoading(false);
       }
@@ -25,19 +24,29 @@ function AllGroups() {
   }, []);
 
   const requestJoinGroup = async (groupId) => {
+    if (requestedGroups.includes(groupId)) return; // turva duplikaatteja vastaan frontendissä
+
     try {
       const res = await axios.post(
         `http://localhost:3001/groups/${groupId}/request-join`,
-        { user_id: 1 } // TODO: vaihda kirjautuneen käyttäjän ID:hen
+        { user_id: 1 } // TODO: korvaa kirjautuneen käyttäjän ID:llä
       );
       alert(res.data.message || "Join request sent");
-      setRequests((prev) => [...prev, groupId]); // mark group as requested
+
+      // lisää ryhmä heti 'requested' listaan
+      setRequestedGroups((prev) => [...prev, groupId]);
     } catch (err) {
       console.error("Error sending join request:", err);
-      if (err.response && err.response.data) {
-        alert(err.response.data); // show backend error message
+
+      if (err.response && err.response.data&& err.response.data.message) {
+        alert(err.response.data.message );
       } else {
         alert("Failed to send join request");
+      }
+
+      // jos virhe duplikaatti, lisää ryhmä myös requested-listaan
+      if (err.response?.status === 400 && err.response?.data?.message?.includes("already sent")) {
+        setRequestedGroups((prev) => [...prev, groupId]);
       }
     }
   };
@@ -45,11 +54,8 @@ function AllGroups() {
   if (loading) return <p>Loading groups...</p>;
 
   return (
-   
-  
-   <div className="allgroups-container">
+    <div className="allgroups-container">
       <h2>All Groups</h2>
-     
       {groups.length === 0 ? (
         <p>No groups found</p>
       ) : (
@@ -60,9 +66,9 @@ function AllGroups() {
               <button
                 className="allgroups-button"
                 onClick={() => requestJoinGroup(group.id)}
-                disabled={requests.includes(group.id)} // disable if already requested
+                disabled={requestedGroups.includes(group.id)}
               >
-                {requests.includes(group.id) ? "Requested" : "Join"}
+                {requestedGroups.includes(group.id) ? "Requested" : "Join"}
               </button>
             </div>
           ))}

@@ -1,57 +1,67 @@
 import * as groupJoinModel from '../models/groupJoinModel.js';
 
-// Send join request
+// Lähetä liittymispyyntö
 export const requestJoinGroup = async (req, res) => {
   try {
     const groupId = req.params.id;
-    const requesterId = req.body.user_id; // should come from auth middleware
+    const requesterId = req.body.user_id; // TODO: vaihda auth-tokenista tulevaan ID:hen
 
-    // check if already requested
-    const existing = await groupJoinModel.getRequestsById(groupId);
-    if (existing.some(r => r.requester_id === requesterId)) {
-      return res.status(400).json({ message: 'Request already sent' });
-    }
-
-    // add new request
+    // yritetään lisätä pyyntö
     const newRequest = await groupJoinModel.addRequest({
       group_id: groupId,
       requester_id: requesterId,
       status: 'pending',
     });
 
-    res.status(201).json({ message: 'Join request sent', request: newRequest });
+    return res.status(201).json({
+      message: 'Join request sent',
+      request: newRequest,
+    });
   } catch (err) {
+    // duplikaatti (unique constraint violation)
+    if (err.code === '23505') {
+      return res.status(400).json({ message: 'You already sent a request to this group' });
+    }
+
     console.error('Error creating join request:', err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
-// List requests for a group
+// Listaa liittymispyynnöt tietylle ryhmälle
 export const getGroupRequests = async (req, res) => {
   try {
     const groupId = req.params.id;
     const requests = await groupJoinModel.getRequestsByGroup(groupId);
-    res.json(requests);
+
+    return res.json({
+      groupId,
+      requests,
+    });
   } catch (err) {
-    console.error('Error fetching requests:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching join requests:', err);
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Approve / reject a join request
+// Hyväksy tai hylkää liittymispyyntö
 export const updateJoinRequest = async (req, res) => {
   try {
     const requestId = req.params.requestId;
-    const { status } = req.body; // "approved" or "rejected"
+    const { status } = req.body; // "approved" tai "rejected"
 
     const updated = await groupJoinModel.updateRequest(requestId, { status });
+
     if (!updated) {
-      return res.status(404).json({ message: 'Request not found' });
+      return res.status(404).json({ message: 'Join request not found' });
     }
 
-    res.json({ message: `Request ${status}`, request: updated });
+    return res.json({
+      message: `Request ${status}`,
+      request: updated,
+    });
   } catch (err) {
     console.error('Error updating join request:', err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
