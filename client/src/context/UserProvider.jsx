@@ -92,6 +92,19 @@ function UserProvider({ children }) {
     },[]);
 
     useEffect(() => {
+    // Poista aiempi interceptor, jos sellainen on
+    const id = axios.interceptors.request.use((config) => {
+        if (accessToken) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+    });
+    return () => axios.interceptors.request.eject(id);
+    }, [accessToken]);
+
+
+    useEffect(() => {
         let timeoutId;
         if (!accessToken) return;
 

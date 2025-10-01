@@ -37,7 +37,7 @@ function Login(){
                     <button type="submit" onClick={e=>handleClick(e)}>Submit</button>
                     <NavLink to="/signup">No account? Sign in</NavLink>
                     <label>
-                        <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.value)}/>
+                        <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>
                         Remember me
                     </label>
                     <Link to="/myinfo"><h4>To My info</h4></Link> 
