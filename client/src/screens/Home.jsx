@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react"
-import { getTrendingToday } from "../services/movieService"
+import { useEffect, useRef, useState } from "react"
+import axios from "axios";
 import MovieCard from "../components/MovieCard.jsx"
 import "./Home.css";
 
@@ -9,7 +9,16 @@ export default function Home() {
   const [status, setStatus] = useState("idle");  
   const [hasMore, setHasMore] = useState(true);
   const [err, setErr] = useState("");
+  const url = import.meta.env.VITE_API_URL;
 
+  async function getTrendingToday(){
+    try {
+      const response = await axios.get(url+`/api/movie/trending?page=${page}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -22,7 +31,7 @@ export default function Home() {
 
         const results = data?.results ?? [];
         setMovies(prev => [...prev, ...results]);
-        setHasMore(page < (data?.total_pages ?? page));
+        setHasMore(page < (data?.total_pages ?? 1));
         setStatus("idle");
       } catch (e) {
         if (cancelled) return;
@@ -52,6 +61,15 @@ export default function Home() {
     return () => io.disconnect();
   }, [hasMore, status]); 
 
+  const handleMovieUpdated = (movieId, { review_count, avg_rating }) => {
+    setMovies(prev =>
+      prev.map(m => Number(m.id) === Number(movieId)
+        ? { ...m, review_count, avg_rating }
+        : m
+      )
+    );
+  };
+
   return (
     <main className="page">
       <h1 className="home-title">Trending right now</h1>
@@ -61,8 +79,8 @@ export default function Home() {
       )}
 
       <div className="grid">
-        {movies.map((m) => (
-          <MovieCard key={m.id} movie={m} />
+        {movies.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} onMovieUpdated={handleMovieUpdated} />
         ))}
       </div>
 

@@ -5,6 +5,12 @@ import refreshTokens from '../models/refreshTokenModel.js';
 
 const { JWT_SECRET_KEY, REFRESH_TOKEN_MS } = process.env;
 
+async function getUserIdFromRefreshToken(plain) {
+  const hashed = hashRefreshToken(plain);
+  const { rows } = await refreshTokens.findByHash(hashed); // uusi mallifunktio
+  return rows[0]?.user_id ?? null;
+}
+
 function signAccessToken(dbUser) {
   return jwt.sign(
     { sub: dbUser.id, email: dbUser.email },
@@ -74,4 +80,4 @@ const auth = (req, res, next) => {
   }
 };
 
-export { signAccessToken, auth, generateRefreshToken, storeRefreshToken, verifyRefreshToken, revokeRefreshToken, rotateRefreshToken };
+export { getUserIdFromRefreshToken, signAccessToken, auth, generateRefreshToken, storeRefreshToken, verifyRefreshToken, revokeRefreshToken, rotateRefreshToken };

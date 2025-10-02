@@ -57,4 +57,6 @@ delete: function(id, callback) {
         callback);
     }
 }; // END
+
+
 export default users;
