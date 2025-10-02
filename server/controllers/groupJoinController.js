@@ -45,13 +45,26 @@ export const getGroupRequests = async (req, res) => {
 };
 
 // Hyväksy tai hylkää liittymispyyntö
+
 export const updateJoinRequest = async (req, res) => {
   try {
     const requestId = req.params.requestId;
     const { status } = req.body; // "approved" tai "rejected"
 
-    const updated = await groupJoinModel.updateRequest(requestId, { status });
+    if (status === "rejected") {
+      // Poistetaan rivi kokonaan, niin voi tehdä uuden pyynnön myöhemmin
+      const deleted = await groupJoinModel.deleteRequest(requestId);
+      if (!deleted) {
+        return res.status(404).json({ message: 'Join request not found' });
+      }
+      return res.json({
+        message: 'Request rejected and deleted',
+        request: deleted,
+      });
+    }
 
+    // Muuten vain päivitetään status esim. "approved"
+    const updated = await groupJoinModel.updateRequest(requestId, { status });
     if (!updated) {
       return res.status(404).json({ message: 'Join request not found' });
     }

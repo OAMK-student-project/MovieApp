@@ -23,7 +23,7 @@ import db from '../helpers/db.js';
         return result.rows;
     }*/
 
-
+//-----Get join requests from a specific group and return group info
 const getRequestsByGroup = async (groupJoinId) => {
   try {
     const result = await db.query(
@@ -111,6 +111,9 @@ const addRequest = async (groupJoinData) => {
         return result.rows[0];
     }
 
+
+
+    
 export {
   getAllRequests,
   getRequestsById,

@@ -27,21 +27,27 @@ export default function ManageGroup() {
 }, [id]);
   // Hyväksy / hylkää pyyntö
   const handleRequest = async (requestId, status) => {
-    try {
-      const res = await axios.put(
-        `http://localhost:3001/groups/${id}/requests/${requestId}`,
-        { status }
-      );
-      alert(res.data.message || `Request ${status}`);
-      // Päivitä local state niin, että status muuttuu
+  try {
+    const res = await axios.put(
+      `http://localhost:3001/groups/${id}/requests/${requestId}`,
+      { status }
+    );
+    alert(res.data.message || `Request ${status}`);
+
+    if (status === "rejected") {
+      // poista rivistä kokonaan
+      setRequests((prev) => prev.filter((r) => r.request_id !== requestId));
+    } else {
+      // päivitä vain status
       setRequests((prev) =>
         prev.map((r) => (r.request_id === requestId ? { ...r, status } : r))
       );
-    } catch (err) {
-      console.error("Error updating request:", err);
-      alert("Failed to update request");
     }
-  };
+  } catch (err) {
+    console.error("Error updating request:", err);
+    alert("Failed to update request");
+  }
+};
 
   if (loading) return <p>Loading join requests...</p>;
   if (error) return <p>{error}</p>;

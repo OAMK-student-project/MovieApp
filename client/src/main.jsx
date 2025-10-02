@@ -7,14 +7,12 @@ import Home from "./screens/Home.jsx"
 import Login from "./screens/account/Login.jsx";
 import Signup from "./screens/account/Signup.jsx";
 import Favorites from "./screens/Favorites.jsx";
-//import Groups from "./screens/Groups.jsx";
 import Reviews from "./screens/Reviews.jsx";
 import SearchScreen from "./screens/SearchScreen";
 import Theater from "./screens/Theater.jsx";
 import Myinfo from "./screens/Myinfo.jsx";
 import "./index.css";
 import UserProvider from "./context/UserProvider.jsx";
-//import AllGroups from "./screens/AllGroups.jsx";
 import GroupsPage from "./screens/GroupsPage.jsx";
 import ManageGroup from "./screens/ManageGroup.jsx";
 import GroupPage from "./screens/GroupPage.jsx";
