@@ -5,7 +5,7 @@ import "./Reviews.css";
 import MovieCard from "../components/MovieCard";
 
 function Reviews(){
-    const url = import.meta.env.VITE_API_URL + `/api/movie`;
+    const url = import.meta.env.VITE_API_URL + `/api/movies`;
     const [allReviews, setAllReviews] = useState([]);
     const [status, setStatus] = useState("idle"); 
 

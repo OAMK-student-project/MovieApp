@@ -5,14 +5,14 @@ import db from '../helpers/db.js'
 
 //id auto-incremented
 
-/*//-----Get all reviews
+//-----Get all reviews
     const getAllReviews = async() => {
         const result = await db.query('SELECT * FROM "Reviews"');
 
 
         return result.rows;
     }
-*/
+
     const getAllReviewsTmdbIds = async() => {
         const result = await db.query(`SELECT movie_id FROM "Reviews"`);
 

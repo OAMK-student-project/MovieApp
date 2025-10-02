@@ -11,7 +11,7 @@ function Login(){
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
     const navigate = useNavigate();
-    const url = import.meta.env.VITE_API_URL+"/user";
+    const url = import.meta.env.VITE_API_URL+"/api/user";
 
     async function handleClick(e) {
         e.preventDefault();
