@@ -28,6 +28,11 @@
     color: #aaa; font-size: 0.9rem; margin: 0; 
 }
 
+.mc-review {
+  display: flex;
+  flex-direction: row;
+}
+
 .mc-overview {
   color: #ddd;
   font-size: 0.9rem;
@@ -41,7 +46,7 @@
   margin-top: auto;
   display: inline-block;
   padding: 8px 12px;
-  background: color: #5C5EFF;
+  background: #5C5EFF;
   color: #fff;
   border: 0;
   border-radius: 8px;

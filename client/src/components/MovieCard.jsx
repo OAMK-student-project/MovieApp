@@ -1,12 +1,27 @@
 import { useState } from "react"
-import { getMovieDetails } from "../services/movieService"
+import axios from "axios"
 import { posterUrl, backdropUrl } from "../helpers/images"
+import { useUser } from "../context/useUser.js";
+import ReviewsCard from "./ReviewsCard.jsx";
 import "./movieCard.css"
 
-export default function MovieCard({ movie }) {
+export default function MovieCard({ movie, onMovieUpdated  }) {
   const [isOpen, setIsOpen] = useState(false)
   const [details, setDetails] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [showReviews, setShowReviews] = useState(false);
+  const { user } = useUser();
+  const url = import.meta.env.VITE_API_URL;
+
+  async function getMovieDetails(){
+    try {
+      const response = await axios.get(url+`/api/movie/${movie.id}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 
   async function toggle() {
     if (isOpen) {
@@ -17,7 +32,7 @@ export default function MovieCard({ movie }) {
     if (!details && !loading) {
       try {
         setLoading(true)
-        const data = await getMovieDetails(movie.id)
+        const data = await getMovieDetails()
         setDetails(data)
       } finally {
         setLoading(false)
@@ -27,6 +42,56 @@ export default function MovieCard({ movie }) {
 
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
+  
+  function renderStars(avg) {
+    const stars = Math.round(avg);
+    return (
+      <span className="mc-stars">
+        {Array.from({ length: stars }).map((_, i) => (
+          <span key={i}>★</span>
+        ))}
+        {Array.from({ length: 5 - stars }).map((_, i) => (
+          <span key={i}>☆</span>
+        ))}
+      </span>
+    );
+  }
+
+  function handleReviews() {
+    if (movie.review_count > 0) {
+      return (
+        <div className="mc-rating">
+          {renderStars(movie.avg_rating)}
+          <span className="mc-muted"> ({movie.review_count})</span>
+          <button onClick={() => setShowReviews(!showReviews)}>Show reviews</button>
+
+          {showReviews && (
+            <ReviewsCard
+              movie_id={movie.id}
+              onClose={() => setShowReviews(false)}
+              onStatsChange={(stats) => onMovieUpdated?.(movie.id, stats)}
+            />
+          )}
+        </div>
+      );
+    } else if (!user) {
+      return <div className="mc-review"><div>No reviews</div></div>;
+    } else {
+      return (
+        <div>
+          <div>No reviews</div>
+          <button onClick={() => setShowReviews(!showReviews)}>Add review</button>
+          {showReviews && (
+            <ReviewsCard
+              movie_id={movie.id}
+              onClose={() => setShowReviews(false)}
+              onStatsChange={(stats) => onMovieUpdated?.(movie.id, stats)}
+            />
+          )}
+        </div>
+      );
+    }
+  }
 
   /** mc = moviecard*/
   return (
@@ -40,8 +105,11 @@ export default function MovieCard({ movie }) {
 
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
+          {handleReviews()}
         <p className="mc-year">{movie.release_date?.slice(0, 4) || "-"}</p>
         <p className="mc-overview">{movie.overview || "No description."}</p>
+
+
 
         {!isOpen ? (
           <button className="mc-btn" onClick={toggle}>Read more</button>

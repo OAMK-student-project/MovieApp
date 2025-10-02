@@ -24,6 +24,17 @@ const refreshTokens = {
             'UPDATE refresh_tokens SET revoked_at=now() WHERE user_id=$1 AND token_hash=$2 AND revoked_at IS NULL',
             [userID, hashedToken]
         );
+    },
+
+    findByHash: async function(hashed) {
+        return await db.query(
+            `SELECT user_id, token_hash, expires_at
+            FROM refresh_tokens
+            WHERE token_hash = $1
+            AND expires_at > NOW()
+            LIMIT 1`,
+            [hashed]
+        );
     }
 }
 export default refreshTokens;
