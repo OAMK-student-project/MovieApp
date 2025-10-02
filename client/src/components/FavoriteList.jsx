@@ -13,6 +13,10 @@ function FavoriteList() {
   const [lists, setLists] = useState([]);
   const [loadingUser, setLoadingUser] = useState(true);
 
+  const [showModal, setShowModal] = useState(false);
+  const [editingListId, setEditingListId] = useState(null);
+  const [editListName, setEditListName] = useState("");
+
 //This is partly just for debug, basically checks for changes in user data whether or not we have the userID and token.
   useEffect(() => {
     //console.log("UserContext updated:", user, accessToken); //DEBUG
@@ -20,7 +24,7 @@ function FavoriteList() {
     getLists();
   }, [user, accessToken]);
 
-//Add a fav list
+//-----------Add lists
   const addList = async () => {
     if (!user?.userID || !accessToken) return; //must have access token
 
@@ -50,7 +54,8 @@ function FavoriteList() {
     }
     getLists();
   };
-
+  
+//-----------Get lists
 //Fetch the lists user has created
   const getLists = async () => {
     if (!user?.userID || !accessToken) return;
@@ -73,10 +78,39 @@ function FavoriteList() {
     }
   };
 
-  const editList = async () => {
+//-----------Edit list
+  //Modal stuff
+  const openModal = (list) => {
+    setEditingListId(list.id);
+    setEditListName(list.name);
+    setShowModal(true);
+  };
 
+  const editList = async () => {
+    if (!editListName.trim()) return alert("Please enter a list name");
+    try {
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/favourite-lists/${editingListId}`,
+        { name: editListName },
+        { headers: { "Authorization": `Bearer ${accessToken}` } }
+      );
+
+      // update state
+      setLists(prev =>
+        prev.map(list =>
+          list.id === editingListId ? { ...list, name: editListName } : list
+        )
+      );
+
+      setShowModal(false);
+      setEditingListId(null);
+      setEditListName("");
+    } catch (error) {
+      console.error("Error updating list:", error);
+    }
   }
 
+//-----------Remove list
   const removeList = async (listId) => {
     if (!user?.userID || !accessToken) return; // must have access token
     try {
@@ -110,12 +144,14 @@ function FavoriteList() {
     return <p>Please sign in to add a favorite list</p>;
   }
 
-return (
+  return (
     <div className="favorite-list-container">
-      <div className="favourite-list-row">
-        <button className="addBtn" onClick={addList}> <FontAwesomeIcon icon={faPlusIcon} role="button" size="lg" />
-        </button>
 
+{/*--------- Add list ------------*/}
+      <div className="favourite-list-row">
+        <button className="addBtn" onClick={addList}>
+          <FontAwesomeIcon icon={faPlusIcon} size="lg" />
+        </button>
         <input
           className="listInput"
           type="text"
@@ -124,18 +160,42 @@ return (
           onChange={(e) => setNewListName(e.target.value)}
         />
       </div>
+
+{/*--------- Lists ------------*/}
       <ul className="favListUl">
         {lists.map((list) => (
-          <li className="favListLi" key={list.id}>{list.name}
+          <li className="favListLi" key={list.id}>
+            {list.name}
             <div className="actionButtons">
-              <button className="editBtn" onClick={editList}> <FontAwesomeIcon icon={faEditIcon} role="button" size="lg" />
+              <button className="editBtn" onClick={() => openModal(list)}>
+                <FontAwesomeIcon icon={faEditIcon} size="lg" />
               </button>
-              <button className="trashBtn" onClick={() => removeList(list.id)}> <FontAwesomeIcon icon={faTrashIcon} role="button" size="lg" />
+              <button className="trashBtn" onClick={() => removeList(list.id)}>
+                <FontAwesomeIcon icon={faTrashIcon} size="lg" />
               </button>
             </div>
           </li>
         ))}
       </ul>
+
+{/*--------- Edit modal ------------*/}
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="favList-modal" onClick={(e) => e.stopPropagation()}>
+            <h4>Insert new list name:</h4>
+            <input
+              className="listInput"
+              type="text"
+              value={editListName}
+              onChange={(e) => setEditListName(e.target.value)}
+            />
+            <div className="actionButtons">
+              <button className="saveBtn" onClick={editList}>Save</button>
+              <button className="cancelBtn" onClick={() => setShowModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

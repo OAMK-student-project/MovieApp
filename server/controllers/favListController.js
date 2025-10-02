@@ -1,4 +1,4 @@
-import {addList, deleteList, getListByUser } from "../models/favoriteListsModel.js";
+import {addList, deleteList, getListByUser,updateList } from "../models/favoriteListsModel.js";
 
 // Get all lists for the authenticated user
 const getLists = async (req, res, next) => {
@@ -57,5 +57,29 @@ const removeLists = async (req, res, next) => {
   }
 };
 
+const updateLists = async (req, res, next) => {
+  try {
+    const listId = req.params.id;
+    const userId = req.user?.id;
+    const { name } = req.body;
 
-export { getLists, addLists, removeLists }
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const updatedList = await updateList(listId, {name, user_id: userId });
+
+    if (!updatedList) {
+      return res.status(404).json({ error: "List not found or not owned by user" });
+    }
+
+    return res.status(200).json({ message: "List edited", edited: updatedList });
+  } catch (error) {
+    console.error("Error in updateList:", error);
+    return next(error);
+  }
+};
+
+
+
+export { getLists, addLists, removeLists, updateLists }

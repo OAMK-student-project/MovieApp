@@ -31,18 +31,24 @@ const addFavourite = async (req, res, next) => {
 };
 
 
-const removeFavourite = async(req,res,next) => {
-    try {
-        const favouriteMovieId = req.params.id;
-        const userId = req.body.userId; //Should come from auth
-        const deleteFavourite = await deleteFavouriteMovie(favouriteMovieId,userId)
-        return res.status(201).json(deleteFavourite);
-    } 
-    catch(error) {
-        return next(error)
+const removeFavourite = async (req, res, next) => {
+  try {
+    const userId = req.user.id;          // from auth middleware
+    const { movieId } = req.body;        // frontend sends { movieId }
+
+    if (!movieId) {
+      return res.status(400).json({ error: "Missing movieId" });
     }
 
-}
+    const deletedRows = await deleteFavouriteMovie(movieId, userId);
+
+    return res.status(200).json({ deleted: deletedRows.length });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 
 export const favouritesByUser = async (req, res, next) => {
   try {

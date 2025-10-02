@@ -67,7 +67,7 @@ import pool from '../helpers/db.js'
     //favouriteListId = id which is added automatically on review creation (via postgres auto-increment).
     const updateList = async(favouriteListId, listData) => {
         const result = await pool.query(
-            'UPDATE "Favourite_lists" SET name = $1 WHERE id = $2 AND user_id = $3',
+            'UPDATE "Favourite_lists" SET name = $1 WHERE id = $2 AND user_id = $3 RETURNING *',
             [
                 listData.name,
                 favouriteListId,
