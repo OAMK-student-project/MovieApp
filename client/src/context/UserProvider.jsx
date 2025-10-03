@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
-    //const [refreshToken, setRefreshToken] = useState(null);
+    const [refreshToken, setRefreshToken] = useState(null);
     const [remaining, setRemaining] = useState(null);
     const url = import.meta.env.VITE_API_URL + "/user";
 
@@ -15,6 +15,7 @@ function UserProvider({ children }) {
         const headers = { headers: { "Content-Type": "application/json" } };
         const { data } = await axios.post(url+"/signin", {email, password, remember}, headers);
         setAccessToken(data.accessToken);
+        localStorage.setItem("token", data.accessToken);// lisätty localstorage my info hakee suoraan täältä
         setUser(prev => ({ ...(prev ?? {}), userID: data.userID, email: data.email, identifiedUser: true }));
         if (remember) localStorage.setItem("uid", String(data.userID));
         return true;

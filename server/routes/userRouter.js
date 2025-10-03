@@ -87,7 +87,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Hae kirjautuneen käyttäjän tiedot
+/*// Hae kirjautuneen käyttäjän tiedot
 router.get("/me", auth, async (req, res) => {
   try {
     const currentUserId = req.userId; // auth-middleware lisää tämän
@@ -98,9 +98,21 @@ router.get("/me", auth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
+});*/
+// Hae kirjautuneen käyttäjän tiedot
+router.get("/me", auth, async (req, res) => {
+  try {
+    const currentUserId = req.user.id; // <-- use req.user.id from auth middleware
+    const result = await users.getById(currentUserId);
+    if (!result) return res.status(404).json({ error: "User not found" });
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-// Poista vain oma käyttäjä
+/*// Poista vain oma käyttäjä
 router.delete("/:id", auth, async (req, res) => {
   const { id } = req.params;
   if (parseInt(id) !== req.userId) {
@@ -115,6 +127,23 @@ router.delete("/:id", auth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
+});*/
+router.delete("/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  if (parseInt(id) !== req.user.id) {  // <-- change here
+    return res.status(403).json({ error: "You can only delete your own account" });
+  }
+
+  try {
+    const result = await users.delete(id);
+    if (!result) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "User deleted", user: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
+
+
 
 export default router;
