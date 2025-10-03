@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useUser } from "../context/useUser.js";
 import "./ReviewsCard.css";
 
@@ -7,13 +7,28 @@ function ReviewCard({ movie_id, onClose, onStatsChange }) {
   const url = import.meta.env.VITE_API_URL;
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(-1);
+  const [rating, setRating] = useState(3);
   const { user } = useUser();
 
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [editRating, setEditRating] = useState(0);
-  const [saving, setSaving] = useState(false);
+  //const [saving, setSaving] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const [statusDetail, setStatusDetail] = useState("");
+
+  const saving = status === "saving";
+  const submitting = status === "submitting";
+  const deleting = status === "deleting";
+  const loading = status === "loading";
+
+  const myUserId = useMemo(() => Number(user?.id ?? user?.userID), [user]);
+  const isOwner = (review) => Number(review.user_id) === myUserId;
+  const hasMyReview = useMemo(
+    () => reviews.some((r) => isOwner(r)),
+    [reviews, myUserId]
+  );
 
   const computeStats = (array) => {
     const n = Array.isArray(array) ? array.length : 0;
@@ -26,52 +41,98 @@ function ReviewCard({ movie_id, onClose, onStatsChange }) {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await axios.get(`${url}/api/reviews/movie/${movie_id}`, { withCredentials: true });
+       setStatus("loading");
+       setStatusDetail("Loading reviews…");        
+        const { data } = await axios.get(
+          `${url}/api/reviews/movie/${movie_id}`,
+          { withCredentials: true }
+        );
         if (!cancelled) {
           const list = Array.isArray(data) ? data : [];
           setReviews(list);
           onStatsChange?.(computeStats(list));
+          setStatus("idle"); 
+          setStatusDetail("");
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setReviews([]);
           onStatsChange?.({ review_count: 0, avg_rating: null });
+          setStatus("error");
+          setStatusDetail("Failed to load reviews");
         }
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [movie_id, url]);
+
+  async function refreshList() {
+    setStatus("loading");
+    setStatusDetail("Refreshing…");
+    const { data } = await axios.get(
+      `${url}/api/reviews/movie/${movie_id}`,
+      { withCredentials: true }
+    );
+    const list = Array.isArray(data) ? data : [];
+    setReviews(list);
+    onStatsChange?.(computeStats(list));
+    setStatus("idle");
+    setStatusDetail(""); 
+  }
 
   async function postReview() {
     try {
-      await axios.post(`${url}/api/reviews/add`, {
-        movieID: movie_id,
-        reviewText,
-        rating: Number(rating),
-      });
-      const { data } = await axios.get(`${url}/api/reviews/movie/${movie_id}`, { withCredentials: true });
-      const list = Array.isArray(data) ? data : [];
-      setReviews(list);
-      onStatsChange?.(computeStats(list));
-      onClose?.();
+      setStatus("submitting");
+      setStatusDetail("Submitting review…");
+      await axios.post(
+        `${url}/api/reviews/add`,
+        {
+          movieID: movie_id,
+          reviewText: reviewText.trim(),
+          rating: Number(rating),
+        },
+        { withCredentials: true }
+      );
+      await refreshList();
+      setReviewText("");
+      setRating(3);
+      setAdding(false);
     } catch (error) {
       console.error(error);
-    }
-  }
-
-    async function deleteReview(reviewID, movieID) {
-      try {
-        await axios.delete(`${url}/api/reviews/delete`, { data: { reviewID, movieID } });
-        setReviews((prev) => {
-          const next = prev.filter(r => r.id !== reviewID);
-          onStatsChange?.(computeStats(next));
-          if (next.length === 0) onClose?.();
-          return next;
-        });
-      } catch (error) {
-        console.error(error);
+      setStatus("error");
+      setStatusDetail("Failed to submit review");
+      } finally {
+        if (status === "submitting") {
+            setStatus("idle");
+            setStatusDetail("");
       }
     }
+}
+
+  async function deleteReview(reviewID, movieID) {
+    try {
+      setStatus("deleting");
+      setStatusDetail("Deleting review…");
+      await axios.delete(`${url}/api/reviews/delete`, {
+        data: { reviewID, movieID },
+        withCredentials: true,
+      });
+      setReviews((prev) => {
+        const next = prev.filter((r) => r.id !== reviewID);
+        onStatsChange?.(computeStats(next));
+        if (next.length === 0) onClose?.();
+        return next;
+      });
+      setStatus("idle");
+      setStatusDetail("");
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setStatusDetail("Failed to delete review");
+    }
+  }
 
   function startEdit(review) {
     setEditingId(review.id);
@@ -83,45 +144,84 @@ function ReviewCard({ movie_id, onClose, onStatsChange }) {
     setEditingId(null);
     setEditText("");
     setEditRating(0);
-    setSaving(false);
+    setStatus("idle");
+    setStatusDetail("");
   }
 
   async function saveEdit(reviewID) {
     try {
-      setSaving(true);
+      setStatus("saving");
+      setStatusDetail("Saving changes…");
       const payload = {
         reviewID,
         reviewText: editText,
         rating: Number(editRating),
       };
-      const { data } = await axios.put(`${url}/api/reviews/update`, payload);
+      const { data } = await axios.put(
+        `${url}/api/reviews/update`,
+        payload,
+        { withCredentials: true }
+      );
 
       setReviews((prev) => {
         const next = prev.map((r) =>
           r.id === reviewID
-            ? { ...r, review_text: data?.review_text ?? payload.reviewText, rating: data?.rating ?? payload.rating }
+            ? {
+                ...r,
+                review_text: data?.review_text ?? payload.reviewText,
+                rating: data?.rating ?? payload.rating,
+              }
             : r
         );
         onStatsChange?.(computeStats(next));
         return next;
       });
 
+
+      setStatus("idle");
+      setStatusDetail("");
       cancelEdit();
     } catch (err) {
       console.error(err);
-      setSaving(false);
+      setStatus("error");
+      setStatusDetail("Failed to save changes");
     }
   }
 
-  const isOwner = (review) =>
-    Number(review.user_id) === Number(user?.id ?? user?.userID);
+  const renderStatus = () => { 
+    if (status === "idle") return null;
+    return (
+      <div className={`rc-status rc-status--${status}`}>
+        {statusDetail || status}
+      </div>
+    );
+  };
+
+  const canAdd =
+    Boolean(myUserId) && !hasMyReview;
 
 return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
+        <button type="button" onClick={onClose}>Close</button>
+        {renderStatus()}
+
+        {canAdd && !adding && (
+          <div className="rc-toolbar">
+            <button type="button" onClick={() => setAdding(true)} disabled={loading || submitting || saving || deleting}>Add review</button>
+          </div>
+        )}
+
+        {canAdd && adding && (
+          <div className="rc-form">
+            <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)} disabled={submitting || loading}/>
+            <input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} disabled={submitting || loading}/>
+            <div className="rc-actions">
+              <button type="button" onClick={postReview} disabled={submitting || reviewText.trim() === "" || Number.isNaN(rating) || rating < 1 || rating > 5}>Submit</button>
+              <button type="button" onClick={() => { setAdding(false); setReviewText(""); setRating(3); }}>Cancel</button>
+            </div>
+          </div>
+        )}
 
         {reviews.length > 0 ? (
           <div className="rc-list">
@@ -136,9 +236,9 @@ return (
                   {editingId === review.id ? (
                     <>
                       <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={3}/>
-                      <input type="number"min={1} max={5} value={editRating} onChange={(e) => setEditRating(Number(e.target.value))}/>
+                      <input type="number" min={1} max={5} value={editRating} onChange={(e) => setEditRating(Number(e.target.value))}/>
                       <div className="rc-actions">
-                        <button type="button" disabled={saving || editText.trim() === "" || Number.isNaN(editRating)} onClick={() => saveEdit(review.id)}>
+                        <button type="button" disabled={saving || editText.trim() === "" || Number.isNaN(editRating) || editRating < 1 || editRating > 5} onClick={() => saveEdit(review.id)}>
                           {saving ? "Saving..." : "Save"}</button>
                         <button type="button" onClick={cancelEdit}>Cancel</button>
                       </div>
@@ -149,7 +249,7 @@ return (
                       {isOwner(review) ? (
                         <div className="rc-actions">
                           <button type="button" onClick={() => startEdit(review)}>Edit</button>
-                          <button type="button"onClick={() => deleteReview(review.id, review.movie_id)}>Delete</button>
+                          <button type="button" onClick={() => deleteReview(review.id, review.movie_id)} disabled={deleting || saving || submitting || loading} >Delete</button>
                         </div>
                       ) : null}
                     </>
@@ -161,9 +261,9 @@ return (
           </div>
         ) : (
           <div className="rc-form">
-            <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)}/>
-            <input type="number" min={0} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))}/>
-            <button type="button" onClick={() => postReview()} disabled={!reviewText || Number.isNaN(rating)}>Submit</button>
+            <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)} disabled={submitting || loading}/>
+            <input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} disabled={submitting || loading}/>
+            <button type="button" onClick={() => postReview()} disabled={submitting || reviewText.trim() === "" || Number.isNaN(rating) || rating < 1 || rating > 5}>{submitting ? "Submitting…" : "Submit"}</button>
           </div>
         )}
       </div>

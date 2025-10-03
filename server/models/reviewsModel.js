@@ -3,12 +3,12 @@ import db from '../helpers/db.js'
 
 //-----Get all reviews
     const getAllReviews = async() => {
-        const result = await db.query('SELECT * FROM "Reviews"');
+        const result = await db.query('SELECT * FROM "Reviews" ORDER BY created_at DESC');
         return result.rows;
     }
 
     const getAllReviewsTmdbIds = async() => {
-        const result = await db.query(`SELECT movie_id FROM "Reviews"`);
+        const result = await db.query('SELECT movie_id FROM "Reviews"');
         return result.rows;
     }
 
@@ -17,6 +17,7 @@ import db from '../helpers/db.js'
         const result = await db.query('SELECT * FROM "Reviews" WHERE user_id = $1', [userID]);
         return result.rows;
     }
+
 //-----Get movie's reviews with user infos
     async function getReviewsWithUserByMovieId(movie_id) {
     const query = `
@@ -85,7 +86,7 @@ import db from '../helpers/db.js'
         return new Map(rows.map(r => [Number(r.movie_id), r]));
     }
 
-    const statisticsInDatabase = async() => {
+    const statisticsInDatabase = async(tmdbId) => {
         await db.query(
         `SELECT COUNT(*)::int AS review_count,
                 ROUND(AVG(rating)::numeric, 2) AS avg_rating
@@ -93,19 +94,21 @@ import db from '../helpers/db.js'
         WHERE movie_id = $1`,
         [tmdbId]
     );
-        return statisticsInDatabase.rows[0] || { review_count: 0, avg_rating: null };
+        return rows[0] || { review_count: 0, avg_rating: null };
     }
 
-    const myReviewInDatabase = async () => {
-        await db.query(
-            `SELECT id, rating, review_text, created_at
-            FROM "Reviews"
-            WHERE user_id = $1 AND movie_id = $2
-            LIMIT 1`,
-            [userId, tmdbId]
-            );
-            return myReviewInDatabase.rows[0] || null;
-    }
+    const myReviewInDatabase = async (userId, tmdbId) => {
+    const { rows } = await db.query(
+        `SELECT id, rating, review_text, created_at
+        FROM "Reviews"
+        WHERE user_id = $1 AND movie_id = $2
+        ORDER BY created_at DESC
+        LIMIT 1`,
+        [userId, tmdbId]
+    );
+    return rows[0] || null;
+    };
+
 
 export {
     getAllReviews,

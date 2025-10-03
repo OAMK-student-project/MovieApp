@@ -15,27 +15,30 @@ export async function getOrCacheMovie(tmdbId) {
 }
 
 async function getMovieWithStats(tmdbId, userId) {
-    const movie = await getOrCacheMovie(tmdbId);
-    const statistics = statisticsInDatabase();
-    if (userId) {
-        const myReview = myReviewInDatabase();
-    }
+  const movie = await getOrCacheMovie(tmdbId);
+  const statistics = await statisticsInDatabase(tmdbId);
+  let myReview = null;
+  if (userId) {
+    myReview = await myReviewInDatabase(userId, tmdbId);
+  }
 
-    return {
-        movie: {
-        id: movie.movie_id,
-        title: movie.title,
-        original_title: movie.original_title,
-        release_date: movie.release_date,
-        poster_path: movie.poster_path,
-        backdrop_path: movie.backdrop_path,
-        runtime: movie.runtime,
-        genres: movie.genres
-        },
-        statistics,
-        myReview
-    };
+  return {
+    movie: {
+      id: movie.movie_id,
+      title: movie.title,
+      original_title: movie.original_title,
+      release_date: movie.release_date,
+      poster_path: movie.poster_path,
+      backdrop_path: movie.backdrop_path,
+      runtime: movie.runtime,
+      genres: movie.genres,
+      overview: movie.overview
+    },
+    statistics,
+    myReview
+  };
 }
+
 
 function attachData(movies, statsMap){
   return movies.map(movie => ({
@@ -44,7 +47,6 @@ function attachData(movies, statsMap){
     release_date: movie.release_date,
     poster_path: movie.poster_path,
     backdrop_path:movie.backdrop_path,
-    release_date: movie.release_date,
     runtime: movie.runtime,
     genres:movie.genres,
     credits: movie.credits,

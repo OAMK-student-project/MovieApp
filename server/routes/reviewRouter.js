@@ -10,4 +10,4 @@ router.post("/add", auth, addNewReview);
 router.put("/update", auth, updateMovieReview);
 router.delete("/delete", auth, deleteMovieReview);
 
-export default router;  
+export default router;
