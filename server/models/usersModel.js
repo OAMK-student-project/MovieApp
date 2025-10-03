@@ -9,16 +9,25 @@ const users = {
     return db.query('SELECT * FROM "Users"');
     },
 
-//-----Get user by ID
-    getById: function (id) {
-        return db.query('SELECT * FROM "Users" WHERE id = $1', [id]);
-    },
 
+
+// Get user by ID
+  getById: async function (id) {
+    return db.query(
+      'SELECT id, firstname, lastname, email FROM "Users" WHERE id = $1',
+      [id]
+    );
+  },
+    
+
+    
 //-----Get user by email
     getByEmail: function (email) {
         return db.query('SELECT * FROM "Users" WHERE email = $1', [email]);
     },
 
+
+    
 //-----Add user
     //from my undestanding user id (id) should be automagically added to the database by postgre, thus it's "missing" from add. Tested in query.
     //userAccountData = {email, firstname, lastname}

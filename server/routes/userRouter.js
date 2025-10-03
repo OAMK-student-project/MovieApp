@@ -100,12 +100,18 @@ router.get("/me", auth, async (req, res) => {
   }
 });*/
 // Hae kirjautuneen käyttäjän tiedot
+
 router.get("/me", auth, async (req, res) => {
   try {
-    const currentUserId = req.user.id; // <-- use req.user.id from auth middleware
+    const currentUserId = req.user.id; // <-- from auth middleware
     const result = await users.getById(currentUserId);
-    if (!result) return res.status(404).json({ error: "User not found" });
-    res.json(result);
+
+    // result.rows[0] contains the user
+    if (!result?.rows?.length) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(result.rows[0]); // <-- return actual user object
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error" });
