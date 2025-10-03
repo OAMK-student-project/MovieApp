@@ -1,5 +1,6 @@
 import { getAllReviews, getReviewsByUserId, getReviewsWithUserByMovieId, addReview, updateReview, deleteReview, getStatsForIds } from "../models/reviewsModel.js";
 import { addMovieToDb, removeMovieFromDb } from "./moviesController.js";
+import { ApiError } from "../helpers/ApiError.js";
 
 const validateInput = (data, validateFields) => {
     const missingFields = [];
@@ -17,7 +18,7 @@ const validateInput = (data, validateFields) => {
 const getReviews = async (req, res ,next) => {
     try {
         const response = await getAllReviews();
-        if(!response) return res.status(500).json({error: "Something went wrong"});
+        if(!response) throw new ApiError("Something went wrong", 500)
         return res.status(200).json(response);
     } catch (error) {
         next(error);
@@ -27,6 +28,10 @@ const getReviews = async (req, res ,next) => {
 const getReviewsForMovie = async (req, res, next) => {
   try {
     const movie_id = Number(req.params.tmdbId);
+    if (!Number.isInteger(movie_id)) {
+      return res.status(400).json({ error: "Invalid tmdbId" });
+    }
+
     const rows = await getReviewsWithUserByMovieId(movie_id);
 
     if (rows.length === 0) return res.status(200).json([]);
@@ -34,7 +39,7 @@ const getReviewsForMovie = async (req, res, next) => {
     const out = rows.map(review => ({
       id: review.id,
       user_id: review.user_id,
-      username: `${review.firstname} ${review.lastname}`,
+      username: `${review.firstname ?? ""} ${review.lastname ?? ""}`.trim(),
       email: review.email,
       movie_id: review.movie_id,
       rating: review.rating,
@@ -50,9 +55,11 @@ const getReviewsForMovie = async (req, res, next) => {
 
 const getUsersReviews = async (req, res, next) => {
   try {
+    if (!req.user?.id) throw new ApiError("Unauthorized", 401);
     const userID = req.user.id;
+
     const response = await getReviewsByUserId(userID);
-    if (!response) return res.status(500).json({ error: "Something went wrong" });
+    if (!response) throw new ApiError("Something went wrong", 500);
     if (response.length < 1) return res.status(204).end();
     return res.status(200).json(response);
   } catch (error) {
@@ -60,12 +67,17 @@ const getUsersReviews = async (req, res, next) => {
   }
 };
 
+
 const addNewReview = async (req, res, next) => {
   try {
     const missing = validateInput(req.body, ["movieID", "reviewText", "rating"]);
     if (missing) return res.status(400).json({ error: "Missing information", fields: missing });
 
-    const movieId = Number(req.body.movieID);
+    const movieId = Number(req.body.movieID);    
+    if (!Number.isInteger(movieId)) {
+      return res.status(400).json({ error: "Invalid movieID" });
+    }
+
 
     const statsMap = await getStatsForIds([movieId]);
     const existingCount = statsMap.get(movieId)?.review_count ?? 0;
@@ -74,9 +86,10 @@ const addNewReview = async (req, res, next) => {
       await addMovieToDb(movieId);
     }
 
+    if (!req.user?.id) throw new ApiError("Unauthorized", 401);
     const data = { ...req.body, userID: req.user.id };
     const created = await addReview(data);
-    if (!created) return res.status(500).json({ error: "Something went wrong" });
+    if (!created) throw new ApiError("Something went wrong", 500);
 
     return res.status(201).json({ review: created, movieAdded: existingCount === 0 });
   } catch (error) {
@@ -90,10 +103,12 @@ const updateMovieReview = async (req, res, next) => {
     const missing = validateInput(req.body, ["rating", "reviewText", "reviewID"]);
     if (missing) return res.status(400).json({ error: "Missing information", fields: missing });
 
-    const { reviewID } = req.body;
+    const reviewID = Number(req.body.reviewID);
+    if (!Number.isInteger(reviewID)) return res.status(400).json({ error: "Invalid reviewID" });
+    if (!req.user?.id) throw new ApiError("Unauthorized", 401);
     const data = { ...req.body, userID: req.user.id }; // omistajuus tokenista
     const response = await updateReview(reviewID, data);
-    if (!response) return res.status(500).json({ error: "Something went wrong" });
+    if (!response) throw new ApiError("Something went wrong", 500);
 
     return res.status(200).json(response);
   } catch (error) {
@@ -106,29 +121,31 @@ const deleteMovieReview = async (req, res, next) => {
     const missing = validateInput(req.body, ["reviewID", "movieID"]);
     if (missing) return res.status(400).json({ error: "Missing information", fields: missing });
 
-    const userID = req.user.id; // tokenista
-    const { reviewID, movieID } = req.body;
+    if (!req.user?.id) throw new ApiError("Unauthorized", 401);
+    const userID = req.user.id;
+
+    const reviewID = Number(req.body.reviewID);
+    const movieID  = Number(req.body.movieID);
+    if (!Number.isInteger(reviewID) || !Number.isInteger(movieID)) {
+      return res.status(400).json({ error: "Invalid reviewID or movieID" });
+    }
 
     const deleted = await deleteReview(reviewID, userID);
-    if (!deleted) {
-      return res.status(404).json({ error: "Review not found or not owned by user" });
-    }
+    if (!deleted) throw new ApiError("Review not found or not owned by user", 404);
 
-    const statsMap = await getStatsForIds([Number(movieID)]);
-    const remainingCount = statsMap.get(Number(movieID))?.review_count ?? 0;
+    const statsMap = await getStatsForIds([movieID]);
+    const remainingCount = statsMap.get(movieID)?.review_count ?? 0;
 
     if (remainingCount === 0) {
-      await removeMovieFromDb(Number(movieID));
+      await removeMovieFromDb(movieID);
     }
 
-    return res.status(200).json({
-      deletedReview: deleted,
-      movieRemoved: remainingCount === 0
-    });
+    return res.status(200).json({ deletedReview: deleted, movieRemoved: remainingCount === 0 });
   } catch (error) {
     next(error);
   }
 };
+
 
 
 export { getReviews, getUsersReviews, getReviewsForMovie, addNewReview, updateMovieReview, deleteMovieReview };
