@@ -1,5 +1,5 @@
 import express from 'express';
-import { fetchAllGroups } from '../controllers/groupsController.js';
+import { fetchAllGroups, createGroup } from '../controllers/groupsController.js';
 import {
   requestJoinGroup,
   getGroupRequests,
@@ -8,8 +8,11 @@ import {
 
 const router = express.Router();
 
-// existing route
+// fetch all groups
 router.get('/', fetchAllGroups);
+
+// create new group
+router.post('/', createGroup);
 
 // new routes for join requests
 router.post('/:id/request-join', requestJoinGroup);
