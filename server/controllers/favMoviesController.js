@@ -1,4 +1,4 @@
-import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie, getAllFavouritesByUser } from "../models/favouriteMoviesModel.js";
+import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie, getAllFavouritesByUser, getFavouritesByList } from "../models/favouriteMoviesModel.js";
 
 const getFavourites = async (req, res,next) => {
     try {
@@ -9,6 +9,27 @@ const getFavourites = async (req, res,next) => {
       return next(error)
     }
 }
+
+const favouritesByList = async (req, res, next) => {
+  const { favourite_id } = req.query; // get favourite_id from query
+
+  if (!favourite_id) {
+    return res.status(400).json({ error: "Missing favourite_id parameter" });
+  }
+
+  try {
+    console.log("Fetching movies for favourite_id:", favourite_id);
+
+    // Call your model function that fetches movies
+    const movies = await getFavouritesByList(favourite_id);
+
+    return res.status(200).json(movies); // send movies back to client
+  } catch (error) {
+    console.error("error:", error);
+    return next(error);
+  }
+};
+
 
 const addFavourite = async (req, res, next) => {
     
@@ -68,4 +89,4 @@ export const favouritesByUser = async (req, res, next) => {
 
 
 
-export { getFavourites, addFavourite, removeFavourite }
+export { getFavourites, addFavourite, removeFavourite,favouritesByList }

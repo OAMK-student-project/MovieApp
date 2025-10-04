@@ -2,20 +2,23 @@ import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import UserContext from "../context/UserContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus as faPlusIcon } from '@fortawesome/free-solid-svg-icons';
-import { faTrash as faTrashIcon } from '@fortawesome/free-solid-svg-icons';
-import { faPenToSquare as faEditIcon } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare as faEditIcon,faTrash as faTrashIcon, faPlus as faPlusIcon, faSquareCaretDown as faExpand  } from '@fortawesome/free-solid-svg-icons';
 import "./FavoriteList.css";
 
 function FavoriteList() {
-  const { user, accessToken } = useContext(UserContext); 
+  const { user, accessToken } = useContext(UserContext);
+  //Create 
   const [newListName, setNewListName] = useState("");
   const [lists, setLists] = useState([]);
   const [loadingUser, setLoadingUser] = useState(true);
-
+  //Edit
   const [showModal, setShowModal] = useState(false);
   const [editingListId, setEditingListId] = useState(null);
   const [editListName, setEditListName] = useState("");
+  //Expando
+  const [expandedId, setExpandedId] = useState(null);
+  const [moviesByList, setMoviesByList] = useState({}); // { [listId]: movies[] }
+  const [loadingMovies, setLoadingMovies] = useState(false);
 
 //This is partly just for debug, basically checks for changes in user data whether or not we have the userID and token.
   useEffect(() => {
@@ -132,8 +135,48 @@ function FavoriteList() {
       console.error("Error deleting list:", error);
       alert("Could not delete list");
     }
-    getLists(); // optional if you want to refresh from server
+    getLists();
   };
+
+
+//-----------Toggle list expand
+  const toggle = (id) => {
+    if (expandedId === id) {
+      setExpandedId(null); // collapse
+    } else {
+      setExpandedId(id); // expand
+      console.log("expanded: " + expandedId);
+      // Fetch movies if not already cached
+      if (!moviesByList[id]) {
+        fetchMovies(id);
+      }
+    }
+  };
+
+//-----------Fetch movies for a specific list
+const fetchMovies = async (favouriteId) => {
+  if (!user?.userID || !accessToken) return;
+  try {
+    setLoadingMovies(true);
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_URL}/favourite/movies?favourite_id=${favouriteId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      }
+    );
+    setMoviesByList((prev) => ({
+      ...prev,
+      [favouriteId]: res.data,
+    }));
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+  } finally {
+    setLoadingMovies(false);
+  }
+};
 
 //Show text if user not logged in and show text if logged in but user data has not been fethed
   if (loadingUser) {
@@ -144,10 +187,11 @@ function FavoriteList() {
     return <p>Please sign in to add a favorite list</p>;
   }
 
+
   return (
     <div className="favorite-list-container">
 
-{/*--------- Add list ------------*/}
+      {/*--------- Add list ------------*/}
       <div className="favourite-list-row">
         <button className="addBtn" onClick={addList}>
           <FontAwesomeIcon icon={faPlusIcon} size="lg" />
@@ -161,43 +205,80 @@ function FavoriteList() {
         />
       </div>
 
-{/*--------- Lists ------------*/}
+      {/*--------- Lists ------------*/}
       <ul className="favListUl">
-        {lists.map((list) => (
-          <li className="favListLi" key={list.id}>
-            {list.name}
-            <div className="actionButtons">
-              <button className="editBtn" onClick={() => openModal(list)}>
-                <FontAwesomeIcon icon={faEditIcon} size="lg" />
-              </button>
-              <button className="trashBtn" onClick={() => removeList(list.id)}>
-                <FontAwesomeIcon icon={faTrashIcon} size="lg" />
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+        {lists.map((list) => {
+          const isExpanded = expandedId === list.id;
+          const movies = moviesByList[list.id] || [];
 
-{/*--------- Edit modal ------------*/}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="favList-modal" onClick={(e) => e.stopPropagation()}>
-            <h4>Insert new list name:</h4>
-            <input
-              className="listInput"
-              type="text"
-              value={editListName}
-              onChange={(e) => setEditListName(e.target.value)}
-            />
-            <div className="actionButtons">
-              <button className="saveBtn" onClick={editList}>Save</button>
-              <button className="cancelBtn" onClick={() => setShowModal(false)}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+          return (
+            <li className="favListLi" key={list.id}>
+              <div className="favListHeader">
+                <span className="favListName">{list.name}</span>
+                <div className="actionButtons">
+                  <button
+                    className={`expandBtn ${isExpanded ? "rotated" : ""}`}
+                    onClick={() => toggle(list.id)}
+                  >
+                    <FontAwesomeIcon icon={faExpand} size="lg" />
+                  </button>
+
+                  <button className="editBtn" onClick={() => openModal(list)}>
+                    <FontAwesomeIcon icon={faEditIcon} size="lg" />
+                  </button>
+
+                  <button className="trashBtn" onClick={() => removeList(list.id)}>
+                    <FontAwesomeIcon icon={faTrashIcon} size="lg" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Edit List */}
+              {showModal && (
+                <div className="modal-overlay">
+                  <div className="favList-modal">
+                    <h3>Edit List</h3>
+                    <input 
+                      className="listInput"
+                      type="text" 
+                      value={editListName} 
+                      onChange={(e) => setEditListName(e.target.value)} 
+                    />
+                    <div className="actionButtons">
+                      <button className="saveBtn" onClick={editList}>Save</button>
+                      <button className="cancelBtn" onClick={() => setShowModal(false)}>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Expanded content */}
+              {isExpanded && (
+                <div className="favListExpand">
+                  {loadingMovies && movies.length === 0 ? (
+                    <p>Loading movies...</p>
+                  ) : movies.length === 0 ? (
+                    <p>No movies found for this list.</p>
+                  ) : (
+                    <div className="movieGrid">
+                      {movies.map((movie) => (
+                        <div className="movieCard" key={movie.id}>
+                          <p className="movieTitle">{movie.title}</p>
+                          <p className="movieGenres">{movie.genres.join(", ")}</p>
+                          <p className="movieAdded">{movie.added_at}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </li>
+            
+          );
+          
+        })}
+      </ul>
     </div>
   );
 }
-
 export default FavoriteList;

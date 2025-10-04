@@ -1,4 +1,9 @@
 
+/* 
+   I think the CSS needs some magic giga skills since right now all the lists expand on the same row and 
+   I assume we would like to expand them so that only one list item is expanded at a time. On the JSX side this feature is supported already.
+*/
+
 .favorite-list-container {
     display: flex;
     flex-direction: column;
@@ -12,7 +17,16 @@
     gap: 0.5em;
     align-items: center;
 }
-/************ Modal styling *****************/
+
+.favListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-weight: bold;
+}
+
+/***************** Modal styling *****************/
 
  /* Background */
 .modal-overlay {
@@ -42,7 +56,7 @@
   position: relative;
 }
 
-/************ Favourite buttons :) *****************/
+/***************** Favourite buttons :) *****************/
 .addBtn {
     display: flex;
     align-items: center;
@@ -77,6 +91,32 @@
     margin-left: auto;
 }
 
+.expandBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 0em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: white;
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .expandBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+    .expandBtn.rotated {
+        transform: rotate(180deg);
+        background-color: var(--bg-second-color);
+    }
+
 .trashBtn {
     display:inline-flex;
     margin: auto;
@@ -85,7 +125,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    color: white; /* Needs icon-color var */
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -106,7 +146,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    color: white; /* Needs icon-color var */
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -127,7 +167,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    color: white; /* Needs icon-color var */
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -147,7 +187,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    color: white; /* Needs icon-color var */
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -159,7 +199,7 @@
         border-width: 2px;
     }
 
-/************ Favourite list *****************/
+/***************** Favourite list *****************/
 
 .listInput {
     max-height: 2.5em;
@@ -168,19 +208,20 @@
     margin: 0;
     background-color: var(--bg-second-color);
     border-style: none;
-    color: #fff;
+    color: var(--text-color);
     font-size: medium;
 }
 
 .favListUl {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5em;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5em;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
+
 
 .favListLi {
     background: var(--bg-second-color);
@@ -190,10 +231,11 @@
     padding: 0.6em 1em;
     border-radius: 0;
     text-align: left;
-    justify-content: space-between;
-    align-items:center;
+    justify-content: flex-start;
+    align-items:stretch;
     white-space: nowrap;
     display: flex;
+    flex-direction: column;
     transition-duration: 0.1s;
 }
 
@@ -203,3 +245,54 @@
         border-style: solid;
         border-width: 2px;
     }
+
+/***************** Expanded content *****************/
+
+.favListExpand {
+  width: 100%;
+  margin-top: 8px;
+  background: var(--bg-color);
+  max-height: 23em;
+  overflow-y:scroll;
+  border-radius: 0 0 8px 8px;
+  scrollbar-color: var(--effect-color) var(--bg-second-color);
+  scrollbar-width:auto;
+}
+
+.movieGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max-content, 1fr));
+    gap: 0.1em;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.movieCard {
+    width: 100%;
+    padding: 1em 1.5em;    /* top and bottom padding 1em, right and left are 1.5em */
+    border-radius: 0px;
+    border: 1px solid var(--effect-color);
+    background: var(--bg-second-color);
+    transition: 0.2s ease;
+    color: var(--text-color);
+    box-sizing: border-box;
+    margin: 0;
+    text-align: left;
+}
+
+.movieTitle {
+  font-weight: bold;
+}
+
+.movieGenres {
+  font-size: 0.85em;
+  color: var(--text-color);
+}
+
+.movieAdded {
+    font-size: 0.85em;
+    color: var(--text-color);
+}
+

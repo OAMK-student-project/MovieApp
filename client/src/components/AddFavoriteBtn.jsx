@@ -76,7 +76,7 @@ useEffect(() => {
         : movie.genre_ids
         ? movie.genre_ids.join(", ")
         : "Unknown";
-
+        
       const favouriteMovieData = {
         movie_id: movie.id,
         genre: genreString,

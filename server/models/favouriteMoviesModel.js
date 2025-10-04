@@ -23,6 +23,22 @@ const result = await pool.query(
     return result.rows;
 };
 
+const getFavouritesByList = async (favourite_id) => {
+  console.log("Querying database for favourite_id:", favourite_id);
+  
+  const { rows } = await pool.query(
+    'SELECT id, movie_title, genre, added_at FROM "Favourite_movies" WHERE favourite_id = $1',
+    [favourite_id]
+  );
+
+  // Genre is always an array (split string if stored as comma-separated)
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.movie_title,
+    genres: row.genre ? row.genre.split(",").map((g) => g.trim()) : [],
+    added: row.added_at,
+  }));
+};
 
 //-----Add a movie to a favourite list
     //To keep me sane: favouriteMovieData = { movie_id, movie_title, genre, favourite_id }
@@ -61,5 +77,6 @@ export {
     getAllFavourites, 
     addFavouriteMovie, 
     deleteFavouriteMovie,
-    getAllFavouritesByUser
+    getAllFavouritesByUser,
+    getFavouritesByList
 };
