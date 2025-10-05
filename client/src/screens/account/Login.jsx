@@ -40,7 +40,6 @@ function Login(){
                         <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>
                         Remember me
                     </label>
-                    <Link to="/myinfo"><h4>To My info</h4></Link> 
                 </form>
             </div>
         </div>
