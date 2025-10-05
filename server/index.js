@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import userRouter from "./routes/userRouter.js";
 import moviesRouter from "./routes/moviesRouter.js";
+import movieRouter from "./routes/movieRouter.js";
+import reviewRouter from "./routes/reviewRouter.js";
 import favMoviesRouter from "./routes/favMoviesRouter.js";
 import favListRouter from "./routes/favListRouter.js";
 
@@ -22,6 +24,8 @@ app.use(express.json());
 app.get("/healthz", (req,res)=>res.send("ok"));
 app.use("/user", userRouter);
 app.use("/api/movies", moviesRouter);
+app.use("/api/movie", movieRouter);
+app.use("/api/reviews", reviewRouter);
 app.use("/favourite", favMoviesRouter);
 app.use("/favourite-lists", favListRouter);
 
