@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Search.css";
-
 export default function Search() {
 
   const [titleQuery, setTitleQuery] = useState("");
@@ -17,6 +16,7 @@ export default function Search() {
       const data = await res.json();
       const results = data.results || [];
       navigate("/search", { state: { results } });
+      
     } catch (err) {
       console.error("Fetch error:", err);
     }

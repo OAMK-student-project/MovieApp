@@ -14,6 +14,7 @@ import Theater from "./screens/Theater.jsx";
 import Myinfo from "./screens/Myinfo.jsx";
 import "./index.css";
 import UserProvider from "./context/UserProvider.jsx";
+import SharedListPage from "./screens/FavoriteShared.jsx"
 
 
 const router = createBrowserRouter([
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home/> },
       { path: "login", element: <Login/> },
       { path: "favorites", element: <Favorites/>},
+      { path: "/shared/favourites/:uuid", element: <SharedListPage/>},
       { path: "groups", element: <Groups/>},
       { path: "reviews", element: <Reviews/>},
       { path: "search", element: <SearchScreen/>},

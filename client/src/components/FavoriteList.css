@@ -1,7 +1,14 @@
+/*
+    --bg-color: #1d1d1d;
+    --bg-second-color:#2c2c2c;
+    --effect-color: #5C5EFF;
+    --text-color: #eeeeee;
+    --text-font: Arial;
+    --icon-color: #fff;
+    --warning-color: #ee2400;
 
-/* 
-   I think the CSS needs some magic giga skills since right now all the lists expand on the same row and 
-   I assume we would like to expand them so that only one list item is expanded at a time. On the JSX side this feature is supported already.
+   I think this CSS needs some magic giga skills since right now all the lists expand on the same row and 
+   I assume we would like to expand them so that only one list item is expanded at a time. On the JSX side this feature is (should be) supported already.
 */
 
 .favorite-list-container {
@@ -26,6 +33,29 @@
   font-weight: bold;
 }
 
+.fav-login {
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50vh;
+    padding: 2em;
+    text-align: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/***************** Shared text *****************/
+
+.sharedText {
+    margin:auto;
+    padding:auto;
+    font-weight: lighter;
+    font-size:14px;
+}
+
 /***************** Modal styling *****************/
 
  /* Background */
@@ -35,7 +65,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* change this to a transparent variable */
+  background-color: rgba(0, 0, 0, 0.7); /* change this to a transparent variable */
   justify-content: center;
   align-items: center;
   display: flex;
@@ -117,6 +147,28 @@
         background-color: var(--bg-second-color);
     }
 
+.shareBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .shareBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+
 .trashBtn {
     display:inline-flex;
     margin: auto;
@@ -125,7 +177,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white; /* Needs icon-color var */
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -133,7 +185,7 @@
 
     .trashBtn:hover {
         background: var(--bg-color);
-        border-color: var(--effect-color);
+        border-color: var(--warning-color);
         border-style: solid;
         border-width: 2px;
     }
@@ -146,7 +198,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white; /* Needs icon-color var */
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -167,7 +219,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white; /* Needs icon-color var */
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
@@ -187,7 +239,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white; /* Needs icon-color var */
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;

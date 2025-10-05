@@ -1,4 +1,4 @@
-:root {
+/*
     --bg-color: #1d1d1d;
     --bg-second-color:#2c2c2c;
     --effect-color: #5C5EFF;
@@ -6,10 +6,16 @@
     --text-font: Arial;
     --icon-color: #fff;
     --warning-color: #ee2400;
+*/
+
+.sharedContainer {
+    border: 2px solid var(--effect-color);
 }
 
-html, body{
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: var(--text-font);
+.sharedUl {
+    background-color: var(--bg-second-color);
 }
+
+ .sharedLi {
+    background-color: var(--bg-second-color);
+ }

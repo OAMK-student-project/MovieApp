@@ -2,46 +2,42 @@ import { useState, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as faBookmarkSolid, faTrash as faBookmarkRemove } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
-import axios from "axios";
 import UserContext from "../context/UserContext";
-import { addFavorites, getLists, favouritesByUser } from "../helpers/favoriteHelper.js";
+import { getLists, favouritesByUser, addFavoriteMovie, removeFavoriteMovie } from "../helpers/favoriteBtnHelper.js";
 import "./AddFavoriteBtn.css";
 
 export default function AddFavoriteBtn({ movie }) {
-  const { user, accessToken } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [hovering, setHovering] = useState(false); // <-- track hover state
+  const [hovering, setHovering] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [favoriteLists, setFavoriteLists] = useState([]);
   const [loadingLists, setLoadingLists] = useState(false);
+  const [favouriteId, setFavouriteId] = useState(null);
+
+ 
 
   // Check if movie is already favorited
-const [favouriteId, setFavouriteId] = useState(null); // store DB id of the favourite record
-
-useEffect(() => {
-  const checkIfFavorited = async () => {
-    if (!user || !accessToken) return;
-    try {
-      const favourites = await favouritesByUser(accessToken);
-
-      const favRecord = favourites.find(
-        (f) => String(f.movie_id) === String(movie.id)
-      );
-
-      if (favRecord) {
-        setIsFavorited(true);
-        setFavouriteId(favRecord.id); // store the DB favourite id
-      } else {
-        setIsFavorited(false);
-        setFavouriteId(null);
+  useEffect(() => {
+    const checkIfFavorited = async () => {
+      if (!user) return;
+      try {
+        const favourites = await favouritesByUser();
+        const favRecord = favourites.find(f => String(f.movie_id) === String(movie.id));
+        if (favRecord) {
+          setIsFavorited(true);
+          setFavouriteId(favRecord.id);
+        } else {
+          setIsFavorited(false);
+          setFavouriteId(null);
+        }
+      } catch (err) {
+        console.error("Error checking favourites:", err);
       }
-    } catch (err) {
-      console.error("Error checking favourites:", err);
-    }
-  };
+    };
 
-  checkIfFavorited();
-}, [user, accessToken, movie.id]);
+    checkIfFavorited();
+  }, [user, movie.id]);
 
 
   // Open modal and fetch lists
@@ -53,10 +49,10 @@ useEffect(() => {
 
     setShowModal(true);
 
-    if (favoriteLists.length === 0 && user && accessToken) {
+    if (favoriteLists.length === 0 && user) {
       setLoadingLists(true);
       try {
-        const lists = await getLists(user.userID, accessToken);
+        const lists = await getLists();
         setFavoriteLists(lists || []);
       } catch (err) {
         console.error("Error fetching lists:", err);
@@ -67,52 +63,31 @@ useEffect(() => {
   };
 
   // Add movie to selected favorite list
-  const handleFavourite = async (listId) => {
-    if (!user || !accessToken) return;
-
-    try {
-      const genreString = movie.genres
-        ? movie.genres.map((g) => (typeof g === "object" ? g.name : g)).join(", ")
-        : movie.genre_ids
-        ? movie.genre_ids.join(", ")
-        : "Unknown";
-        
-      const favouriteMovieData = {
-        movie_id: movie.id,
-        genre: genreString,
-        favourite_id: listId,
-        movie_title: movie.title,
-      };
-
-      await addFavorites(favouriteMovieData, accessToken);
-
-      setIsFavorited(true);
-      setShowModal(false);
-    } catch (err) {
-      console.error("Error adding favorite:", err);
-    }
-  };
-
-  // Remove movie from favourites
-const handleRemoveFavourite = async () => {
-  if (!accessToken || !user?.userID) return;
-
+const handleFavourite = async (listId) => {
   try {
-    await axios.delete(`${import.meta.env.VITE_API_URL}/favourite`, {
-      headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-      data: { movieId: movie.id },
-    });
-
-    setIsFavorited(false);
-  } catch (error) {
-    console.error("Error removing favourite:", error);
-    alert("Could not remove favourite");
+    const addedFav = await addFavoriteMovie(movie, listId);
+    setIsFavorited(true);
+    setFavouriteId(addedFav.id);
+    setShowModal(false);
+  } catch (err) {
+    console.error(err);
   }
 };
 
+const handleRemoveFavourite = async () => {
+  try {
+    await removeFavoriteMovie(movie.id);
+    setIsFavorited(false);
+    setFavouriteId(null);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+  // Render nothing if no user
+  if (!user) {
+    return <></>; // or null
+  }
 
   return (
     <>
@@ -120,16 +95,8 @@ const handleRemoveFavourite = async () => {
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
       >
-        <FontAwesomeIcon icon={ isFavorited ? hovering
-                ? faBookmarkRemove // show remove icon on hover
-                : faBookmarkSolid // normal solid when favorited
-                : faBookmarkRegular // normal unselected
-          }
-          size="lg"
-          className={`fav-icon ${isFavorited ? "favorited" : ""}`}
-          role="button"
-          onClick={handleClick}
-        />
+        <FontAwesomeIcon icon={ isFavorited ? hovering ? faBookmarkRemove : faBookmarkSolid : faBookmarkRegular } size="lg"
+          className={`fav-icon ${isFavorited ? "favorited" : ""}`} role="button" onClick={handleClick}/>
       </div>
 
       {showModal && (

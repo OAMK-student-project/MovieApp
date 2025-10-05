@@ -134,7 +134,7 @@ function UserProvider({ children }) {
     useEffect(()=>{
     }, [user]);
     return (
-        <UserContext.Provider value={{ user, accessToken, signin, signout, signup }}>
+        <UserContext.Provider value={{ user, signin, signout, signup }}>
             {children}
         </UserContext.Provider>
     );

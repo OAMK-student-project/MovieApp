@@ -1,38 +1,35 @@
-import {getAllFavourites, addFavouriteMovie, deleteFavouriteMovie, getAllFavouritesByUser, getFavouritesByList } from "../models/favouriteMoviesModel.js";
+import { getAllFavourites, addFavouriteMovie, deleteFavouriteMovie, getAllFavouritesByUser, getFavouritesByList } from "../models/favouriteMoviesModel.js";
 
-const getFavourites = async (req, res,next) => {
-    try {
-        const result = await getAllFavourites(); //Call model
-        return res.status(200).json(favourites); //Sending it back to the client
-    } 
-    catch (error) {
-      return next(error)
-    }
-}
+// ------------------- Get all favourites -------------------
+const getFavourites = async (req, res, next) => {
+  try {
+    const favourites = await getAllFavourites(); 
+    return res.status(200).json(favourites);
+  } 
+  catch (error) {
+    next(error);
+  }
+};
 
+// ------------------- Get favourites by list -------------------
 const favouritesByList = async (req, res, next) => {
-  const { favourite_id } = req.query; // get favourite_id from query
+  const { favourite_id } = req.query;
 
   if (!favourite_id) {
     return res.status(400).json({ error: "Missing favourite_id parameter" });
   }
 
   try {
-    console.log("Fetching movies for favourite_id:", favourite_id);
-
-    // Call your model function that fetches movies
     const movies = await getFavouritesByList(favourite_id);
-
-    return res.status(200).json(movies); // send movies back to client
-  } catch (error) {
-    console.error("error:", error);
+    return res.status(200).json(movies);
+  } 
+  catch (error) {
     return next(error);
   }
 };
 
-
+// ------------------- Add favourite movie -------------------
 const addFavourite = async (req, res, next) => {
-    
   try {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -45,48 +42,38 @@ const addFavourite = async (req, res, next) => {
     const newFav = await addFavouriteMovie(favouriteMovieData);
 
     return res.status(201).json(newFav[0]);
-  } catch (error) {
-    console.error("Error adding favourite movie:", error);
+  } 
+  catch (error) {
     return next(error);
   }
 };
 
-
+// ------------------- Remove favourite movie -------------------
 const removeFavourite = async (req, res, next) => {
   try {
-    const userId = req.user.id;          // from auth middleware
-    const { movieId } = req.body;        // frontend sends { movieId }
+    const { movieId } = req.body;
+    if (!movieId) return res.status(400).json({ error: "Missing movieId" });
 
-    if (!movieId) {
-      return res.status(400).json({ error: "Missing movieId" });
-    }
-
-    const deletedRows = await deleteFavouriteMovie(movieId, userId);
-
-    return res.status(200).json({ deleted: deletedRows.length });
-  } catch (error) {
-    next(error);
+    const deletedRows = await deleteFavouriteMovie(movieId, req.user.id);
+    return res.status(200).json({ success: true, deletedCount: deletedRows.length });
+  } 
+  catch (err) {
+    next(err);
   }
 };
 
-
-
-export const favouritesByUser = async (req, res, next) => {
+// ------------------- Get favourites by user -------------------
+const favouritesByUser = async (req, res, next) => {
   try {
-    //DEBGUG console.log("User in favouritesByUser controller:", req.user);
-
-    const userId = req.user?.id; // Must be set by auth middleware
+    const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const favourites = await getAllFavouritesByUser(userId);
-
     return res.status(200).json(favourites);
-  } catch (err) {
-    console.error("Error fetching user favourites:", err);
+  } 
+  catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
 
-
-
-export { getFavourites, addFavourite, removeFavourite,favouritesByList }
+export { getFavourites, addFavourite, removeFavourite, favouritesByList, favouritesByUser };

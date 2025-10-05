@@ -7,7 +7,7 @@ import Search from "../components/Search.jsx";
     
     const location = useLocation();
       
-    const hideSearchOn = ["/myinfo"]; // muuttuja joka piilotta serch komponentin tietyllä sivulla
+    const hideSearchOn = ["/myinfo", "/favorites"]; // muuttuja joka piilotta serch komponentin tietyllä sivulla
 
     return (
     <div>

@@ -1,9 +1,9 @@
 import { useState } from "react"
 import axios from "axios"
 import { posterUrl, backdropUrl } from "../helpers/images"
-import AddFavoriteBtn from "../components/AddFavoriteBtn.jsx";
 import { useUser } from "../context/useUser.js";
 import ReviewsCard from "./ReviewsCard.jsx";
+import AddFavoriteBtn from "../components/AddFavoriteBtn.jsx";
 import "./movieCard.css"
 
 
@@ -106,7 +106,9 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
         alt={movie.title}
         loading="lazy"
       />
-      <AddFavoriteBtn movie={movie}/>
+
+      <AddFavoriteBtn movie={movie} />
+
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
           {handleReviews()}

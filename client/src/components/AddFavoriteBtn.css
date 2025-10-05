@@ -1,6 +1,15 @@
-/************ Icon styling on card *****************/
 
-/*Right now the icon itself is bad design wise since it may "drown" in the movie poster */
+/*
+    --bg-color: #1d1d1d;
+    --bg-second-color:#2c2c2c;
+    --effect-color: #5C5EFF;
+    --text-color: #eeeeee;
+    --text-font: Arial;
+    --icon-color: #fff;
+    --warning-color: #ee2400;
+
+/************ Icon styling on card *****************/
+/* Right now the icon itself is bad design wise since it may "drown" in the movie poster */
 .fav-icon {
   transition: color 0.2s ease;
   position: absolute;
@@ -18,7 +27,7 @@
 
 /* Remove hover color */
 .fav-icon.favorited:hover {
-  color: red; /* Needs to be a var */
+  color: var(--warning-color); /* Needs to be a var */
 }
 
 /* Non-favorited default */
@@ -104,7 +113,7 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    color: var(--text-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;

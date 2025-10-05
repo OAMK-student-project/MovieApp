@@ -1,200 +1,140 @@
-import axios from "axios";
-import { useContext, useState, useEffect } from "react";
-import UserContext from "../context/UserContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare as faEditIcon,faTrash as faTrashIcon, faPlus as faPlusIcon, faSquareCaretDown as faExpand  } from '@fortawesome/free-solid-svg-icons';
+import { useState, useEffect, useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faTrash, faPlus, faSquareCaretDown, faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
 import "./FavoriteList.css";
+import { addList, getLists, editList, removeList, fetchMovies, shareList } from "../helpers/favoriteListHelper.js";
+import UserContext from "../context/UserContext";
 
 function FavoriteList() {
-  const { user, accessToken } = useContext(UserContext);
-  //Create 
+  const url = import.meta.env.VITE_API_URL;
+  const { user } = useContext(UserContext);
+
+  // ---------- State ----------
   const [newListName, setNewListName] = useState("");
   const [lists, setLists] = useState([]);
-  const [loadingUser, setLoadingUser] = useState(true);
-  //Edit
+  const [loadingLists, setLoadingLists] = useState(true);
+
   const [showModal, setShowModal] = useState(false);
   const [editingListId, setEditingListId] = useState(null);
   const [editListName, setEditListName] = useState("");
-  //Expando
+
   const [expandedId, setExpandedId] = useState(null);
-  const [moviesByList, setMoviesByList] = useState({}); // { [listId]: movies[] }
+  const [moviesByList, setMoviesByList] = useState({});
   const [loadingMovies, setLoadingMovies] = useState(false);
 
-//This is partly just for debug, basically checks for changes in user data whether or not we have the userID and token.
-  useEffect(() => {
-    //console.log("UserContext updated:", user, accessToken); //DEBUG
-    if (user || accessToken === null) setLoadingUser(false);
-    getLists();
-  }, [user, accessToken]);
+  // ---------- Effects ----------
+useEffect(() => {
+  if (!user) return; // skip if not logged in
 
-//-----------Add lists
-  const addList = async () => {
-    if (!user?.userID || !accessToken) return; //must have access token
-
-    if (!newListName.trim()) {
-      alert("Please enter a list name");
-      return;
-    }
-
+  const fetchLists = async () => {
+    setLoadingLists(true);
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/favourite-lists`,
-        { list_name: newListName },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`, //use access token
-          },
-        }
-      );
+      const data = await getLists();
+      setLists(data);
+    } catch (err) {
+      console.error("Error fetching lists:", err);
+    } finally {
+      setLoadingLists(false);
+    }
+  };
 
-      console.log("New list created:", data);
+  fetchLists();
+}, [user]);
+
+
+  // ---------- Handlers ----------
+  const handleAddList = async () => {
+    try {
+      const data = await addList(newListName);
       setLists(prev => [...prev, data]);
       setNewListName("");
-    } catch (error) {
-      console.error("Error creating list:", error);
-      alert("Could not create list");
+    } catch (err) {
+      console.error("Error adding list:", err);
+      alert(err.message);
     }
-    getLists();
   };
-  
-//-----------Get lists
-//Fetch the lists user has created
-  const getLists = async () => {
-    if (!user?.userID || !accessToken) return;
 
+  const handleEditList = async () => {
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/favourite-lists`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        }
+      await editList(editingListId, editListName);
+      setLists(prev =>
+        prev.map(list => (list.id === editingListId ? { ...list, name: editListName } : list))
       );
-      //DEBUG console.log("Fetched lists:", data);
-      setLists(data); // put API response into state
-    } catch (error) {
-      console.error("Error fetching lists:", error);
-      alert("Could not fetch lists");
+      setShowModal(false);
+      setEditingListId(null);
+      setEditListName("");
+    } catch (err) {
+      console.error("Error editing list:", err);
+      alert(err.message);
     }
   };
 
-//-----------Edit list
-  //Modal stuff
+  const handleRemoveList = async (listId) => {
+    try {
+      await removeList(listId);
+      setLists(prev => prev.filter(list => list.id !== listId));
+    } catch (err) {
+      console.error("Error removing list:", err);
+      alert(err.message);
+    }
+  };
+
+  const toggleExpand = async (listId) => {
+    if (expandedId === listId) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(listId);
+      if (!moviesByList[listId]) {
+        setLoadingMovies(true);
+        try {
+          const movies = await fetchMovies(listId);
+          setMoviesByList(prev => ({ ...prev, [listId]: movies }));
+        } catch (err) {
+          console.error("Error fetching movies:", err);
+        } finally {
+          setLoadingMovies(false);
+        }
+      }
+    }
+  };
+
+  const handleShareList = async (listId) => {
+    try {
+      const shareUrl = await shareList(listId);
+      if (shareUrl) {
+        navigator.clipboard.writeText(shareUrl);
+        alert(`Share link copied:\n${shareUrl}`);
+        setLists(prev => prev.map(list => (list.id === listId ? { ...list, is_shared: true } : list)));
+      }
+    } catch (err) {
+      console.error("Error sharing list:", err);
+      alert("Could not share list");
+    }
+  };
+
   const openModal = (list) => {
     setEditingListId(list.id);
     setEditListName(list.name);
     setShowModal(true);
   };
 
-  const editList = async () => {
-    if (!editListName.trim()) return alert("Please enter a list name");
-    try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/favourite-lists/${editingListId}`,
-        { name: editListName },
-        { headers: { "Authorization": `Bearer ${accessToken}` } }
-      );
-
-      // update state
-      setLists(prev =>
-        prev.map(list =>
-          list.id === editingListId ? { ...list, name: editListName } : list
-        )
-      );
-
-      setShowModal(false);
-      setEditingListId(null);
-      setEditListName("");
-    } catch (error) {
-      console.error("Error updating list:", error);
-    }
-  }
-
-//-----------Remove list
-  const removeList = async (listId) => {
-    if (!user?.userID || !accessToken) return; // must have access token
-    try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/favourite-lists/${listId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      // Update state by filtering out the deleted list
-      setLists(prev => prev.filter(list => list.id !== listId));
-
-      console.log("List deleted:", listId);
-    } catch (error) {
-      console.error("Error deleting list:", error);
-      alert("Could not delete list");
-    }
-    getLists();
-  };
-
-
-//-----------Toggle list expand
-  const toggle = (id) => {
-    if (expandedId === id) {
-      setExpandedId(null); // collapse
-    } else {
-      setExpandedId(id); // expand
-      console.log("expanded: " + expandedId);
-      // Fetch movies if not already cached
-      if (!moviesByList[id]) {
-        fetchMovies(id);
-      }
-    }
-  };
-
-//-----------Fetch movies for a specific list
-const fetchMovies = async (favouriteId) => {
-  if (!user?.userID || !accessToken) return;
-  try {
-    setLoadingMovies(true);
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/favourite/movies?favourite_id=${favouriteId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`,
-        },
-      }
+// ---------- JSX ----------
+  if (!user) { //Show text if not logged in
+    return (
+      <div className="favorite-list-container">
+        <div className="fav-login">
+          <h3>Please <u>sign in</u> to view your favorite lists.</h3>
+        </div>
+      </div>
     );
-    setMoviesByList((prev) => ({
-      ...prev,
-      [favouriteId]: res.data,
-    }));
-  } catch (error) {
-    console.error("Error fetching movies:", error);
-  } finally {
-    setLoadingMovies(false);
   }
-};
-
-//Show text if user not logged in and show text if logged in but user data has not been fethed
-  if (loadingUser) {
-    return <p>Loading...</p>;
-  }
-
-  if (!user?.userID || !accessToken) {
-    return <p>Please sign in to add a favorite list</p>;
-  }
-
 
   return (
     <div className="favorite-list-container">
-
-      {/*--------- Add list ------------*/}
+      {/* Add new list */}
       <div className="favourite-list-row">
-        <button className="addBtn" onClick={addList}>
-          <FontAwesomeIcon icon={faPlusIcon} size="lg" />
+        <button className="addBtn" onClick={handleAddList}>
+          <FontAwesomeIcon icon={faPlus} size="lg" />
         </button>
         <input
           className="listInput"
@@ -205,80 +145,78 @@ const fetchMovies = async (favouriteId) => {
         />
       </div>
 
-      {/*--------- Lists ------------*/}
-      <ul className="favListUl">
-        {lists.map((list) => {
-          const isExpanded = expandedId === list.id;
-          const movies = moviesByList[list.id] || [];
-
-          return (
-            <li className="favListLi" key={list.id}>
-              <div className="favListHeader">
-                <span className="favListName">{list.name}</span>
-                <div className="actionButtons">
-                  <button
-                    className={`expandBtn ${isExpanded ? "rotated" : ""}`}
-                    onClick={() => toggle(list.id)}
-                  >
-                    <FontAwesomeIcon icon={faExpand} size="lg" />
-                  </button>
-
-                  <button className="editBtn" onClick={() => openModal(list)}>
-                    <FontAwesomeIcon icon={faEditIcon} size="lg" />
-                  </button>
-
-                  <button className="trashBtn" onClick={() => removeList(list.id)}>
-                    <FontAwesomeIcon icon={faTrashIcon} size="lg" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Edit List */}
-              {showModal && (
-                <div className="modal-overlay">
-                  <div className="favList-modal">
-                    <h3>Edit List</h3>
-                    <input 
-                      className="listInput"
-                      type="text" 
-                      value={editListName} 
-                      onChange={(e) => setEditListName(e.target.value)} 
-                    />
-                    <div className="actionButtons">
-                      <button className="saveBtn" onClick={editList}>Save</button>
-                      <button className="cancelBtn" onClick={() => setShowModal(false)}>Cancel</button>
-                    </div>
+      {loadingLists ? <p>Loading lists...</p> : (
+        <ul className="favListUl">
+          {lists.map(list => {
+            const isExpanded = expandedId === list.id;
+            const movies = moviesByList[list.id] || [];
+            return (
+              <li className="favListLi" key={list.id}>
+                <div className="favListHeader">
+                  <span className="favListName">{list.name}</span>
+                  {list.is_shared && <p className="sharedText">Shared!</p>}
+                  <div className="actionButtons">
+                    <button className={`expandBtn ${isExpanded ? "rotated" : ""}`} onClick={() => toggleExpand(list.id)}>
+                      <FontAwesomeIcon icon={faSquareCaretDown} size="lg" />
+                    </button>
+                    <button className="shareBtn" onClick={() => handleShareList(list.id)}>
+                      <FontAwesomeIcon icon={faShareFromSquare} size="lg" />
+                    </button>
+                    <button className="editBtn" onClick={() => openModal(list)}>
+                      <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+                    </button>
+                    <button className="trashBtn" onClick={() => handleRemoveList(list.id)}>
+                      <FontAwesomeIcon icon={faTrash} size="lg" />
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {/* Expanded content */}
-              {isExpanded && (
-                <div className="favListExpand">
-                  {loadingMovies && movies.length === 0 ? (
-                    <p>Loading movies...</p>
-                  ) : movies.length === 0 ? (
-                    <p>No movies found for this list.</p>
-                  ) : (
-                    <div className="movieGrid">
-                      {movies.map((movie) => (
-                        <div className="movieCard" key={movie.id}>
-                          <p className="movieTitle">{movie.title}</p>
-                          <p className="movieGenres">{movie.genres.join(", ")}</p>
-                          <p className="movieAdded">{movie.added_at}</p>
-                        </div>
-                      ))}
+                {/* Edit modal */}
+                {showModal && editingListId === list.id && (
+                  <div className="modal-overlay">
+                    <div className="favList-modal">
+                      <h3>Edit List</h3>
+                      <input
+                        className="listInput"
+                        type="text"
+                        value={editListName}
+                        onChange={(e) => setEditListName(e.target.value)}
+                      />
+                      <div className="actionButtons">
+                        <button className="saveBtn" onClick={handleEditList}>Save</button>
+                        <button className="cancelBtn" onClick={() => setShowModal(false)}>Cancel</button>
+                      </div>
                     </div>
-                  )}
-                </div>
-              )}
-            </li>
-            
-          );
-          
-        })}
-      </ul>
+                  </div>
+                )}
+
+                {/* Expanded movies */}
+                {isExpanded && (
+                  <div className="favListExpand">
+                    {loadingMovies && movies.length === 0 ? (
+                      <p>Loading movies...</p>
+                    ) : movies.length === 0 ? (
+                      <p>No movies found for this list.</p>
+                    ) : (
+                      <div className="movieGrid">
+                        {movies.map(movie => (
+                          <div className="movieCard" key={movie.id}>
+                            <p className="movieTitle">{movie.title}</p>
+                            <p className="movieGenres">{movie.genres.join(", ")}</p>
+                            <p className="movieAdded">{movie.added_at}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
+
 export default FavoriteList;

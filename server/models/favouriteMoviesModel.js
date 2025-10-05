@@ -19,19 +19,19 @@ const result = await pool.query(
     [userId]
     );
 
-    console.log("DB favourites for user:", result.rows);
+    //DEBUG console.log("DB favourites for user:", result.rows);
     return result.rows;
 };
 
 const getFavouritesByList = async (favourite_id) => {
-  console.log("Querying database for favourite_id:", favourite_id);
+  //DEBUG console.log("Querying database for favourite_id:", favourite_id);
   
   const { rows } = await pool.query(
     'SELECT id, movie_title, genre, added_at FROM "Favourite_movies" WHERE favourite_id = $1',
     [favourite_id]
   );
 
-  // Genre is always an array (split string if stored as comma-separated)
+  
   return rows.map((row) => ({
     id: row.id,
     title: row.movie_title,
@@ -57,7 +57,7 @@ const addFavouriteMovie = async(favouriteMovieData) => {
   return result.rows;
 };
 
-//-----Delete a favourite movie (only if it belongs to the user’s list) ----- ! Not sure if this works !
+//-----Delete a favourite movie (only if it belongs to the user’s list)
 const deleteFavouriteMovie = async (movieId, userId) => {
   const result = await pool.query(
     `DELETE FROM "Favourite_movies"
