@@ -8,20 +8,21 @@
   text-align: center;
   font-size: 2rem;
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .status {
   text-align: center;
-  color: #bbb;
+  color: var(--text-color-muted);
   margin: 1.5rem 0;
 }
 .status.error { 
-    color: #5C5EFF; 
+    color: var(--effect-color); 
 }
 
-.grid {
+.movie-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
+  width: 100%;
 }

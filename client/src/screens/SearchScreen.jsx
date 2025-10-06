@@ -1,5 +1,6 @@
 import React from 'react'
 import { useLocation } from "react-router-dom";
+import MovieCard from "../components/MovieCard"
 
 export default function SearchScreen() {
     const location = useLocation();
@@ -7,29 +8,16 @@ export default function SearchScreen() {
   
     return (
   
-     <div>
+     <div className="search-results-page">
       <h2>Search results</h2>
-      <div className="results">
+      <div className="movie-list">
         {results.length === 0 && <p>No results</p>}
-        {results.map((m) => (
-          <div key={m.id}>
-            {m.poster_path ? (
-              <img
-                src={`https://image.tmdb.org/t/p/w200${m.poster_path}`}
-                alt={m.title}/>
-            ) : (
-              <div>
-                No picture
-              </div>
-            )}
-            <h2>{m.title}</h2>
-            <p>
-              Released: {m.release_date || "??"}
-            </p>
-          </div>
+
+        {results.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
         ))}
+          </div>
       </div>
-    </div>
   );
 }
 

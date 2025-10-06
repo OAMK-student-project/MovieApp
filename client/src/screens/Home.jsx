@@ -78,7 +78,7 @@ export default function Home() {
         <p className="status error">Failed to load movies: {err}</p>
       )}
 
-      <div className="grid">
+      <div className="movie-list">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} onMovieUpdated={handleMovieUpdated} />
         ))}

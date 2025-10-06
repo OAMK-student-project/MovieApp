@@ -4,8 +4,9 @@
   padding: 24px;
 }
 
-.grid {
+.movie-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
+  width: 100%;
 }

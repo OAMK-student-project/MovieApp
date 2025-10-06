@@ -1,11 +1,28 @@
 :root {
     --bg-color: #1d1d1d;
     --bg-second-color:#2c2c2c;
+    --bg-third-color: #141332;
+    --button-color: #0d1a42;
     --effect-color: #5C5EFF;
     --text-color: #eeeeee;
+    --text-color-muted:#919191;
     --text-font: Arial;
     --icon-color: #fff;
     --warning-color: #ee2400;
+    --showtime-color: rgb(248, 189, 42);
+}
+
+:root[data-theme="light"] {
+    --bg-color: #f7f7ff;
+    --bg-second-color: #7d93ff;
+    --bg-third-color: #c9c7ff;
+    --effect-color: #5C5EFF;
+    --button-color: #a3b3ff;
+    --text-color: #000000;
+    --text-color-muted: #696969;
+    --text-font: Arial;
+    --warning-color: #ee2400;
+    --showtime-color: #ffa600;
 }
 
 html, body{
