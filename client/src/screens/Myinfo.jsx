@@ -91,7 +91,7 @@ export default function Myinfo() {
       <div className="container">
         <h3>Myinfo</h3>
 
-        <h4>Current User Info (from token/backend)</h4>
+        <h4>Current User Info </h4>
         <p>User ID: {jwtPayload?.sub || "N/A"}</p>
         <p>Email: {email || "N/A"}</p>
         <p>First Name: {user?.firstname || "Not available"}</p>
