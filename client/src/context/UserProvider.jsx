@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import axios from "axios";
 import UserContext from "./UserContext";
 
@@ -27,8 +28,10 @@ function UserProvider({ children }) {
         if (uid) {
         const headers = { headers: { "Content-Type": "application/json" } };
         await axios.post(url + "/signout", { userID: uid }, headers); // backend clearCookie + revoke
+        toast.success("Succesful sign out!");
         }
     } catch (error) {
+        toast.error("Sign out failed");
         console.error(error);
     }
 
@@ -93,7 +96,6 @@ function UserProvider({ children }) {
     },[]);
 
     useEffect(() => {
-    // Poista aiempi interceptor, jos sellainen on
     const id = axios.interceptors.request.use((config) => {
         if (accessToken) {
         config.headers = config.headers || {};

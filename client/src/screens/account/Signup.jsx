@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useUser } from "../../context/useUser.js";
+import toast from "react-hot-toast";
 import "./Signup.css";
 
 function Signup(){
@@ -14,7 +15,10 @@ function Signup(){
   async function handleSubmit(e){
     e.preventDefault();
     const ok = await signup(email, password, firstname, lastname);
-    if (ok) navigate("/login");
+    if (ok) {
+      toast.success("Succesful sign up!");
+      navigate("/login");
+    } 
   }
 
   function toLoginWhenClosed(){

@@ -1,6 +1,7 @@
 import {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 import { useUser } from "../../context/useUser";
 import "./Login.css";
@@ -17,9 +18,12 @@ function Login(){
         e.preventDefault();
         try {
             const user = await signin(email, password, remember);
-            if (user) navigate("/");
+            if (user){
+                toast.success("Succesful sign in!");
+                 navigate("/");
+            }
         } catch (error) {
-            alert(error.message || error);
+            toast.error("Check email and password" || error);
         }
     }
 
@@ -40,7 +44,6 @@ function Login(){
                         <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>
                         Remember me
                     </label>
-                    <Link to="/myinfo"><h4>To My info</h4></Link> 
                 </form>
             </div>
         </div>
