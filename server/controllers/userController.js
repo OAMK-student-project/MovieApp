@@ -4,33 +4,41 @@ import { generateRefreshToken, revokeRefreshToken, signAccessToken, storeRefresh
 
 const isProduction= process.env.NODE_ENV === "production";
 
-const signUp = async(req, res, next) => {
-    try {
-      const newUser = req.body;
-      if(!newUser) return res.status(400).json({error: "User info is missing"});
-      const requiredFields = ["firstname", "lastname", "email", "password"];
-      for(const field of requiredFields) {
-        if(!newUser[field]) return res.status(400).json({error: `${field} is missing`});
-      }
-      newUser.password_hash = await hash(newUser.password, 10);
-      delete newUser.password;
-      const result = await users.add(newUser);
-      res.status(201).json(result);
-    } catch (error) {
-        next(error);
+const signUp = async (req, res, next) => {
+  try {
+    const newUser = req.body;
+    if (!newUser) return res.status(400).json({ error: "User info is missing" });
+    newUser.email = newUser.email?.trim().toLowerCase();
+    const required = ["firstname", "lastname", "email", "password"];
+    for (const field of required) {
+      if (!newUser[field]) return res.status(400).json({ error: `${field} is missing` });
     }
-}
+    newUser.password_hash = await hash(newUser.password, 10);
+    delete newUser.password;
+
+    const result = await users.add(newUser);
+    const safe = {
+      id: result.id ?? result.rows?.[0]?.id,
+      firstname: result.firstname ?? result.rows?.[0]?.firstname,
+      lastname: result.lastname ?? result.rows?.[0]?.lastname,
+      email: result.email ?? result.rows?.[0]?.email
+    };
+    return res.status(201).json(safe);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const signIn = async(req, res, next) => {
     try {
-        const {email, password, remember} = req.body;
-        if(!email || !password) return res.status(401).json({error: "email or password info is missing"});
+        let {email, password, remember} = req.body;
+        if(!email || !password) return res.status(400).json({error: "email or password info is missing"});
+        email = email.trim().toLowerCase();
         const result = await users.getByEmail(email);
         const dbUser = result.rows[0];
-        if(!dbUser) return res.status(401).json({error: "Sign in failed"});
         const hashToCompare = dbUser?.password_hash ?? process.env.DUMMY_HASH;
-        const isPasswordCorrect = await compare(password, hashToCompare);
-        if(!isPasswordCorrect) return res.status(401).json({error: "Sign in failed"});
+        const ok = await compare(password, hashToCompare);
+        if (!ok) return res.status(401).json({ error: "Sign in failed" });
         
         const token = signAccessToken(dbUser);
         const refreshTokenPlain = generateRefreshToken();
