@@ -7,17 +7,6 @@ function Header(){
     const identified = Boolean(user?.identifiedUser);
 
     function signInOrOut(){
-<<<<<<< HEAD
-      return identified ? (
-      <>
-        <NavLink to="/myinfo">My Info</NavLink>
-        <NavLink onClick={signOut} to="/">Logout</NavLink>
-      </>
-    ) : (
-      <NavLink to="/login">Login</NavLink>
-    );
-  }
-=======
         return identified
         ? <> 
             <NavLink to="/myinfo">To My info</NavLink>
@@ -25,7 +14,6 @@ function Header(){
         </>
         : <NavLink to="/login">Login</NavLink>;
     }
->>>>>>> origin/main
 
     function signOut(){
         signout();
