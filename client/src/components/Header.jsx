@@ -8,7 +8,10 @@ function Header(){
 
     function signInOrOut(){
         return identified
-        ? <NavLink onClick={signOut} to="/">Logout</NavLink>
+        ? <> 
+            <NavLink to="/myinfo">To My info</NavLink>
+            <NavLink onClick={signOut} to="/">Logout</NavLink>
+        </>
         : <NavLink to="/login">Login</NavLink>;
     }
 
