@@ -4,10 +4,10 @@ import { auth } from "../helpers/auth.js"
 const router = Router();
 
 router.get("/all", getReviews);
-router.get("/byuser", getUsersReviews);
+router.get("/byuser", auth, getUsersReviews);
 router.get("/movie/:tmdbId", getReviewsForMovie);
 router.post("/add", auth, addNewReview);
 router.put("/update", auth, updateMovieReview);
 router.delete("/delete", auth, deleteMovieReview);
 
-export default router;  
+export default router;
