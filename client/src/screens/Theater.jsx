@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { XMLParser } from "fast-xml-parser";
+import toast from "react-hot-toast";
 import "./Theater.css";
 import ShowCard from "../components/ShowCard";
 
@@ -24,7 +25,7 @@ function createXMLParser(arrayName) {
 
 function Theater() {
   const url = import.meta.env.VITE_API_FINNKINO_URL;
-  const [theaters, setTheaters] = useState([{ ID: "", Name: "Ladataan…" }]);
+  const [theaters, setTheaters] = useState([{ ID: "", Name: "Loading..." }]);
   const [theaterCode, setTheaterCode] = useState("");
   const [events, setEvents] = useState([]);
   const [dateIso, setDateIso] = useState(() => new Date().toISOString().slice(0, 10));
@@ -48,12 +49,25 @@ function Theater() {
         const json = parser.parse(xml);
         const locations = json.TheatreAreas.TheatreArea;
         if (locations.length === 0) throw new Error("Tyhjä tulos");
-        setTheaters(locations);
-        setTheaterCode(0);
+        const parsedLocations = locations.map(t => {
+          const rawName = Array.isArray(t.Name) ? t.Name[0] : t.Name; // ei typistetä merkiksi
+          const rawId   = Array.isArray(t.ID)   ? t.ID[0]   : t.ID;
+
+          const displayName =
+            typeof rawName === 'string' &&
+            rawName.trim().toLowerCase() === 'valitse alue/teatteri'
+              ? 'Select region/theater'
+              : rawName;
+
+          return { ID: rawId, Name: displayName };
+        });
+        setTheaters(parsedLocations);
+        setTheaterCode("");
       } catch (err) {
         if (abortController.signal.aborted) return;
-        console.error("Finnkino Theatres haku epäonnistui:", err);
-        setTheaters([{ ID: "", Name: "Virhe haussa" }]);
+        toast.error("Failed at fetching theaters");
+        console.error("Failed at fetching theaters:", err);
+        setTheaters([{ ID: "", Name: "Error at fetch:" }]);
         setTheaterCode("");
       }
     })();
@@ -91,6 +105,7 @@ const fetchMovies = async (areaCode) => {
     setEvents(Array.isArray(shows) ? shows : []);
     setStatus("success");
   } catch (err) {
+    toast.error(err);
     console.error(err);
     setEvents([]);
     setStatus("error");
