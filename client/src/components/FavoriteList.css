@@ -1,0 +1,350 @@
+/*
+    --bg-color: #1d1d1d;
+    --bg-second-color:#2c2c2c;
+    --effect-color: #5C5EFF;
+    --text-color: #eeeeee;
+    --text-font: Arial;
+    --icon-color: #fff;
+    --warning-color: #ee2400;
+
+   I think this CSS needs some magic giga skills since right now all the lists expand on the same row and 
+   I assume we would like to expand them so that only one list item is expanded at a time. On the JSX side this feature is (should be) supported already.
+*/
+
+.favorite-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1em;
+    width: 100%;
+}
+
+.favourite-list-row {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.favListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-weight: bold;
+}
+
+.fav-login {
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50vh;
+    padding: 2em;
+    text-align: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/***************** Shared text *****************/
+
+.sharedText {
+    margin:auto;
+    padding:auto;
+    font-weight: lighter;
+    font-size:14px;
+}
+
+/***************** Modal styling *****************/
+
+ /* Background */
+.modal-overlay {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* change this to a transparent variable */
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  z-index: 1000;
+  
+}
+
+/* Window */
+.favList-modal {
+  background-color: var(--bg-color);
+  padding: 2em;
+  border: 2px solid var(--effect-color);
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  position: relative;
+}
+
+/***************** Favourite buttons :) *****************/
+.addBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    background: var(--effect-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .addBtn p {
+    margin: 0;
+    }
+
+    .addBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+/* A container for the buttons on a list */
+.actionButtons {
+    display: flex;
+    gap: 0.5em;
+    margin-left: auto;
+}
+
+.expandBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 0em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: white;
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .expandBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+    .expandBtn.rotated {
+        transform: rotate(180deg);
+        background-color: var(--bg-second-color);
+    }
+
+.shareBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .shareBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+
+.trashBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .trashBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--warning-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+.editBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+
+    .editBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+.saveBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+    .saveBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+.cancelBtn {
+    display:inline-flex;
+    margin: auto;
+    padding: 0.5em 1em;
+    border-color: var(--effect-color);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.5em;
+    color: var(--icon-color);
+    cursor: pointer;
+    border-radius: 0px;
+    transition-duration: 0.1s;
+}
+    .cancelBtn:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+/***************** Favourite list *****************/
+
+.listInput {
+    max-height: 2.5em;
+    height: 2em;
+    width: 100%;
+    margin: 0;
+    background-color: var(--bg-second-color);
+    border-style: none;
+    color: var(--text-color);
+    font-size: medium;
+}
+
+.favListUl {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5em;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+
+.favListLi {
+    background: var(--bg-second-color);
+    border-color: var(--bg-second-color);
+    border-style: solid;
+    border-width: 2px;
+    padding: 0.6em 1em;
+    border-radius: 0;
+    text-align: left;
+    justify-content: flex-start;
+    align-items:stretch;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    transition-duration: 0.1s;
+}
+
+    .favListLi:hover {
+        background: var(--bg-color);
+        border-color: var(--effect-color);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+/***************** Expanded content *****************/
+
+.favListExpand {
+  width: 100%;
+  margin-top: 8px;
+  background: var(--bg-color);
+  max-height: 23em;
+  overflow-y:scroll;
+  border-radius: 0 0 8px 8px;
+  scrollbar-color: var(--effect-color) var(--bg-second-color);
+  scrollbar-width:auto;
+}
+
+.movieGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max-content, 1fr));
+    gap: 0.1em;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.movieCard {
+    width: 100%;
+    padding: 1em 1.5em;    /* top and bottom padding 1em, right and left are 1.5em */
+    border-radius: 0px;
+    border: 1px solid var(--effect-color);
+    background: var(--bg-second-color);
+    transition: 0.2s ease;
+    color: var(--text-color);
+    box-sizing: border-box;
+    margin: 0;
+    text-align: left;
+}
+
+.movieTitle {
+  font-weight: bold;
+}
+
+.movieGenres {
+  font-size: 0.85em;
+  color: var(--text-color);
+}
+
+.movieAdded {
+    font-size: 0.85em;
+    color: var(--text-color);
+}
+
