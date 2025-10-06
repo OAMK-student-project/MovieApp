@@ -16,7 +16,7 @@ export default function AddFavoriteBtn({ movie }) {
   const [favouriteId, setFavouriteId] = useState(null);
 
  
-
+// ---------- Effects ----------
   // Check if movie is already favorited
   useEffect(() => {
     const checkIfFavorited = async () => {
@@ -39,7 +39,7 @@ export default function AddFavoriteBtn({ movie }) {
     checkIfFavorited();
   }, [user, movie.id]);
 
-
+// ---------- Handlers ----------
   // Open modal and fetch lists
   const handleClick = async () => {
     if (isFavorited) {
@@ -84,9 +84,10 @@ const handleRemoveFavourite = async () => {
   }
 };
 
+// ---------- JSX ----------
   // Render nothing if no user
   if (!user) {
-    return <></>; // or null
+    return <></>;
   }
 
   return (

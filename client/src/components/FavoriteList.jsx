@@ -104,7 +104,7 @@ useEffect(() => {
       const shareUrl = await shareList(listId);
       if (shareUrl) {
         navigator.clipboard.writeText(shareUrl);
-        toast.success(`Share link copied:\n${shareUrl}`);
+        toast.success(`Share link copied to clipboard: \n${shareUrl}`);
         setLists(prev => prev.map(list => (list.id === listId ? { ...list, is_shared: true } : list)));
       }
     } catch (err) {

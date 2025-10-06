@@ -9,7 +9,7 @@
     --warning-color: #ee2400;
 
 /************ Icon styling on card *****************/
-/* Right now the icon itself is bad design wise since it may "drown" in the movie poster */
+/* Right now the icon itself is bad design wise since it may "drown" in the movie poster , thus it is now next to the title*/
 .fav-icon {
   transition: color 0.2s ease;
   position: absolute;
