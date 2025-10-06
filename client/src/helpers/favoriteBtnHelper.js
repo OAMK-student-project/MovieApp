@@ -3,6 +3,7 @@ const url = import.meta.env.VITE_API_URL;
 
 // ------------------- Add favourite ---------------------
 // Add a movie to a favorite list
+
 export async function addFavorites(favouriteMovieData) {
   try {
     const { data } = await axios.post(
@@ -19,6 +20,7 @@ export async function addFavorites(favouriteMovieData) {
 
 // ------------------- Remove favourite ---------------------
 // Remove a movie from favorites by movieId
+
 export async function removeFavorite(movieId) {
   try {
     const { data } = await axios.delete(`${url}/favourite`, {
@@ -34,6 +36,7 @@ export async function removeFavorite(movieId) {
 
 // ------------------- Get favourite lists ---------------------
 // Get all favorite lists for the user
+
 export async function getLists() {
   try {
     const { data } = await axios.get(`${url}/favourite-lists`, {
@@ -48,6 +51,7 @@ export async function getLists() {
 
 // ------------------- Get user favourites ---------------------
 // Get all favorites for the user
+
 export async function favouritesByUser() {
   try {
     const { data } = await axios.get(`${url}/favourite`, {
@@ -62,6 +66,7 @@ export async function favouritesByUser() {
 
 // ------------------- Add favourite movie ---------------------
 // Add a movie to a specific favorite list
+
 export async function addFavoriteMovie(movie, listId) {
   let genres = movie.genres;
 
@@ -87,6 +92,7 @@ export async function addFavoriteMovie(movie, listId) {
 
 // ------------------- Remove favourite movie ---------------------
 // Remove a movie from a specific favourite list by movieId
+
 export async function removeFavoriteMovie(movieId) {
   return axios.delete(`${url}/favourite`, {
     headers: { "Content-Type": "application/json" },

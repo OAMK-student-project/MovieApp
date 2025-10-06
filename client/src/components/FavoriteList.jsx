@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash, faPlus, faSquareCaretDown, faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
-import "./FavoriteList.css";
+import toast from "react-hot-toast";
 import { addList, getLists, editList, removeList, fetchMovies, shareList } from "../helpers/favoriteListHelper.js";
 import UserContext from "../context/UserContext";
+import "./FavoriteList.css";
 
 function FavoriteList() {
   const url = import.meta.env.VITE_API_URL;
@@ -50,7 +51,7 @@ useEffect(() => {
       setNewListName("");
     } catch (err) {
       console.error("Error adding list:", err);
-      alert(err.message);
+      toast.error(`${err.message}`);
     }
   };
 
@@ -65,7 +66,7 @@ useEffect(() => {
       setEditListName("");
     } catch (err) {
       console.error("Error editing list:", err);
-      alert(err.message);
+      toast.error(`${err.message}`);
     }
   };
 
@@ -75,7 +76,7 @@ useEffect(() => {
       setLists(prev => prev.filter(list => list.id !== listId));
     } catch (err) {
       console.error("Error removing list:", err);
-      alert(err.message);
+      toast.error(`${err.message}`);
     }
   };
 
@@ -103,12 +104,12 @@ useEffect(() => {
       const shareUrl = await shareList(listId);
       if (shareUrl) {
         navigator.clipboard.writeText(shareUrl);
-        alert(`Share link copied:\n${shareUrl}`);
+        toast.success(`Share link copied:\n${shareUrl}`);
         setLists(prev => prev.map(list => (list.id === listId ? { ...list, is_shared: true } : list)));
       }
     } catch (err) {
       console.error("Error sharing list:", err);
-      alert("Could not share list");
+      toast.error("There was an error sharing the list");
     }
   };
 
@@ -155,20 +156,25 @@ useEffect(() => {
                 <div className="favListHeader">
                   <span className="favListName">{list.name}</span>
                   {list.is_shared && <p className="sharedText">Shared!</p>}
+
                   <div className="actionButtons">
                     <button className={`expandBtn ${isExpanded ? "rotated" : ""}`} onClick={() => toggleExpand(list.id)}>
                       <FontAwesomeIcon icon={faSquareCaretDown} size="lg" />
                     </button>
+
                     <button className="shareBtn" onClick={() => handleShareList(list.id)}>
                       <FontAwesomeIcon icon={faShareFromSquare} size="lg" />
                     </button>
+
                     <button className="editBtn" onClick={() => openModal(list)}>
                       <FontAwesomeIcon icon={faPenToSquare} size="lg" />
                     </button>
+
                     <button className="trashBtn" onClick={() => handleRemoveList(list.id)}>
                       <FontAwesomeIcon icon={faTrash} size="lg" />
                     </button>
                   </div>
+
                 </div>
 
                 {/* Edit modal */}
