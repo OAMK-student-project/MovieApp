@@ -1,17 +1,18 @@
+//myGroupsController.js
 import db from "../helpers/db.js";
 
-// Fetch all groups a user belongs to
+// Fetch all groups a logged-in user belongs to
 export const getMyGroups = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
 
-   const result = await db.query(
-  `SELECT DISTINCT g.*
-   FROM "Group_join_requests" gjr
-   JOIN "Groups" g ON gjr.group_id = g.id
-   WHERE gjr.requester_id = $1 `, // add this status later AND gjr.status = 'approved'
-  [userId]
-);
+    const result = await db.query(
+      `SELECT g.*
+       FROM "Groups" g
+       JOIN "Group_members" gm ON g.id = gm.group_id
+       WHERE gm.user_id = $1`,
+      [userId]
+    );
 
     res.json(result.rows);
   } catch (err) {

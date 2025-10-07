@@ -46,7 +46,7 @@ import {
 } from '../controllers/groupJoinController.js';
 import { getGroupsByUserId } from '../models/groupsModel.js';
 import { auth } from '../helpers/auth.js';
-
+import db from '../helpers/db.js';
 const router = express.Router();
 
 // --- Kaikki ryhmät ---
@@ -63,7 +63,18 @@ router.get('/me', auth, async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
+// --- Get a single group by ID ---
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const groupId = req.params.id;
+    const result = await db.query('SELECT * FROM "Groups" WHERE id = $1', [groupId]);
+    if (!result.rows[0]) return res.status(404).json({ message: 'Group not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching group:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 // --- Luo uusi ryhmä ---
 router.post('/', auth, createGroup);
 

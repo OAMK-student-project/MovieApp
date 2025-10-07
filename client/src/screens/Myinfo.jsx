@@ -1,46 +1,27 @@
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import UserContext from "../context/UserContext";
 import "./Myinfo.css";
 
+axios.defaults.withCredentials = true;
+
 export default function Myinfo() {
-  const [user, setUser] = useState(null); // from backend
+  const { user, signin, signout } = useContext(UserContext);
+  const [userData, setUserData] = useState(null);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState(""); // optional, can come from token
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-   
-  // Decode JWT from localStorage
-  const token = localStorage.getItem("token");
-  let jwtPayload = null;
-  if (token) {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      jwtPayload = JSON.parse(atob(base64));
-    } catch (err) {
-      console.error("Failed to parse token:", err);
-    }
-  }
 
-  // Set email from token immediately
-  useEffect(() => {
-    if (jwtPayload?.email) setEmail(jwtPayload.email);
-  }, [jwtPayload]);
-
-  // Fetch user info from backend
+  // Hae käyttäjä backendistä
   useEffect(() => {
     const fetchUser = async () => {
-      if (!token) return;
       try {
-        const response = await axios.get("http://localhost:3001/user/me", {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(response.data);
-        setFirstname(response.data.firstname || "");
-        setLastname(response.data.lastname || "");
+        const res = await axios.get("http://localhost:3001/user/me", { withCredentials: true });
+        setUserData(res.data);
+        setFirstname(res.data.firstname || "");
+        setLastname(res.data.lastname || "");
+        setEmail(res.data.email || "");
       } catch (err) {
         console.error("Failed to fetch user:", err.response?.data || err.message);
       } finally {
@@ -49,18 +30,17 @@ export default function Myinfo() {
     };
 
     fetchUser();
-  }, [token]);
+  }, []);
 
-  // Update user profile
+  // Päivitä profiili
   const updateUser = async () => {
-    if (!token) return;
     try {
       const res = await axios.put(
         "http://localhost:3001/user/me",
         { firstname, lastname, email },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       );
-      setUser(res.data);
+      setUserData(res.data);
       alert("Profile updated successfully!");
     } catch (err) {
       console.error("Error updating user:", err.response?.data || err.message);
@@ -68,14 +48,12 @@ export default function Myinfo() {
     }
   };
 
-  // Delete user profile
+  // Poista käyttäjä
   const deleteUser = async () => {
-    if (!token) return;
     try {
-      await axios.delete("http://localhost:3001/user/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete("http://localhost:3001/user/me", { withCredentials: true });
       alert("Your profile has been deleted.");
+      await signout(); // Tyhjennä frontend state
       window.location.href = "/login";
     } catch (err) {
       console.error("Error deleting user:", err.response?.data || err.message);
@@ -92,31 +70,19 @@ export default function Myinfo() {
         <h3>Myinfo</h3>
 
         <h4>Current User Info </h4>
-        <p>User ID: {jwtPayload?.sub || "N/A"}</p>
-        <p>Email: {email || "N/A"}</p>
-        <p>First Name: {user?.firstname || "Not available"}</p>
-        <p>Last Name: {user?.lastname || "Not available"}</p>
+        <p>User ID: {userData?.id || "N/A"}</p>
+        <p>Email: {userData?.email || "N/A"}</p>
+        <p>First Name: {userData?.firstname || "Not available"}</p>
+        <p>Last Name: {userData?.lastname || "Not available"}</p>
 
         <p>Edit First Name:</p>
-        <input
-          type="text"
-          value={firstname}
-          onChange={(e) => setFirstname(e.target.value)}
-        />
+        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
 
         <p>Edit Last Name:</p>
-        <input
-          type="text"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
-        />
+        <input type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} />
 
         <p>Edit Email:</p>
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
 
         <button type="button" onClick={updateUser}>
           Save changes
@@ -139,20 +105,13 @@ export default function Myinfo() {
       <div className="container full-width">
         <p>
           Note that by deleting your profile, you will{" "}
-          <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
-            permanently
-          </span>{" "}
-          lose access to all of your data on your account including favourites,
-          groups, and reviews.
+          <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>permanently</span>{" "}
+          lose access to all of your data on your account including favourites, groups, and reviews.
         </p>
         <button
           type="button"
           onClick={() => {
-            if (
-              window.confirm(
-                "By deleting account you will lose all access to it, are you sure?"
-              )
-            ) {
+            if (window.confirm("By deleting account you will lose all access to it, are you sure?")) {
               deleteUser();
             }
           }}
