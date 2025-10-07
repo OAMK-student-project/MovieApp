@@ -42,7 +42,8 @@ import { fetchAllGroups, createGroup } from '../controllers/groupsController.js'
 import {
   requestJoinGroup,
   getGroupRequests,
-  updateJoinRequest
+  updateJoinRequest,
+  getGroupOwner
 } from '../controllers/groupJoinController.js';
 import { getGroupsByUserId } from '../models/groupsModel.js';
 import { auth } from '../helpers/auth.js';
@@ -79,6 +80,7 @@ router.get('/:id', auth, async (req, res) => {
 router.post('/', auth, createGroup);
 
 // --- Liittymispyynnöt ---
+router.get('/:id/owner', auth, getGroupOwner); // Ownerin ID
 router.post('/:id/request-join', auth, requestJoinGroup);
 router.get('/:id/requests', auth, getGroupRequests);
 router.put('/:id/requests/:requestId', auth, updateJoinRequest);

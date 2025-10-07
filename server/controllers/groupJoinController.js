@@ -78,10 +78,24 @@ export const updateJoinRequest = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };*/
-    
 
+// controllers/groupJoinController.js
 import * as groupJoinModel from '../models/groupJoinModel.js';
+import * as groupMembersModel from '../models/groupMembersModel.js';
 import db from '../helpers/db.js';
+
+// GET owner
+export const getGroupOwner = async (req, res) => {
+  try {
+    const groupId = req.params.id;
+    const members = await groupMembersModel.getMembersByGroup(groupId);
+    const owner = members.find(m => m.role === "Owner");
+    return res.json({ ownerId: owner?.user_id ?? null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 // Lähetä liittymispyyntö
 export const requestJoinGroup = async (req, res) => {
@@ -130,35 +144,60 @@ export const updateJoinRequest = async (req, res) => {
   try {
     const requestId = req.params.requestId;
     const { status } = req.body;
+    const currentUserId = req.user.id;
 
+    // Hae liittymispyyntö
     const [request] = await groupJoinModel.getRequestById(requestId);
     if (!request) return res.status(404).json({ message: 'Join request not found' });
 
+    // Hae ryhmän jäsenet ja etsi owner
+    const members = await groupMembersModel.getMembersByGroup(request.group_id);
+    const owner = members.find(m => m.role === "Owner");
+
+    // Tarkista, onko kirjautunut käyttäjä owner
+    if (!owner || owner.user_id !== currentUserId) {
+      return res.status(403).json({ message: "Only owner can approve or reject requests" });
+    }
+
     if (status === 'approved') {
-      // Lisää käyttäjä jäseneksi
+      // Tarkista, onko käyttäjä jo jäsen
+      const existingMember = members.find(m => m.user_id === request.requester_id);
+      if (existingMember) {
+        return res.status(400).json({ message: 'User is already a member of this group' });
+      }
+
+
       await db.query(
-        'INSERT INTO "Group_members" (user_id, group_id, joined_at) VALUES ($1, $2, NOW())',
-        [request.requester_id, request.group_id]
+        'INSERT INTO "Group_members" (user_id, group_id, role, joined_at) VALUES ($1, $2, $3, NOW())',
+        [request.requester_id, request.group_id, 'Member']
       );
 
-      // Poista join request
+      // Poista liittymispyyntö
       await groupJoinModel.deleteRequest(requestId);
 
-      return res.json({
-        message: 'User added to group',
-        request: { ...request, status },
-      });
+      return res.json({ message: 'User added to group', request: { ...request, status } });
     }
 
     if (status === 'rejected') {
+      // Varmista, että pyyntö löytyy
       const deleted = await groupJoinModel.deleteRequest(requestId);
-      return res.json({
-        message: 'Request rejected and deleted',
-        request: deleted,
-      });
+      if (!deleted) return res.status(404).json({ message: 'Join request not found' });
+
+      return res.json({ message: 'Request rejected and deleted', request });
     }
-  } catch (err) {
+  } /*catch (err) {
     console.error('Error updating join request:', err);
     return res.status(500).json({ message: 'Server error' });
-  }
+  }*/
+catch (err) {
+  console.error('Error updating join request:', err);
+  return res.status(500).json({
+    message: 'Server error',
+    error: err.message,
+    detail: err.detail || null,
+    stack: err.stack,
+  });
+}
+
+
 };

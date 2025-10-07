@@ -1,29 +1,30 @@
 import db from '../helpers/db.js';
-//id auto-incremented
 
-//-----Get all requests from table
-    const getAllRequests = async() => {
-        const result = await db.query('SELECT * FROM "Group_join_requests"')
-        return result.rows;
-    }
+// ----- Get all requests from table
+const getAllRequests = async () => {
+  const result = await db.query('SELECT * FROM "Group_join_requests"');
+  return result.rows;
+};
 
-//-----Get requests by group id
-    const getRequestsById = async(groupJoinId) => {
-        const result = await db.query('SELECT * FROM "Group_join_requests" WHERE group_id=$1', [groupJoinId])
-        return result.rows;
-    }
+// ----- Get requests by group id
+const getRequestsById = async (groupJoinId) => {
+  const result = await db.query(
+    'SELECT * FROM "Group_join_requests" WHERE group_id = $1',
+    [groupJoinId]
+  );
+  return result.rows;
+};
 
-/*//-----Get join requests from a specific group and return group info
-    const getRequestsByGroup = async(groupJoinId) => {
-        const result = await db.query(
-            'SELECT * FROM "Group_join_requests" gjr ' + //gjr and g are just aliases, for example: "Group_join_requests" gjr <- defines the alias
-            'LEFT JOIN "Groups" g ON gjr.group_id = g.id ' +
-            'WHERE gjr.group_id = $1',
-            [groupJoinId])
-        return result.rows;
-    }*/
+// ----- Get one join request by its ID
+const getRequestById = async (requestId) => {
+  const result = await db.query(
+    'SELECT * FROM "Group_join_requests" WHERE id = $1',
+    [requestId]
+  );
+  return result.rows;
+};
 
-//-----Get join requests from a specific group and return group info
+// ----- Get join requests from a specific group and return group + user info
 const getRequestsByGroup = async (groupJoinId) => {
   try {
     const result = await db.query(
@@ -46,13 +47,11 @@ const getRequestsByGroup = async (groupJoinId) => {
     return result.rows;
   } catch (err) {
     console.error("Error in getRequestsByGroup:", err);
-    throw err; // jotta middleware palauttaa 500
+    throw err;
   }
 };
 
-
-
-//-----Add request
+// ----- Add request
 // groupJoinData = { group_id, requester_id, status }
 const addRequest = async (groupJoinData) => {
   const timestamp = new Date();
@@ -73,52 +72,38 @@ const addRequest = async (groupJoinData) => {
       groupJoinData.group_id,
       groupJoinData.requester_id,
       groupJoinData.status,
-      timestamp
+      timestamp,
     ]
   );
 
   return result.rows[0];
 };
 
- 
-/*//-----Add request
-    //groupJoinData = { group_id, requester_id, status }
-    const addRequest = async(groupJoinData) => {
-        const timestamp = new Date();
-        const result = await db.query(
-            'INSERT INTO "Group_join_requests" (group_id, requester_id, status, created_at) VALUES ($1, $2, $3, $4) RETURNING *',
-            [
-                groupJoinData.group_id,
-                groupJoinData.requester_id,
-                groupJoinData.status,
-                timestamp
-            ])
-        return result.rows[0];
-    }*/
+// ----- Update request
+const updateRequest = async (groupJoinId, groupJoinData) => {
+  const result = await db.query(
+    'UPDATE "Group_join_requests" SET status = $1 WHERE id = $2 RETURNING *',
+    [groupJoinData.status, groupJoinId]
+  );
+  return result.rows[0];
+};
 
+// ----- Delete request
+const deleteRequest = async (groupJoinId) => {
+  const result = await db.query(
+    'DELETE FROM "Group_join_requests" WHERE id = $1 RETURNING *',
+    [groupJoinId]
+  );
+  return result.rows[0];
+};
 
-//-----Update request
-    const updateRequest = async(groupJoinId, groupJoinData) => {
-        const result = await db.query(
-            'UPDATE "Group_join_requests" SET status = $1 WHERE id = $2 RETURNING *', [ groupJoinData.status, groupJoinId ])
-            return result.rows[0];
-    }
-
-//-----Delete request
-    const deleteRequest = async(groupJoinId) => {
-        const result = await db.query(
-            'DELETE FROM "Group_join_requests" WHERE id=$1 RETURNING *', [groupJoinId])
-        return result.rows[0];
-    }
-
-
-
-    
+// ----- Exports
 export {
   getAllRequests,
   getRequestsById,
+  getRequestById,     //  tämä puuttui aiemmin!
   getRequestsByGroup,
   addRequest,
   updateRequest,
-  deleteRequest
+  deleteRequest,
 };

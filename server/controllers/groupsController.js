@@ -54,7 +54,7 @@ export const createGroup = async (req, res) => {
 
     const newGroup = await addGroup({ name, created_by });
 
-    // ✅ Add creator to Group_members with Owner role
+    // Add creator to Group_members with Owner role
     await db.query(
       'INSERT INTO "Group_members" (user_id, group_id, role, joined_at) VALUES ($1, $2, $3, NOW())',
       [created_by, newGroup.id, 'Owner']
