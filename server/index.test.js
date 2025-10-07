@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { expect } from 'chai';
 //import { initializeTestDb } from '../helpers/test.js';
 
-import { expect } from 'chai'
+
 import db from '../server/helpers/db.js';
 import { initializeTestDb, clearDb, insertTestUser } from './helpers/test.js'
 const url = process.env.TEST_DB_URL;

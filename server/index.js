@@ -30,7 +30,7 @@ app.use("/api/reviews", reviewRouter);
 app.use("/groups", groupsRouter);
 app.use("/user", userRouter);
 
-app.use("/", myGroupsRoutes);
+app.use("/user", myGroupsRoutes);
 app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });
 });

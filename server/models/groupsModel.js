@@ -46,11 +46,27 @@ const deleteGroup = async (id) => {
   return result.rows[0];
 };
 
+// Hae kaikki ryhmät, joissa käyttäjä on jäsen
+const getGroupsByUserId = async (userId) => {
+  const query = `
+    SELECT g.id, g.name, g.created_by, g.created_at
+    FROM "Groups" g
+    JOIN "Group_members" gm ON gm.group_id = g.id
+    WHERE gm.user_id = $1
+  `;
+  const result = await db.query(query, [userId]);
+  return result.rows;
+};
+
+
+
+
 export {
   getAllGroups,
   getGroupByName,
   getByGroupNameAndCreator,
   addGroup,
   updateGroup,
-  deleteGroup
+  deleteGroup,
+  getGroupsByUserId // lisätty ryhmien haku johon käyttäjä kuuluu
 };
