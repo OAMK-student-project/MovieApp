@@ -45,4 +45,14 @@ import db from '../helpers/db.js';
             return result.rows;
     }
 
-export { getAllMembers, getMembersByGroup, addGroupMember, updateGroupMembers, deleteGroupMember }
+// Delete a member by user_id and group_id
+const deleteGroupMemberByUserId = async (groupId, userId) => {
+  const result = await db.query(
+    'DELETE FROM "Group_members" WHERE group_id=$1 AND user_id=$2 RETURNING *',
+    [groupId, userId]
+  );
+  return result.rows[0];
+};
+
+
+export { getAllMembers, getMembersByGroup, addGroupMember, updateGroupMembers, deleteGroupMember, deleteGroupMemberByUserId }

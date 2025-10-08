@@ -66,3 +66,38 @@ export const createGroup = async (req, res) => {
     res.status(500).json({ error: 'Failed to add group' });
   }
 };
+
+// Leave group
+export const leaveGroup = async (req, res) => {
+  const groupId = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    // Check if user is owner
+    const ownerCheck = await db.query(
+      `SELECT role FROM "Group_members" WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    );
+
+    if (!ownerCheck.rows.length) {
+      return res.status(404).json({ message: "You are not a member of this group" });
+    }
+
+    const role = ownerCheck.rows[0].role;
+
+    if (role === "Owner") {
+      return res.status(403).json({ message: "Owner cannot leave the group. Delete the group instead." });
+    }
+
+    // Remove member
+    await db.query(
+      `DELETE FROM "Group_members" WHERE group_id = $1 AND user_id = $2`,
+      [groupId, userId]
+    );
+
+    res.json({ message: "You have left the group" });
+  } catch (err) {
+    console.error("Error leaving group:", err);
+    res.status(500).json({ message: "Failed to leave group" });
+  }
+};

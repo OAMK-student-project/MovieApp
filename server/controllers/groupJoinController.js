@@ -201,3 +201,22 @@ catch (err) {
 
 
 };
+
+export const leaveGroup = async (req, res) => {
+  try {
+    const groupId = req.params.id;
+    const userId = req.user.id; // Comes from auth middleware
+
+    // Delete the member from the group
+    const deleted = await groupMembersModel.deleteGroupMemberByUserId(groupId, userId);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "You are not a member of this group" });
+    }
+
+    return res.json({ message: "You left the group" });
+  } catch (err) {
+    console.error("Error leaving group:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

@@ -43,7 +43,8 @@ import {
   requestJoinGroup,
   getGroupRequests,
   updateJoinRequest,
-  getGroupOwner
+  getGroupOwner,
+  leaveGroup
 } from '../controllers/groupJoinController.js';
 import { getGroupsByUserId } from '../models/groupsModel.js';
 import { auth } from '../helpers/auth.js';
@@ -85,4 +86,6 @@ router.post('/:id/request-join', auth, requestJoinGroup);
 router.get('/:id/requests', auth, getGroupRequests);
 router.put('/:id/requests/:requestId', auth, updateJoinRequest);
 
+// postu ryhmästä 
+router.delete('/:id/leave', auth, leaveGroup);
 export default router;
