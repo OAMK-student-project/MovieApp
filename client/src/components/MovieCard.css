@@ -43,7 +43,7 @@
 }
 
 .mc-overview {
-  color: var(--color-text);
+  color: var(--text-color);
   font-size: 1rem;
   line-height: 1.4;
   display: wedkit-box;

@@ -2,7 +2,7 @@ toggle-button {
     background: var(--effect-color);
     color: var(--text-color);
     border: none;
-    border-radius: 8;
+    border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
     box-shadow: 0 0 8px var(--bg-second-color);
