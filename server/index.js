@@ -10,8 +10,8 @@ import groupsRouter from "./routes/groupsRouter.js";
 import myGroupsRoutes from "./routes/myGroupsRouter.js";
 import reviewRouter from "./routes/reviewRouter.js"; //  import reviews
 
-import movieRouter from "./routes/movieRouter.js";
-import reviewRouter from "./routes/reviewRouter.js";
+
+
 import favMoviesRouter from "./routes/favMoviesRouter.js";
 import favListRouter from "./routes/favListRouter.js";
 import favSharedRouter from "./routes/favSharedRouter.js";
