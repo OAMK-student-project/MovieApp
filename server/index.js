@@ -10,6 +10,11 @@ import groupsRouter from "./routes/groupsRouter.js";
 import myGroupsRoutes from "./routes/myGroupsRouter.js";
 import reviewRouter from "./routes/reviewRouter.js"; //  import reviews
 
+import movieRouter from "./routes/movieRouter.js";
+import reviewRouter from "./routes/reviewRouter.js";
+import favMoviesRouter from "./routes/favMoviesRouter.js";
+import favListRouter from "./routes/favListRouter.js";
+import favSharedRouter from "./routes/favSharedRouter.js";
 
 const app = express();
 
@@ -26,6 +31,10 @@ app.get("/healthz", (req, res) => res.send("ok"));
 
 app.use("/api/movies", moviesRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/favourite", favMoviesRouter);
+app.use("/favourite-lists", favListRouter);
+app.use("/shared", favSharedRouter);
+
 
 app.use("/groups", groupsRouter);
 app.use("/user", userRouter);

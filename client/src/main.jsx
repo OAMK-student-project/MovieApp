@@ -16,6 +16,8 @@ import UserProvider from "./context/UserProvider.jsx";
 import GroupsPage from "./screens/GroupsPage.jsx";
 import ManageGroup from "./screens/ManageGroup.jsx";
 import GroupPage from "./screens/GroupPage.jsx";
+import SharedListPage from "./screens/FavoriteShared.jsx"
+
 
 const router = createBrowserRouter([
   {
@@ -26,8 +28,12 @@ const router = createBrowserRouter([
       { index: true, element: <Home/> },
       { path: "login", element: <Login/> },
       { path: "favorites", element: <Favorites/>},
+
       { path: "groups", element: <GroupsPage /> },
       { path: "allgroups", element: <GroupsPage /> },
+
+      { path: "/shared/favourites/:uuid", element: <SharedListPage/>},
+      
       { path: "reviews", element: <Reviews/>},
       { path: "search", element: <SearchScreen/>},
       { path: "theater", element: <Theater/>},

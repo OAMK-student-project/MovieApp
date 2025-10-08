@@ -3,7 +3,9 @@ import axios from "axios"
 import { posterUrl, backdropUrl } from "../helpers/images"
 import { useUser } from "../context/useUser.js";
 import ReviewsCard from "./ReviewsCard.jsx";
+import AddFavoriteBtn from "../components/AddFavoriteBtn.jsx";
 import "./movieCard.css"
+
 
 export default function MovieCard({ movie, onMovieUpdated  }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -42,6 +44,7 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
 
   const director = details?.credits?.crew?.find((c) => c.job === "Director")
   const cast = (details?.credits?.cast || []).slice(0, 10)
+  
   
   function renderStars(avg) {
     const stars = Math.round(avg);
@@ -96,12 +99,15 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
   /** mc = moviecard*/
   return (
     <div className="mc-card">
+      
       <img
         className="mc-poster"
         src={posterUrl(movie.poster_path)}  
         alt={movie.title}
         loading="lazy"
       />
+
+      <AddFavoriteBtn movie={movie} />
 
       <div className="mc-body">
         <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
