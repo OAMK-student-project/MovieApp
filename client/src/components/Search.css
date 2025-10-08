@@ -5,19 +5,23 @@ button {
     border: none;
 }
 button:hover {
-  background-color: #666666; 
-  color: white;
+  background-color: var(--bg-third-color); 
+  color: var(--text-color);
 }
-
-
-
+search-results-page{
+  color: var(--text-color);
+}
+/*
+otin pois, jotta saan MovieCardin näkymään niin, miten se näkyy muissa sivuissa.
 .results{
   margin: auto;
   width: 50%;
- /*border: 3px solid green; /* otetaan pois*/
+ /*border: 3px solid green; /* otetaan pois
   padding: 1rem;
   text-align: center;
 }
+
+*/
 select{
   
 }
@@ -27,4 +31,10 @@ margin: auto;
 /*border: 3px solid green; /* otetaan pois*/
 padding: 1rem;
 text-align: center;
+}
+.movie-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
 }

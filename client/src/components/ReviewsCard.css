@@ -29,5 +29,5 @@
 #mc-review-item small {
   display: block;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--bg-third-color);
 }

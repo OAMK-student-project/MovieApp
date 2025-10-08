@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useUser } from "../context/useUser";
+import ThemeToggle from "./ThemeToggle"
 import "./Header.css";
 
 function Header(){
@@ -32,6 +33,7 @@ function Header(){
             </nav>
             <div className="loginArea">
                 {signInOrOut()}
+                <ThemeToggle />
             </div>
         </div>
     );
