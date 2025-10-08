@@ -220,3 +220,38 @@ export const leaveGroup = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+export const deleteGroup = async (req, res) => {
+  try {
+    const groupId = req.params.id;
+    const userId = req.user.id;
+
+    // 1. Check if user is owner
+    const ownerRes = await db.query(
+      'SELECT user_id FROM "Group_members" WHERE group_id = $1 AND role = $2',
+      [groupId, "Owner"]
+    );
+
+    if (ownerRes.rows.length === 0) {
+      return res.status(404).json({ message: "Group not found or has no owner" });
+    }
+
+    if (ownerRes.rows[0].user_id !== userId) {
+      return res.status(403).json({ message: "Only the group owner can delete this group" });
+    }
+
+    // 2. Delete join requests first
+    await db.query('DELETE FROM "Group_join_requests" WHERE group_id = $1', [groupId]);
+
+    // 3. Delete members
+    await db.query('DELETE FROM "Group_members" WHERE group_id = $1', [groupId]);
+
+    // 4. Delete the group itself
+    await db.query('DELETE FROM "Groups" WHERE id = $1', [groupId]);
+
+    return res.json({ message: "Group deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting group:", err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

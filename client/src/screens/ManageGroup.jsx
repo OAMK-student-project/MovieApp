@@ -70,19 +70,34 @@ const handleLeaveGroup = async () => {
   try {
     const res = await axios.delete(`http://localhost:3001/groups/${id}/leave`);
     alert(res.data.message);
-    // Optionally redirect or hide the group info
+    
   } catch (err) {
     console.error("Error leaving group:", err);
     alert("Failed to leave group.");
   }
 };
+// tapahtumakäsitelijä ryhmän poistolle
+const handleDeleteGroup = async () => {
+  if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) {
+    return;
+  }
 
+  try {
+    const res = await axios.delete(`http://localhost:3001/groups/${id}`);
+    alert(res.data.message);
+   
+    window.location.href = "/groups";
+  } catch (err) {
+    console.error("Error deleting group:", err);
+    alert("Failed to delete group.");
+  }
+};
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
  
 
   return (
-    <div>
+    <div className="container">
       <h2>Manage Group</h2>
       <h3>Join Requests</h3>
 
@@ -90,7 +105,15 @@ const handleLeaveGroup = async () => {
   <button onClick={handleLeaveGroup} style={{ marginBottom: "16px" }}>
     Leave Group
   </button>
-
+  
+  {isOwner && (
+  <button
+    onClick={handleDeleteGroup}
+     
+  >
+    Delete Group
+  </button>
+)}
 
       {requests.length > 0 ? (
         <ul>
