@@ -44,7 +44,7 @@ export const addMovieToGroup = async (req, res, next) => {
 // --- Poista elokuva ryhmästä ---
 export const removeMovieFromGroup = async (req, res, next) => {
   try {
-    const movieRecordId = Number(req.params.id);
+    const movieRecordId = Number(req.params.movieId);
     if (!Number.isInteger(movieRecordId)) throw new ApiError("Invalid movie record ID", 400);
 
     const deleted = await deleteGroupMovies(movieRecordId);

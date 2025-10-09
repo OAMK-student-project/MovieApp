@@ -42,7 +42,7 @@ app.use("/user", userRouter);
 //reitti ryhmän elokuville
 app.use("/groups/:groupId/movies", groupMoviesRouter);
 
-app.use("/user", myGroupsRoutes);
+app.use("/user/my-groups", myGroupsRoutes);
 app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });
 });

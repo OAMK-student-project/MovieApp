@@ -46,11 +46,34 @@ const getAllMovies = async () => {
   return result.rows;
 };
 
-// ----- Get movies by group ID -----
+/*// ----- Get movies by group ID -----
 const getMoviesById = async (groupId) => {
   const result = await db.query('SELECT * FROM "Group_movies" WHERE group_id = $1', [groupId]);
   return result.rows;
+};*/
+
+/*const getMoviesById = async (groupId) => {
+  const result = await db.query(
+    `SELECT 
+        id AS group_movie_id, 
+        movie_id, 
+        genre, 
+        added_at 
+     FROM "Group_movies" 
+     WHERE group_id = $1`,
+    [groupId]
+  );
+  return result.rows;
+};*/
+
+const getMoviesById = async (groupId) => {
+  const result = await db.query(
+    'SELECT id, movie_id, genre, added_at FROM "Group_movies" WHERE group_id = $1',
+    [groupId]
+  );
+  return result.rows;
 };
+
 
 // ----- Add a new movie to a group -----
 // groupMoviesData = { group_id, movie_id, genre }
