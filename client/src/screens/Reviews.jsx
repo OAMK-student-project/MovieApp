@@ -90,7 +90,7 @@ function Reviews(){
             <option value="mine">Show mine</option>
         </select>
         </div>
-        <div id="reviewsArea" className="grid">
+        <div id="reviewsArea" className="movie-list">
         {visible.map((movie) => (
             <MovieCard key={movie.id} movie={movie}  onMovieUpdated={handleMovieUpdated} />
         ))}

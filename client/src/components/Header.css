@@ -10,7 +10,7 @@
 
 .navArea {
   display: flex;
-  border: 1px solid black;
+  border: 1px solid var(--bg-second-color);
   border-radius: 6px;
   overflow: hidden;
   background-color: var(--effect-color);
@@ -22,8 +22,8 @@
   display: block;
   padding: 0.75rem 2rem;
   text-decoration: none;
-  color: var(--text-color);
-  border-left: 1px solid black;
+  color: var(--color-text);
+  border-left: 1px solid var(--bg-second-color);
   white-space: nowrap;
 }
 
@@ -32,12 +32,12 @@
 }
 
 .navArea a.active {
-  background-color: #666666;
+  background-color: var(--bg-second-color);
 }
 
 .loginArea{
   display: flex;
-  border: 1px solid black;
+  border: 1px solid var(--bg-second-color);
   border-radius: 6px;
   overflow: hidden;
   background-color: var(--effect-color);
@@ -47,15 +47,15 @@
 
 .loginArea a {
   display: block;
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.5rem;
   text-decoration: none;
   color: var(--text-color);
-  border-left: 1px solid black;
+  border-left: 1px solid var(--bg-second-color);
   white-space: nowrap;
 }
 
 .loginArea a.active{
-    background-color: #666666;
+    background-color: var(--bg-second-color);
 }
 
 @media (max-width: 640px) {
@@ -68,12 +68,12 @@
   }
 
   .navArea a{
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.4rem;
     flex: 1 1 auto;
     text-align: center;
   }
   .loginArea a {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.85rem;
     flex: 1 1 auto;
     text-align: end;
   }

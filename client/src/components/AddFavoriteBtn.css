@@ -32,7 +32,7 @@
 
 /* Non-favorited default */
 .fav-icon:not(.favorited) {
-  color: var(--bg-second-color); /* Probably want some other color here */
+  color: var(--bg-third-color); /* Probably want some other color here */
 }
 
 /* Hover color for when non-favorited */
@@ -91,8 +91,8 @@
     width: 100%;
     padding: 1em 1.5em;    /* top and bottom padding 1em, right and left are 1.5em */
     border-radius: 0px;
-    border: 1px solid var(--bg-second-color);
-    background: var(--bg-second-color);
+    border: 1px solid var(--bg-third-color);
+    background: var(--bg-third-color);
     cursor: pointer;
     transition: 0.2s ease;
     color: var(--text-color);
