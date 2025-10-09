@@ -1,3 +1,4 @@
+//moviesController.js
 import { updateFromTmdb, deleteMovie } from "../models/movieModel.js";
 import { getReviewedMoviesWithStats, getTrendingWithStats } from "../services/movieService.js";
 import { fetchMovieWithCredits } from "../services/tmdbService.js";

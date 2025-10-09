@@ -9,7 +9,7 @@ import userRouter from "./routes/userRouter.js";
 import groupsRouter from "./routes/groupsRouter.js";
 import myGroupsRoutes from "./routes/myGroupsRouter.js";
 import reviewRouter from "./routes/reviewRouter.js"; //  import reviews
-
+import groupMoviesRouter from "./routes/groupMoviesRouter.js";
 
 
 import favMoviesRouter from "./routes/favMoviesRouter.js";
@@ -38,6 +38,9 @@ app.use("/shared", favSharedRouter);
 
 app.use("/groups", groupsRouter);
 app.use("/user", userRouter);
+
+//reitti ryhmän elokuville
+app.use("/groups/:groupId/movies", groupMoviesRouter);
 
 app.use("/user", myGroupsRoutes);
 app.use((req, res, next) => {

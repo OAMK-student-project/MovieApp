@@ -72,7 +72,7 @@ export async function addFavoriteMovie(movie, listId) {
 
   // If genres not available, fetch from movie details API
   if (!genres || genres.length === 0) {
-    const { data } = await axios.get(`${url}/api/movie/${movie.id}`);
+    const { data } = await axios.get(`${url}/api/movies/${movie.id}`);
     genres = data.genres || [];
   }
 

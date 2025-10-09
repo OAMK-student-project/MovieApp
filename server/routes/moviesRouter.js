@@ -1,3 +1,4 @@
+// moviesRouter.js
 import express from "express";
 import axios from "axios";
 import { getMovie, getAll, getTrending } from "../controllers/moviesController.js";

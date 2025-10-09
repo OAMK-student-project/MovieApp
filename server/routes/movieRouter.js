@@ -1,4 +1,4 @@
-/*//Tämä pitää yhdistää moviesRouterin kanssa kun se on refaktoroitu
+//Tämä pitää yhdistää moviesRouterin kanssa kun se on refaktoroitu
 import express from "express";
 import { getMovie, getAll, getTrending } from "../controllers/moviesController.js";
 
@@ -9,4 +9,4 @@ router.get("/allreviewed", getAll);
 router.get("/:tmdbId", getMovie);
 
 
-export default router;*/
+export default router;
