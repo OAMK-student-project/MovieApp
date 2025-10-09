@@ -1,16 +1,35 @@
 # MovieApp
 Student project – Fullstack
+Course name: *Web programming app project*.
 
-Web-sovellus elokuvaharrastajille. Kurssi: *Web-ohjelmoinnin sovellusprojekti*. Hyödynnetään The Movie Database (TMDB) ja Finnkino -rajapintoja.
+Web application for movie enthusiasts. 
+Users can browse movies, write reviews, join groups, search showtimes and add favorites.
+Utilisizes The Movie Database (TMDB) and Finnkino APIs.
 
-## Teknologiat
+## Documentation
+
+### API documentation
+The MovieApp backend API has been fully documented and tested using **Postman**.  
+The documentation includes all authentication, user, movie, review and favourite list endpoints,  
+along with example requests, responses and error cases.
+
+[View the full API documentation here](https://documenter.getpostman.com/view/41009671/2sB3QKq9eq)
+
+### Database
+Database runs on PostgreSQL database. 
+![Database diagram](docs/ERD.png)
+
+## Technologies
 #### Frontend:
 <ol>
    <li>Node.js</li>
    <li>React (Vite)</li>
    <li>React Router DOM</li>
+   <li>React hot toast</li>
    <li>React DOM</li>
    <li>Axios</li>
+   <li>fast-xml-parser</li>
+   <li>fortawesome</li>
 </ol>
 
 #### Backend
@@ -23,40 +42,53 @@ Web-sovellus elokuvaharrastajille. Kurssi: *Web-ohjelmoinnin sovellusprojekti*. 
    <li>jsonwebtoken</li>
    <li>npx</li>
    <li>pg</li>
+   <li>cookie-parser</li>
+   <li>uuid</li>
+   <li>chai</li>
+   <li>cross-env</li>
+   <li>mocha</li>
+   <li>dotenv</li>
+   <li>nodemon</li>
 </ol>
 
 - Dokumentaatio: OpenAPI (Swagger), dbdiagram.io
 - Versionhallinta: GitHub
 
-## Projektin rakenne
+## Project structure
 ```
 MovieApp/
   client/            # React frontend
-   /components       # Uudelleenkäytettävät komponentit
-   /context          # Kontekstit, kuten käyttäjän tiedot
-   /screens          # Näkymät, jotka vastaavat reittejä. (Home jne)
-      /account       # Käyttäjän hallinta, Login, Signup jne.
+   /components       # Reusable components
+   /context          # Contexts, such as user info
+   /screens          # Views that correspond routes
+      /account       # User management, Login, Signup jne.
   server/            # Node/Express backend
-   /controllers      # Sovelluslogiikka (esim. userController.js, reviewController.js)
-   /helpers          # Pienet apufunktiot
-   /middleware       # Esimerkiksi auth.js
-   /models           # Tietokantalogiikka
-   /service          # Ulkoiset integraatiot the Movie Databaseen ja Finnkinoon
-  docs/              # openapi.yaml, kaaviot, backlog-kuvat
+   /controllers      # App logic (for example. userController.js, reviewController.js)
+   /helpers          # Small helper functions
+   /middleware       # For example auth.js
+   /models           # Database logic
+   /service          # Outside integrations to Finnkino and TMDB
+  docs/              # openapi.yaml, charts, backlog-pictures
   .gitignore
   README.md
 ```
 
-## Reitit
-Määritetyt reitit
+## Routes
+Defined frontend routes
    /home
    /login
+   /signup
+   /myinfo
+   /search
+   /favorites
+   /shared/favourites/:uuid
+   /groups
+   /reviews
    /theater
    /theater/shows/?area=xxxx&dt=dd.mm.yyyy
    /theater/locations/
 
-
-## Kloonaus ja alustus
+## Cloning and initalization
 1. Kloonaa repo omalle koneellesi:
    ```bash
    git clone <repo-url>
@@ -90,30 +122,16 @@ Määritetyt reitit
      ```
      → http://localhost:3001
 
-Huomio:
-- `node_modules/`-kansiota ei ole repossa. Se luodaan aina `npm install` -komennolla.
-- Kaikki tarvittavat kirjastot ja niiden versiot on määritetty `package.json` + `package-lock.json` -tiedostoissa, joten `npm install` asentaa saman ympäristön kaikille.
-- `.env`-tiedosto täytyy jokaisen luoda itse `server/`-kansioon (tietokannan osoite, API-avaimet).
+Notice:
+- `node_modules/`-directory is not in the repository. It´s always created with `npm install`-command.
+- All the necessary libraries and their versions are defined in `package,json` + `package-lock.json` files. `npm install` installs same environment to everyone.
+- `.env`-file must be created to `server/` and `client/`-directories.
 
 
 
-
-## Asennus ja käynnistys
-
-### Backend
-```bash
-
-```
-
-### Frontend
-```bash
-
-```
-
-
-### Ympäristömuuttujat
+### Environment variables
 #### Frontend
-Luo .env tiedosto polkuun: `/client/`
+Create .env file to path: `client/`
 
 VITE_API_URL=http://localhost:3001
 VITE_API_FINNKINO_URL=https://www.finnkino.fi/xml
@@ -121,11 +139,11 @@ VITE_TMDB_TOKEN=xxxx
 VITE_TMDB_KEY=xxxx
 
 #### Backend
-Luo .env tiedosto polkuun: `server/`:
+Create .env file to path: `server/`
 ```
 PORT=3001
 
-#Frontend addres
+#Frontend address
 FRONTEND_URL=http://localhost:5173
 
 #In http this is "development"
@@ -147,6 +165,3 @@ REFRESH_TOKEN_MS=2592000000
 TEST_DB_NAME = testMovieApp
 TMDB_BEARER_TOKEN=xxxxx
 ```
-
-## Dokumentaatio
-Täydennetään myöhemmin
