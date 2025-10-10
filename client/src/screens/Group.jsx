@@ -1,23 +1,25 @@
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ManageGroupNav from "../components/ManageGroupNav";
 import GroupPage from "./GroupPage";
-import ManageGroupPage from "./ManageGroupPage";
+import ManageGroup from "./ManageGroup";
 
 export default function Group() {
-  const { id } = useParams(); // group ID from URL
-  const [view, setView] = useState("group"); // "group" or "manage"
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Optionally, you can detect the URL path to set view automatically
-  // const location = useLocation();
-  // const view = location.pathname.includes("managegroup") ? "manage" : "group";
+  const isManageView = location.pathname.includes("managegroup");
 
   return (
     <div className="group-wrapper">
-      {/* Top navigation for this group */}
-      <ManageGroupNav groupId={id} />
-
-      {/* Main content depending on view */}
-      {view === "group" ? <GroupPage groupId={id} /> : <ManageGroupPage groupId={id} />}
+      <ManageGroupNav
+        groupId={id}
+        onSwitchView={(target) =>
+          navigate(target === "manage" ? `/managegroup/${id}` : `/grouppage/${id}`)
+        }
+      />
+      {isManageView ? <ManageGroup /> : <GroupPage />}
     </div>
   );
 }

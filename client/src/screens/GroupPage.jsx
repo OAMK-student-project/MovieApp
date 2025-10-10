@@ -100,19 +100,16 @@ export default function GroupPage() {
       withCredentials: true,
     });
 
-    // Update movies list
     setMovies((prev) => [
       ...prev,
       { ...movieRes.data, group_movie_id: res.data.id },
     ]);
 
-    // Clear search input & results
     setSearchQuery("");
     setSearchResults([]);
 
-    // Navigate back to the group page
-    navigate(`/groups/${id}`);
-
+    // FIXED: navigate back to the correct URL
+    navigate(`/grouppage/${id}`);
   } catch (err) {
     console.error("Error adding movie:", err);
     alert("Failed to add movie");
@@ -152,9 +149,7 @@ export default function GroupPage() {
 
       {/* Navigation */}
       <ManageGroupNav groupId={group.id} />
-      <button onClick={goToManageGroup}>
-        Go to Manage Group
-      </button>
+      
 
       <div className="group-content">
         {/* Left column: movies */}

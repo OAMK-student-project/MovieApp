@@ -9,7 +9,7 @@ function ManageGroupNav({ groupId }) {
 
       <nav className="nav-area">
         <NavLink
-          to={`/groups/${groupId}`}
+          to={`/grouppage/${groupId}`}
           className={({ isActive }) => (isActive ? "active-link" : "")}
         >
           Group Page
@@ -28,3 +28,5 @@ function ManageGroupNav({ groupId }) {
 }
 
 export default ManageGroupNav;
+
+
