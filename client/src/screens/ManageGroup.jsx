@@ -97,52 +97,82 @@ const handleDeleteGroup = async () => {
  
 
   return (
-    <div className="container">
+    <div className="grid-container">
+       {/* Left side */}
+       <div className="container">
       <h2>Manage Group</h2>
-      <h3>Join Requests</h3>
-
-
-  <button onClick={handleLeaveGroup} style={{ marginBottom: "16px" }}>
+      <h3>Group members</h3>
+        
+        
+        
+        <button onClick={handleLeaveGroup} style={{ marginBottom: "16px" }}>
     Leave Group
   </button>
-  
-  {isOwner && (
-  <button
-    onClick={handleDeleteGroup}
+        </div>
      
-  >
-    Delete Group
-  </button>
-)}
-
-      {requests.length > 0 ? (
-        <ul>
+      {/* Right side */}
+      
+      <div className="container">
+      <h3>Join Requests</h3>
+  
+   {requests.length > 0 ? (
+      <table >
+        <thead>
+          <tr>
+            <th >First Name</th>
+            <th >Last Name</th>
+            <th >Email</th>
+            <th >Status</th>
+            <th >Actions</th>
+          </tr>
+        </thead>
+        <tbody>
           {requests.map((req) => (
-            <li key={req.request_id}>
-              {req.firstname ?? "Unknown"} {req.lastname ?? ""} ({req.email ?? "No email"}) –{" "}
-              <strong>{req.status}</strong>
-              {req.status === "pending" && (
-                <>
-                  <button
-                    onClick={() => handleRequest(req.request_id, "approved")}
-                    style={{ marginLeft: "8px" }}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleRequest(req.request_id, "rejected")}
-                    style={{ marginLeft: "4px" }}
-                  >
-                    Reject
-                  </button>
-                </>
-              )}
-            </li>
+            <tr key={req.request_id}>
+              <td>{req.firstname ?? "Unknown"}</td>
+              <td>{req.lastname ?? ""}</td>
+              <td>{req.email ?? "No email"}</td>
+              <td>{req.status}</td>
+              <td>
+                {req.status === "pending" && (
+                  <>
+                    <button
+                      onClick={() => handleRequest(req.request_id, "approved")}
+                      style={{ marginRight: "4px" }}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleRequest(req.request_id, "rejected")}
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
           ))}
-        </ul>
+        </tbody>
+      </table>
+ 
+
+      
       ) : (
         <p>No join requests for this group.</p>
       )}
     </div>
+ {/* Full width bottom */}
+      <div className="container full-width">
+        
+        {isOwner && (
+
+<button onClick={handleDeleteGroup}>Delete Group</button>
+)}
+        
+      </div>
+    </div>
+ 
+ 
+ 
   );
 }
