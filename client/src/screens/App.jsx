@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Search from "../components/Search.jsx";
 import { Toaster } from 'react-hot-toast';
-//import Groupnav from "../components/Groupnav.jsx";
+
 
   export default function App() {
     

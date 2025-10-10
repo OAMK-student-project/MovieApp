@@ -1,0 +1,28 @@
+.group-page-container {
+  padding: 2rem;
+}
+
+.search-panel {
+  margin-bottom: 2rem;
+}
+
+.group-content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start; /* ensure both columns align at top */
+}
+
+/* Left column: movies */
+.group-movies {
+  flex: 5;
+
+
+}
+
+/* Right column: showtimes */
+.showtimes {
+  flex: 1;
+  border-left: 1px solid #ccc;
+  padding-left: 2rem;
+margin-top: 2rem; /* move the column down slightly */
+}

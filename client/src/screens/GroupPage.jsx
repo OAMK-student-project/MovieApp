@@ -1,12 +1,14 @@
 
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MovieCard from "../components/MovieCard.jsx";
+import ManageGroupNav from "../components/ManageGroupNav.jsx";
 import "./GroupPage.css";
 
 export default function GroupPage() {
   const { id } = useParams(); // Group ID
+  const navigate = useNavigate();
   const [group, setGroup] = useState(null);
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,7 +53,7 @@ export default function GroupPage() {
               );
               return {
                 ...movieRes.data,
-                group_movie_id: m.id, // DB record ID for delete
+                group_movie_id: m.id,
               };
             } catch {
               return { ...m, group_movie_id: m.id };
@@ -87,35 +89,43 @@ export default function GroupPage() {
 
   // --- Add movie to group ---
   const handleAddMovie = async (tmdbId) => {
-    try {
-      const res = await axios.post(
-        `${API_URL}/groups/${id}/movies`,
-        { movie_id: tmdbId },
-        { withCredentials: true }
-      );
+  try {
+    const res = await axios.post(
+      `${API_URL}/groups/${id}/movies`,
+      { movie_id: tmdbId },
+      { withCredentials: true }
+    );
 
-      const movieRes = await axios.get(`${API_URL}/api/movies/${tmdbId}`, {
-        withCredentials: true,
-      });
+    const movieRes = await axios.get(`${API_URL}/api/movies/${tmdbId}`, {
+      withCredentials: true,
+    });
 
-      setMovies((prev) => [
-        ...prev,
-        { ...movieRes.data, group_movie_id: res.data.id },
-      ]);
-    } catch (err) {
-      console.error("Error adding movie:", err);
-      alert("Failed to add movie");
-    }
-  };
+    // Update movies list
+    setMovies((prev) => [
+      ...prev,
+      { ...movieRes.data, group_movie_id: res.data.id },
+    ]);
+
+    // Clear search input & results
+    setSearchQuery("");
+    setSearchResults([]);
+
+    // Navigate back to the group page
+    navigate(`/groups/${id}`);
+
+  } catch (err) {
+    console.error("Error adding movie:", err);
+    alert("Failed to add movie");
+  }
+};
 
   // --- Delete movie from group ---
   const handleDeleteMovie = async (groupMovieId) => {
     if (!window.confirm("Are you sure you want to remove this movie?")) return;
     try {
-      await axios.delete(
-        `${API_URL}/groups/${id}/movies/${groupMovieId}`,
-        { withCredentials: true }
-      );
+      await axios.delete(`${API_URL}/groups/${id}/movies/${groupMovieId}`, {
+        withCredentials: true,
+      });
       setMovies((prev) =>
         prev.filter((m) => m.group_movie_id !== groupMovieId)
       );
@@ -125,59 +135,79 @@ export default function GroupPage() {
     }
   };
 
+  // --- Navigate to manage group ---
+  const goToManageGroup = () => {
+    if (group?.id) {
+      navigate(`/managegroup/${group.id}`);
+    }
+  };
+
   if (loadingGroup || loadingMovies) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!group) return <p>Group not found</p>;
 
   return (
-    <div className="group-page">
+    <div className="group-page-container">
       <h2>{group.name}</h2>
-      <Link to={`/managegroup/${group.id}`}>
-        <h4>Go to Manage Group</h4>
-      </Link>
 
-      <div style={{ marginBottom: "20px" }}>
-        <h3>Search Movies to Add</h3>
-        <input
-          placeholder="Enter movie title"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button type="button" onClick={handleSearch}>
-          Search
-        </button>
+      {/* Navigation */}
+      <ManageGroupNav groupId={group.id} />
+      <button onClick={goToManageGroup}>
+        Go to Manage Group
+      </button>
 
-        <div className="grid">
-          {searchResults.map((movie) => (
-            <div key={`search-${movie.id}`} style={{ position: "relative" }}>
-              <MovieCard movie={movie} />
-              <button
-                onClick={() => handleAddMovie(movie.id)}>
-                Add to Group
-              </button>
+      <div className="group-content">
+        {/* Left column: movies */}
+        <div className="group-movies">
+          {/* Search Movies */}
+          <div className="search-panel">
+            <h3>Search Movies to Add</h3>
+            <input
+              placeholder="Enter movie title"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="button" onClick={handleSearch}>
+              Search
+            </button>
+
+            <div className="grid">
+              {searchResults.map((movie) => (
+                <div key={`search-${movie.id}`} style={{ position: "relative" }}>
+                  <MovieCard movie={movie} />
+                  <button onClick={() => handleAddMovie(movie.id)}>Add</button>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Group Movies */}
+          <h3>Group Movies</h3>
+          {movies.length > 0 ? (
+            <div className="grid">
+              {movies.map((movie) => (
+                <div
+                  key={`group-${movie.group_movie_id}`}
+                  style={{ position: "relative" }}
+                >
+                  <MovieCard movie={movie} />
+                  <button onClick={() => handleDeleteMovie(movie.group_movie_id)}>
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No movies added to this group yet.</p>
+          )}
+        </div>
+
+        {/* Right column: showtimes */}
+        <div className="showtimes">
+          <h3>Showtimes</h3>
+          <p>Showtime information will go here.</p>
         </div>
       </div>
-
-      <h3>Group Movies</h3>
-      {movies.length > 0 ? (
-        <div className="grid">
-          {movies.map((movie) => (
-            <div
-              key={`group-${movie.group_movie_id}`}
-              style={{ position: "relative" }}>
-              <MovieCard movie={movie} />
-              <button
-                onClick={() => handleDeleteMovie(movie.group_movie_id)} >
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No movies added to this group yet.</p>
-      )}
     </div>
   );
 }
