@@ -14,8 +14,10 @@ import Theater from "./screens/Theater.jsx";
 import Myinfo from "./screens/Myinfo.jsx";
 import "./index.css";
 import UserProvider from "./context/UserProvider.jsx";
-import SharedListPage from "./screens/FavoriteShared.jsx"
+import SharedListPage from "./screens/FavoriteShared.jsx";
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
+if (process.env.NODE_ENV === 'production') disableReactDevTools(); //Disables devTools when project is deployed
 
 const router = createBrowserRouter([
   {
