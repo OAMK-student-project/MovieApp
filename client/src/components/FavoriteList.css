@@ -129,10 +129,12 @@
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    background-color: var(--bg-third-color);
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
+    
 }
 
     .expandBtn:hover {
@@ -149,6 +151,7 @@
 
 .shareBtn {
     display:inline-flex;
+    background-color: var(--bg-third-color);
     margin: auto;
     padding: 0.5em 1em;
     border-color: var(--effect-color);
@@ -171,6 +174,7 @@
 
 .trashBtn {
     display:inline-flex;
+    background-color: var(--bg-third-color);
     margin: auto;
     padding: 0.5em 1em;
     border-color: var(--effect-color);
@@ -192,6 +196,7 @@
 
 .editBtn {
     display:inline-flex;
+    background-color: var(--bg-third-color);
     margin: auto;
     padding: 0.5em 1em;
     border-color: var(--effect-color);

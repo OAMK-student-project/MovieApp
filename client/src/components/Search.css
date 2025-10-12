@@ -1,9 +1,10 @@
 button {
-    background-color: var(--effect-color);
+    background-color: var(--button-color);
     border-radius: 4px;
     margin: 1rem;
     border: none;
 }
+
 button:hover {
   background-color: var(--bg-third-color); 
   color: var(--text-color);
@@ -11,27 +12,50 @@ button:hover {
 search-results-page{
   color: var(--text-color);
 }
-/*
-otin pois, jotta saan MovieCardin näkymään niin, miten se näkyy muissa sivuissa.
-.results{
+
+.searchContainer {
   margin: auto;
-  width: 50%;
- /*border: 3px solid green; /* otetaan pois
   padding: 1rem;
   text-align: center;
+  box-sizing: border-box; /* include padding in width */
 }
 
-*/
-select{
-  
+
+.searchContainer button {
+    background-color: var(--bg-second-color);
+    margin: 1rem;
+    padding: 0.5em 0.5em;
+    border: none;
+    width: 10%;
+    border: 2px solid var(--bg-second-color);
+    border-radius: 0px;
+    transition-duration: 0.3s;
 }
 
-.searchContainer{
-margin: auto;
-/*border: 3px solid green; /* otetaan pois*/
-padding: 1rem;
-text-align: center;
+.searchContainer button:hover {
+        background: var(--bg-color);
+        border: 2px solid var(--effect-color);
 }
+
+.searchContainer input {
+    border-radius: 0px;
+    margin: 1rem;
+    padding: 0.5em 0.5em;
+    border: none;
+    width: 10%;
+    border: 2px solid var(--bg-second-color);
+}
+
+  .searchContainer input.active {
+    border: 2px solid var(--bg-effect-color);
+  }
+
+.searchContainer select {
+  border-radius: 0;
+  border: 2px solid var(--bg-third-color);
+  padding: 0.5em 0.5em;
+}
+
 .movie-list {
   display: grid;
   grid-template-columns: 1fr;
