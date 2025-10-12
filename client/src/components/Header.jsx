@@ -10,7 +10,7 @@ function Header(){
     function signInOrOut(){
         return identified
         ? <> 
-            <NavLink to="/myinfo">To My info</NavLink>
+            <NavLink to="/myinfo">My info</NavLink>
             <NavLink onClick={signOut} className={({ isActive }) => (isActive ? "inactive" : "")}>Logout</NavLink>
         </>
         : <NavLink to="/login">Login</NavLink>;

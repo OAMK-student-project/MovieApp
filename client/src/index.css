@@ -4,6 +4,7 @@
     --bg-third-color: #4b4b4b;
     --button-color: #5C5EFF;
     --effect-color: #5C5EFF;
+    --border-color: #7e7e7e;
     --text-color: #eeeeee;
     --text-color-alt: #eee;
     --text-color-muted:#919191;
@@ -20,6 +21,7 @@
     --bg-third-color: #D1D9E6;
     --effect-color: #6C63FF;
     --button-color: #B4C5FF;
+    --border-color: #7e7e7e;
     --text-color: #1A1A1A;
     --text-color-alt: #eee;
     --text-color-muted: #5F6368;
@@ -40,5 +42,8 @@ html, body{
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: var(--text-font);
-    padding-top: 2rem;
+    padding-top: 0.8rem;
+    margin: 0;
+    scrollbar-color: var(--effect-color) var(--bg-second-color);
+    scrollbar-width: auto;
 }
