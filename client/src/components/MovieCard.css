@@ -127,6 +127,7 @@
 }
 
 .mc-reviewBtn {
+  cursor: pointer;
   display: block;
   text-decoration: none;
   color: var(--text-color);
