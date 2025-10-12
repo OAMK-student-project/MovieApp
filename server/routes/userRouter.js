@@ -1,10 +1,10 @@
 
 
 import { Router } from "express";
-import { signUp, signIn, refresh, signout } from "../controllers/userController.js";
+import { signUp, signIn, refresh, signout} from "../controllers/userController.js";
 import { auth } from "../helpers/auth.js";
 import users from "../models/usersModel.js";
-
+import {deleteProfile } from "../controllers/deleteController.js"
 const router = Router();
 
 // Auth routes
@@ -13,6 +13,8 @@ router.post("/signin", signIn);
 router.post("/refresh", refresh);
 router.post("/signout", signout);
 
+// Delete user routes
+router.delete("/me", auth, deleteProfile);
 // CRUD routes
 
 // Hae kaikki käyttäjät (vain adminille voisi sallia)

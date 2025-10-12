@@ -17,7 +17,7 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
 
   async function getMovieDetails(){
     try {
-      const response = await axios.get(url+`/api/movie/${movie.id}`);
+     const response = await axios.get(`${url}/api/movies/${movie.id}`); // changed this to working one 
       return response.data;
     } catch (error) {
       console.error(error);
