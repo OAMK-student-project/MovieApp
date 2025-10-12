@@ -33,9 +33,11 @@ function Header(){
             </nav>
             <div className="loginArea">
                 {signInOrOut()}
-                <ThemeToggle />
+                
             </div>
+            <ThemeToggle className="toggle-button" />
         </div>
+        
     );
 }
 

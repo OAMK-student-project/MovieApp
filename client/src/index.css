@@ -1,11 +1,13 @@
 :root {
     --bg-color: #1d1d1d;
     --bg-second-color:#2c2c2c;
-    --bg-third-color: #141332;
-    --button-color: #0d1a42;
+    --bg-third-color: #4b4b4b;
+    --button-color: #5C5EFF;
     --effect-color: #5C5EFF;
     --text-color: #eeeeee;
+    --text-color-alt: #eee;
     --text-color-muted:#919191;
+    --text-color-muted-alt: #b3b3b3;
     --text-font: Arial;
     --icon-color: #fff;
     --warning-color: #ee2400;
@@ -13,20 +15,30 @@
 }
 
 :root[data-theme="light"] {
-    --bg-color: #f7f7ff;
-    --bg-second-color: #7d93ff;
-    --bg-third-color: #c9c7ff;
-    --effect-color: #5C5EFF;
-    --button-color: #a3b3ff;
-    --text-color: #000000;
-    --text-color-muted: #696969;
-    --text-font: Arial;
-    --warning-color: #ee2400;
-    --showtime-color: #ffa600;
+    --bg-color: #F8FAFC;
+    --bg-second-color: #E3E8EF;
+    --bg-third-color: #D1D9E6;
+    --effect-color: #6C63FF;
+    --button-color: #B4C5FF;
+    --text-color: #1A1A1A;
+    --text-color-alt: #eee;
+    --text-color-muted: #5F6368;
+    --text-color-muted-alt: #b3b3b3;
+    --text-font: 'Segoe UI', sans-serif;
+    --icon-color: #6C63FF;
+    --warning-color: #E53935;
+    --showtime-color: #FF9800;
+}
+
+.page {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 24px;
 }
 
 html, body{
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: var(--text-font);
+    padding-top: 2rem;
 }
