@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Search.css";
+const url = import.meta.env.VITE_API_URL;
+
 export default function Search() {
 
   const [titleQuery, setTitleQuery] = useState("");
@@ -23,20 +25,20 @@ export default function Search() {
   };
 
   // hakufunktiot
-  const searchByTitle = () => {
-    fetchAndNavigate(`http://localhost:3001/api/movies?q=${encodeURIComponent(titleQuery)}`);
-  };
+const searchByTitle = () => {
+  fetchAndNavigate(`${url}/api/movies?q=${encodeURIComponent(titleQuery)}`);
+};
 
-  const searchByDirector = () => {
-    fetchAndNavigate(`http://localhost:3001/api/movies?director=${encodeURIComponent(directorQuery)}`);
-  };
+const searchByDirector = () => {
+  fetchAndNavigate(`${url}/api/movies?director=${encodeURIComponent(directorQuery)}`);
+};
 
-  const searchByGenre = () => {
-    fetchAndNavigate(`http://localhost:3001/api/movies?genre=${encodeURIComponent(genre)}`);
-  };
+const searchByGenre = () => {
+  fetchAndNavigate(`${url}/api/movies?genre=${encodeURIComponent(genre)}`);
+};
 
   const getPopular = () => {
-    fetchAndNavigate(`http://localhost:3001/api/movies`);
+    fetchAndNavigate(`${url}/api/movies`);
   };
 
   return (
