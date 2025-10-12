@@ -4,7 +4,7 @@ import { posterUrl, backdropUrl } from "../helpers/images"
 import { useUser } from "../context/useUser.js";
 import ReviewsCard from "./ReviewsCard.jsx";
 import AddFavoriteBtn from "../components/AddFavoriteBtn.jsx";
-import "./movieCard.css"
+import "./MovieCard.css"
 
 
 export default function MovieCard({ movie, onMovieUpdated  }) {
