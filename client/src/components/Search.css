@@ -70,7 +70,7 @@ button:hover {
   border-radius: 0;
   border: 1px solid var(--border-color);
   box-sizing: border-box;
-  vertical-align: middle; /* This is key for inline alignment */
+  vertical-align: middle;
 }
 
 .searchActions input {
@@ -83,7 +83,7 @@ button:hover {
   margin: auto;
   border: 1px solid var(--border-color);
   box-sizing: border-box;
-  vertical-align: middle; /* This is key for inline alignment */
+  vertical-align: middle;
 }
 
 .searchActions input,
@@ -100,7 +100,7 @@ button:hover {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  margin: 0; /* Remove any default margins */
+  margin: 0;
   transition-duration: 0.3s;
 }
 
