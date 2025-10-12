@@ -9,16 +9,12 @@ export default function MyGroups() {
   const { user } = useUser(); // user.id ja mahdollisesti user.accessToken
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-
+   const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     if (!user) return; // ei kirjautunut -> ei haeta
     const fetchGroups = async () => {
       try {
-        const token = localStorage.getItem("accessToken"); // tai user.accessToken
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/groups/me`, // reitti backendissä
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await axios.get(`${API_URL}/groups/me`,{ withCredentials: true });
         setGroups(res.data);
       } catch (err) {
         console.error("Error fetching groups:", err);

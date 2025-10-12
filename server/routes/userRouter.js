@@ -48,26 +48,6 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// Poista vain oma käyttäjä
-
-router.delete("/:id", auth, async (req, res) => {
-  const { id } = req.params;
-  if (parseInt(id) !== req.user.id) {  // <-- change here
-    return res.status(403).json({ error: "You can only delete your own account" });
-  }
-
-  try {
-    const result = await users.delete(id);
-    if (!result) return res.status(404).json({ error: "User not found" });
-    res.json({ message: "User deleted", user: result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
-
-
-
-});
 
 // Hae kaikki ryhmät, joissa kirjautunut käyttäjä on jäsen
 router.get("/me/groups", auth, async (req, res) => {
@@ -75,7 +55,7 @@ router.get("/me/groups", auth, async (req, res) => {
     const query = `
       SELECT g.id, g.name, g.created_at
       FROM "Groups" g
-      JOIN "GroupMembers" gm ON gm.group_id = g.id
+      JOIN "Group_members" gm ON gm.group_id = g.id
       WHERE gm.user_id = $1
     `;
     const result = await users.db.query(query, [req.user.id]);

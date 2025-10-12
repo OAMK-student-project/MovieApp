@@ -12,18 +12,19 @@ export default function ManageGroup() {
   const [error, setError] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isMember, setIsMember] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
   // Hae ownerin id ja liittymispyynnöt
   useEffect(() => {
     const fetchData = async () => {
       try {
         // 1. Hae ownerin id
         const ownerRes = await axios.get(
-          `http://localhost:3001/groups/${id}/owner`
+          `${API_URL}/groups/${id}/owner`
         );
         const ownerId = ownerRes.data.ownerId;
 
         // 2. Hae kirjautuneen käyttäjän id (backend palauttaa sen tokenin perusteella)
-        const meRes = await axios.get(`http://localhost:3001/user/me`);
+        const meRes = await axios.get(`${API_URL}/user/me`);
         const currentUserId = meRes.data.id;
 
         setIsOwner(ownerId === currentUserId);
@@ -35,7 +36,7 @@ export default function ManageGroup() {
 
         // 3. Hae liittymispyynnöt
         const reqRes = await axios.get(
-          `http://localhost:3001/groups/${id}/requests`
+          `${API_URL}/groups/${id}/requests`
         );
         setRequests(Array.isArray(reqRes.data.requests) ? reqRes.data.requests : []);
       } catch (err) {
@@ -52,7 +53,7 @@ export default function ManageGroup() {
   const handleRequest = async (requestId, status) => {
     try {
       const res = await axios.put(
-        `http://localhost:3001/groups/${id}/requests/${requestId}`,
+        `${API_URL}/groups/${id}/requests/${requestId}`,
         { status }
       );
 
@@ -68,7 +69,7 @@ export default function ManageGroup() {
   };
 const handleLeaveGroup = async () => {
   try {
-    const res = await axios.delete(`http://localhost:3001/groups/${id}/leave`);
+    const res = await axios.delete(`${API_URL}/groups/${id}/leave`);
     alert(res.data.message);
     
   } catch (err) {
@@ -83,7 +84,7 @@ const handleDeleteGroup = async () => {
   }
 
   try {
-    const res = await axios.delete(`http://localhost:3001/groups/${id}`);
+    const res = await axios.delete(`${API_URL}/groups/${id}`);
     alert(res.data.message);
    
     window.location.href = "/groups";

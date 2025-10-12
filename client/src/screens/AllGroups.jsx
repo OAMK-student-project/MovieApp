@@ -2,22 +2,22 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "./AllGroups.css";
-import UserContext from "../context/UserContext";
+
 
 function AllGroups() {
-  const { user } = useContext(UserContext);
+ 
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [requestedGroups, setRequestedGroups] = useState([]);
   const [newGroupName, setNewGroupName] = useState("");
-
+   const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     fetchGroups();
   }, []);
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/groups", { withCredentials: true });
+      const res = await axios.get(`${API_URL}/groups`, { withCredentials: true });
       setGroups(res.data);
     } catch (err) {
       console.error("Error fetching groups:", err);
@@ -32,7 +32,7 @@ function AllGroups() {
 
     try {
       const res = await axios.post(
-        `http://localhost:3001/groups/${groupId}/request-join`,
+        `${API_URL}/groups/${groupId}/request-join`,
         {},
         { withCredentials: true }
       );
@@ -56,7 +56,7 @@ function AllGroups() {
 
     try {
       const res = await axios.post(
-        "http://localhost:3001/groups",
+    `${API_URL}/groups`,
         { name: newGroupName },
         { withCredentials: true }
       );
