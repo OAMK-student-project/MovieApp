@@ -1,4 +1,8 @@
+
+
+
 import db from '../helpers/db.js'
+
 //id auto-incremented
 
 //-----Get all reviews
@@ -13,8 +17,12 @@ import db from '../helpers/db.js'
     }
 
 //-----Get user's reviews
+
+    
+
     const getReviewsByUserId = async(userID) => {
         const result = await db.query('SELECT * FROM "Reviews" WHERE user_id = $1', [userID]);
+
         return result.rows;
     }
 
@@ -50,7 +58,9 @@ import db from '../helpers/db.js'
 
 //-----Delete review
     //Not sure if this is functional. This should make sure that the review can only be deleted by the one who created it (user_id). reviewId = id which is added automatically (via postgres auto-increment)
+
     const deleteReview = async(reviewID, userID) => {
+
         const result = await db.query(
             'DELETE FROM "Reviews" WHERE id = $1 AND user_id = $2 RETURNING *',
             [reviewID, userID])
@@ -59,7 +69,9 @@ import db from '../helpers/db.js'
 
 //-----Update review
     //reviewId = id which is added automatically on review creation (via postgres auto-increment)
+
     const updateReview = async(reviewID, reviewData) => {
+
         const result = await db.query(
             'UPDATE "Reviews" SET rating = $1, review_text = $2 WHERE id = $3 AND user_id = $4 RETURNING *',
             [

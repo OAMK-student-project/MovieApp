@@ -22,5 +22,5 @@ const config = isTest
       ...(process.env.DB_PASSWORD ? { password: process.env.DB_PASSWORD } : {})
     };
 
-const pool = new Pool(config);
-export default pool;
+const db = new Pool(config);
+export default db;

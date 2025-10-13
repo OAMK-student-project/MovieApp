@@ -1,15 +1,15 @@
-import { pool } from '../helpers/db.js'
+import db from '../helpers/db.js';
 //id auto-incremented
 
 //-----Get all Group Members
     const getAllMembers = async() => {
-       const result = await pool.query('SELECT * FROM "Group_members"');
+       const result = await db.query('SELECT * FROM "Group_members"');
        return result.rows;
     }
 
 //-----Get Group Members by group
     const getMembersByGroup = async(id) => {
-        const result = await pool.query('SELECT * FROM "Group_members" WHERE group_id=$1', [id])
+        const result = await db.query('SELECT * FROM "Group_members" WHERE group_id=$1', [id])
         return result.rows;
     }
 
@@ -17,7 +17,7 @@ import { pool } from '../helpers/db.js'
     //groupMemberData = { user_id, group_id, role }
     const addGroupMember = async(groupMemberData) => {
         const timestamp = new Date();
-        const result = await pool.query(
+        const result = await db.query(
             'INSERT INTO "Group_members" (user_id, group_id, role, joined_at) VALUES ($1, $2, $3, $4) RETURNING *',
             [
                 groupMemberData.user_id,
@@ -30,7 +30,7 @@ import { pool } from '../helpers/db.js'
 
 //-----Update Group Members
     const updateGroupMembers = async(id, groupMemberData) => {
-        const result = await pool.query(
+        const result = await db.query(
             'UPDATE "Group_members" SET role = $1 WHERE id = $2 RETURNING *',
             [
                 groupMemberData.role,
@@ -40,9 +40,19 @@ import { pool } from '../helpers/db.js'
 
 //-----Delete Group Member
     const deleteGroupMember = async(id) => {
-        const result = await pool.query(
+        const result = await db.query(
             'DELETE FROM "Group_members" WHERE id=$1 RETURNING *', [id])
             return result.rows;
     }
 
-export { getAllMembers, getMembersByGroup, addGroupMember, updateGroupMembers, deleteGroupMember }
+// Delete a member by user_id and group_id
+const deleteGroupMemberByUserId = async (groupId, userId) => {
+  const result = await db.query(
+    'DELETE FROM "Group_members" WHERE group_id=$1 AND user_id=$2 RETURNING *',
+    [groupId, userId]
+  );
+  return result.rows[0];
+};
+
+
+export { getAllMembers, getMembersByGroup, addGroupMember, updateGroupMembers, deleteGroupMember, deleteGroupMemberByUserId }

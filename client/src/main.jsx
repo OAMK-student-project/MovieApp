@@ -7,13 +7,15 @@ import Home from "./screens/Home.jsx"
 import Login from "./screens/account/Login.jsx";
 import Signup from "./screens/account/Signup.jsx";
 import Favorites from "./screens/Favorites.jsx";
-import Groups from "./screens/Groups.jsx";
 import Reviews from "./screens/Reviews.jsx";
 import SearchScreen from "./screens/SearchScreen";
 import Theater from "./screens/Theater.jsx";
 import Myinfo from "./screens/Myinfo.jsx";
 import "./index.css";
 import UserProvider from "./context/UserProvider.jsx";
+import GroupsPage from "./screens/GroupsPage.jsx";
+import ManageGroup from "./screens/ManageGroup.jsx";
+import GroupPage from "./screens/GroupPage.jsx";
 import SharedListPage from "./screens/FavoriteShared.jsx"
 
 
@@ -26,14 +28,22 @@ const router = createBrowserRouter([
       { index: true, element: <Home/> },
       { path: "login", element: <Login/> },
       { path: "favorites", element: <Favorites/>},
+
+      { path: "groups", element: <GroupsPage /> },
+      { path: "allgroups", element: <GroupsPage /> },
+
       { path: "/shared/favourites/:uuid", element: <SharedListPage/>},
-      { path: "groups", element: <Groups/>},
+      
       { path: "reviews", element: <Reviews/>},
       { path: "search", element: <SearchScreen/>},
       { path: "theater", element: <Theater/>},
       { path: "signup", element: <Signup/>},
-      { path:"myinfo", element:<Myinfo/>}      
-    ]
+      { path:"myinfo", element:<Myinfo/>},      
+      { path:"grouppage/:id", element:<GroupPage/>},     
+     { path: "groups/:id", element: <GroupPage /> },
+      { path:"managegroup/:id", element:<ManageGroup/>}      
+     
+      ]
   }
 ]);
 

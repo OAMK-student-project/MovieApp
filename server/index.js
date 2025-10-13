@@ -1,43 +1,52 @@
+
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-import userRouter from "./routes/userRouter.js";
 import moviesRouter from "./routes/moviesRouter.js";
-import movieRouter from "./routes/movieRouter.js";
-import reviewRouter from "./routes/reviewRouter.js";
+import userRouter from "./routes/userRouter.js";
+import groupsRouter from "./routes/groupsRouter.js";
+import myGroupsRoutes from "./routes/myGroupsRouter.js";
+import reviewRouter from "./routes/reviewRouter.js"; //  import reviews
+import groupMoviesRouter from "./routes/groupMoviesRouter.js";
+
+
 import favMoviesRouter from "./routes/favMoviesRouter.js";
 import favListRouter from "./routes/favListRouter.js";
 import favSharedRouter from "./routes/favSharedRouter.js";
 
-//Router imports here
 const app = express();
-const port = process.env.PORT || 3001;
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: process.env.FRONTEND_URL || "http://localhost:5173", // change if needed
   credentials: true
+
 }));
+
 app.use(cookieParser());
 app.use(express.json());
 
-//routes here, healthz is for initial testing
-app.get("/healthz", (req,res)=>res.send("ok"));
-app.use("/user", userRouter);
+app.get("/healthz", (req, res) => res.send("ok"));
+
 app.use("/api/movies", moviesRouter);
-app.use("/api/movie", movieRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/favourite", favMoviesRouter);
 app.use("/favourite-lists", favListRouter);
 app.use("/shared", favSharedRouter);
 
 
+app.use("/groups", groupsRouter);
+app.use("/user", userRouter);
+
+//reitti ryhmän elokuville
+app.use("/groups/:groupId/movies", groupMoviesRouter);
+
+app.use("/user/my-groups", myGroupsRoutes);
 app.use((req, res, next) => {
-    next({
-        status: 404, 
-        message: "Not found"
-    });
+  next({ status: 404, message: "Not found" });
 });
+
 
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
@@ -46,6 +55,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-
-
-app.listen(port, ()=>console.log(`Server running at port ${port}`));
+const port = process.env.PORT || 3001;
+app.listen(port, () => console.log(`Server running at port ${port}`));

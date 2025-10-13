@@ -2,19 +2,19 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Search from "../components/Search.jsx";
 import { Toaster } from 'react-hot-toast';
-//import Groupnav from "../components/Groupnav.jsx";
+
 
   export default function App() {
     
     const location = useLocation();
       
-    const hideSearchOn = ["/myinfo", "/favorites"]; // muuttuja joka piilotta serch komponentin tietyllä sivulla
-
+    const hideSearchOn = ["/myinfo", "/grouppage","/favorites", "/managegroup"]; // muuttuja joka piilotta serch komponentin tietyillä sivuilla
+   
     return (
     <div>
       <Header/>
       
-      {!hideSearchOn.includes(location.pathname) && <Search />}  
+     {!hideSearchOn.some(path => location.pathname.startsWith(path)) && <Search />}
      
       <Outlet/>
       

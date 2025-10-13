@@ -13,7 +13,7 @@ export default function Home() {
 
   async function getTrendingToday(){
     try {
-      const response = await axios.get(url+`/api/movie/trending?page=${page}`);
+      const response = await axios.get(url+`/api/movies/trending?page=${page}`);
       return response.data;
     } catch (error) {
       console.error(error);
