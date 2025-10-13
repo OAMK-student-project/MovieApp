@@ -1,7 +1,6 @@
-import React from 'react'
+
 import { useLocation } from "react-router-dom";
 import MovieCard from "../components/MovieCard"
-import './SearchScreen.css'
 
 export default function SearchScreen() {
     const location = useLocation();
