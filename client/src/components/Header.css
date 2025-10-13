@@ -7,35 +7,32 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--bg-second-color);
-  flex-wrap: wrap;
-  height: 3rem;
-  padding: 0 1rem;
-  overflow-x: hidden;
+  height: auto;
 }
 
 .navArea {
-  height: 3rem;
   display: flex;
   align-items: center;
   gap: 0.1em;
+  flex: 1;
 }
 
-
 .navArea a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 2rem;
   text-decoration: none;
   color: var(--text-color);
   border-bottom: 2px solid var(--bg-third-color);
   white-space: nowrap;
-  transition-duration: 0.3s;
+  transition: 0.3s;
   box-sizing: border-box;
   height: 3rem;
-  padding: 0 2rem;
-  line-height: 3rem;
 }
 
 .navArea a:hover {
@@ -48,28 +45,23 @@
   border-bottom: 2px solid var(--effect-color);
 }
 
-
 .loginArea {
   display: flex;
-  overflow: hidden;
-  flex: 0 1 auto;
-  min-width: 0;
+  align-items: center;
   margin-left: auto;
 }
 
 .loginArea a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 2rem;
   text-decoration: none;
   color: var(--text-color);
   border-bottom: 2px solid var(--bg-third-color);
-  white-space: nowrap;
-  transition-duration: 0.3s;
   box-sizing: border-box;
   height: 3rem;
-  padding: 0 2rem;
-  line-height: 3rem;
-  
+  transition: 0.3s;
 }
 
 .loginArea a:hover {
@@ -77,37 +69,36 @@
   border-bottom: 2px solid var(--effect-color);
 }
 
-.loginArea a.active{
+.loginArea a.active {
   background-color: var(--bg-second-color);
   border-bottom: 2px solid var(--effect-color);
 }
 
-
-/* Mobile styles */
+/* Responsiveness, not perfect as the search section will fall under it due to fixed nav */
 @media (max-width: 640px) {
   .header {
     flex-direction: column;
     align-items: stretch;
-    justify-content: flex-start;
-    padding: 0.5rem;
+  }
+
+  .header h1 {
+    text-align: center;
+    margin-bottom: 0.5rem;
   }
 
   .navArea,
   .loginArea {
     width: 100%;
     justify-content: space-around;
+    margin: 0.25rem 0;
   }
 
-  .navArea a {
-    padding: 0.65rem 0.4rem;
-    flex: 1 1 auto;
-    text-align: center;
-  }
-
+  .navArea a,
   .loginArea a {
-    padding: 0.65rem 0.85rem;
     flex: 1 1 auto;
+    padding: 0.65rem 0.5rem;
     text-align: center;
+    height: auto;
+    line-height: normal;
   }
 }
-

@@ -131,9 +131,7 @@ button:hover {
   width: 100%;
 }
 
-/* ------------------------
-   RESPONSIVE TWEAKS
--------------------------*/
+
 @media (max-width: 900px) {
   .searchActions {
     flex-wrap: wrap;

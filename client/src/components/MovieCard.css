@@ -145,6 +145,7 @@
   .mc-reviewBtn:hover {
     border: 2px solid var(--effect-color);
     border-radius: 0;
+    background-color: var(--bg-color)
   }
 
 @media (max-width: 640px) {
