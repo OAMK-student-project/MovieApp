@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import Groupnav from "../components/Groupnav";
 import AllGroups from "./AllGroups";
-import MyGroups from "./MyGroups.jsx";
+import MyGroups from "./myGroups.jsx";
 // This component is for navigation between Allgroups and My groups
 export default function GroupsPage() {
   const location = useLocation();

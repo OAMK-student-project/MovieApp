@@ -2,7 +2,7 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "./AllGroups.css";
-
+import toast from "react-hot-toast";
 
 function AllGroups() {
  
@@ -10,7 +10,8 @@ function AllGroups() {
   const [loading, setLoading] = useState(true);
   const [requestedGroups, setRequestedGroups] = useState([]);
   const [newGroupName, setNewGroupName] = useState("");
-   const API_URL = import.meta.env.VITE_API_URL;
+  
+  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     fetchGroups();
   }, []);
@@ -21,7 +22,7 @@ function AllGroups() {
       setGroups(res.data);
     } catch (err) {
       console.error("Error fetching groups:", err);
-      alert("Failed to load groups");
+      toast.error("Failed to load groups");
     } finally {
       setLoading(false);
     }
@@ -37,11 +38,11 @@ function AllGroups() {
         { withCredentials: true }
       );
 
-      alert(res.data.message || "Join request sent");
+      toast.success(res.data.message || "Join request sent");
       setRequestedGroups(prev => [...prev, groupId]);
     } catch (err) {
       console.error("Error sending join request:", err);
-      alert(err.response?.data?.message || "Failed to send join request");
+      toast.error(err.response?.data?.message || "Failed to send join request");
       if (err.response?.status === 400 && err.response?.data?.message?.includes("already sent")) {
         setRequestedGroups(prev => [...prev, groupId]);
       }
@@ -50,7 +51,7 @@ function AllGroups() {
 
   const addGroup = async () => {
     if (!newGroupName.trim()) {
-      alert("Group name cannot be empty");
+      toast.error("Group name cannot be empty");
       return;
     }
 
@@ -61,12 +62,12 @@ function AllGroups() {
         { withCredentials: true }
       );
 
-      alert(res.data.message || "Group created");
+      toast.success(res.data.message || "Group created");
       setNewGroupName("");
       fetchGroups();
     } catch (err) {
       console.error("Error adding group:", err);
-      alert(err.response?.data?.message || "Failed to add group");
+      toast.error(err.response?.data?.message || "Failed to add group");
     }
   };
 

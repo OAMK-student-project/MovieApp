@@ -2,8 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import "./Myinfo.css";
+import "./GroupPage.css";
+import toast from "react-hot-toast";
 
-axios.defaults.withCredentials = true;
+ axios.defaults.withCredentials = true;
 
 export default function Myinfo() {
   const { user, signin, signout } = useContext(UserContext);
@@ -12,18 +14,20 @@ export default function Myinfo() {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const API_URL = import.meta.env.VITE_API_URL;
+ 
   // Hae käyttäjä backendistä
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/user/me", { withCredentials: true });
+        const res = await axios.get(`${API_URL}/user/me`, { withCredentials: true });
         setUserData(res.data);
         setFirstname(res.data.firstname || "");
         setLastname(res.data.lastname || "");
         setEmail(res.data.email || "");
       } catch (err) {
         console.error("Failed to fetch user:", err.response?.data || err.message);
+         toast.error("Failed to fetch user data");
       } finally {
         setLoading(false);
       }
@@ -32,34 +36,37 @@ export default function Myinfo() {
     fetchUser();
   }, []);
 
-  // Päivitä profiili
-  const updateUser = async () => {
-    try {
-      const res = await axios.put(
-        "http://localhost:3001/user/me",
-        { firstname, lastname, email },
-        { withCredentials: true }
-      );
-      setUserData(res.data);
-      alert("Profile updated successfully!");
-    } catch (err) {
-      console.error("Error updating user:", err.response?.data || err.message);
-      alert("Failed to update profile");
-    }
+  const deleteUser = async () => {
+    toast.custom((t) => (
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+        <div className="toast-modal">
+          <p>Are you sure you want to delete your account it is permanent</p>
+          <div className="toast-modal-buttons">
+            <button className="toast-btn cancel-btn" onClick={() => toast.dismiss(t.id)}>Cancel</button>
+            <button
+              className="toast-btn delete-btn"
+              onClick={async () => {
+                try {
+                  await axios.delete(`${API_URL}/user/me`);
+                  toast.success("Your profile has been deleted.");
+                  await signout();
+                  window.location.href = "/login";
+                } catch (err) {
+                  console.error("Error deleting user:", err);
+                  toast.error("Failed to delete profile");
+                } finally {
+                  toast.dismiss(t.id);
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    ), { duration: Infinity });
   };
 
-  // Poista käyttäjä
-  const deleteUser = async () => {
-    try {
-      await axios.delete("http://localhost:3001/user/me", { withCredentials: true });
-      alert("Your profile has been deleted.");
-      await signout(); // Tyhjennä frontend state
-      window.location.href = "/login";
-    } catch (err) {
-      console.error("Error deleting user:", err.response?.data || err.message);
-      alert("Failed to delete profile");
-    }
-  };
 
   if (loading) return <p>Loading user data...</p>;
 
@@ -69,24 +76,13 @@ export default function Myinfo() {
       <div className="container">
         <h3>Myinfo</h3>
 
-        <h4>Current User Info </h4>
-        <p>User ID: {userData?.id || "N/A"}</p>
+     
+       
         <p>Email: {userData?.email || "N/A"}</p>
         <p>First Name: {userData?.firstname || "Not available"}</p>
         <p>Last Name: {userData?.lastname || "Not available"}</p>
 
-        <p>Edit First Name:</p>
-        <input type="text" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
-
-        <p>Edit Last Name:</p>
-        <input type="text" value={lastname} onChange={(e) => setLastname(e.target.value)} />
-
-        <p>Edit Email:</p>
-        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-
-        <button type="button" onClick={updateUser}>
-          Save changes
-        </button>
+        
       </div>
 
       {/* Right side */}
@@ -110,12 +106,7 @@ export default function Myinfo() {
         </p>
         <button
           type="button"
-          onClick={() => {
-            if (window.confirm("By deleting account you will lose all access to it, are you sure?")) {
-              deleteUser();
-            }
-          }}
-        >
+          onClick={deleteUser}>
           Delete my profile
         </button>
       </div>

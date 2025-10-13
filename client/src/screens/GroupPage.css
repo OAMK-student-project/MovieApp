@@ -26,3 +26,57 @@
   padding-left: 2rem;
 margin-top: 2rem; /* move the column down slightly */
 }
+
+
+
+/* Modal content */
+.toast-modal {
+  background: var(--bg-color); /* solid white modal */
+  color: var(--text-color);      
+  padding: 1.5rem;
+  border-radius: 0.42rem;
+  border: 2px solid var(--warning-color);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 10000; /* above overlay */ 
+  animation: scaleIn 0.2s ease-out forwards;
+  
+  margin-top: 4rem;
+}
+
+/* Buttons */
+.toast-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.toast-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background: #ccc;
+  color: #111;
+}
+
+.cancel-btn:hover {
+  background: var(--effect-color);
+}
+
+.delete-btn {
+  background: #e53e3e;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #c53030;
+}

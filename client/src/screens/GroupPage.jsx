@@ -5,7 +5,9 @@ import axios from "axios";
 import MovieCard from "../components/MovieCard.jsx";
 import ManageGroupNav from "../components/ManageGroupNav.jsx";
 import "./GroupPage.css";
+import toast from "react-hot-toast";
 
+  
 export default function GroupPage() {
   const { id } = useParams(); // Group ID
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ export default function GroupPage() {
   const [loadingGroup, setLoadingGroup] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const [error, setError] = useState(null);
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // --- Fetch group info ---
   useEffect(() => {
@@ -28,7 +30,7 @@ export default function GroupPage() {
         setGroup(res.data);
       } catch (err) {
         console.error("Error fetching group:", err);
-        setError("Failed to fetch group");
+        toast.error("Failed to fetch group");
       } finally {
         setLoadingGroup(false);
       }
@@ -64,7 +66,7 @@ export default function GroupPage() {
         setMovies(moviesWithDetails);
       } catch (err) {
         console.error("Error fetching group movies:", err);
-        setError("Failed to fetch group movies");
+        toast.error("Failed to fetch group movies");
       } finally {
         setLoadingMovies(false);
       }
@@ -83,7 +85,7 @@ export default function GroupPage() {
       setSearchResults(res.data.results || []);
     } catch (err) {
       console.error("Search failed:", err);
-      alert("Failed to search movies");
+      toast.error("Failed to search movies");
     }
   };
 
@@ -107,38 +109,57 @@ export default function GroupPage() {
 
     setSearchQuery("");
     setSearchResults([]);
-
-    // FIXED: navigate back to the correct URL
+    toast.success("Movie added to group!");
+    
+  // FIXED: navigate back to the correct URL
     navigate(`/grouppage/${id}`);
   } catch (err) {
     console.error("Error adding movie:", err);
-    alert("Failed to add movie");
+    toast.error("Failed to add movie");
   }
 };
 
-  // --- Delete movie from group ---
+  
   const handleDeleteMovie = async (groupMovieId) => {
-    if (!window.confirm("Are you sure you want to remove this movie?")) return;
-    try {
-      await axios.delete(`${API_URL}/groups/${id}/movies/${groupMovieId}`, {
-        withCredentials: true,
-      });
-      setMovies((prev) =>
-        prev.filter((m) => m.group_movie_id !== groupMovieId)
-      );
-    } catch (err) {
-      console.error("Error deleting movie:", err);
-      alert("Failed to delete movie.");
-    }
-  };
+  toast.custom((t) => (
+    <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className="toast-modal">
+        <p>Are you sure you want to remove this movie?</p>
+        <div className="toast-modal-buttons">
+          <button
+            className="toast-btn cancel-btn"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+          <button
+            className="toast-btn delete-btn"
+            onClick={async () => {
+              try {
+                await axios.delete(`${API_URL}/groups/${id}/movies/${groupMovieId}`, {
+                  withCredentials: true,
+                });
+                setMovies((prev) =>
+                  prev.filter((m) => m.group_movie_id !== groupMovieId)
+                );
+                toast.success("Movie removed from group.");
+              } catch (err) {
+                console.error("Error deleting movie:", err);
+                toast.error("Failed to delete movie.");
+              } finally {
+                toast.dismiss(t.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  ), { duration: Infinity });
+};
 
-  // --- Navigate to manage group ---
-  const goToManageGroup = () => {
-    if (group?.id) {
-      navigate(`/managegroup/${group.id}`);
-    }
-  };
-
+  
   if (loadingGroup || loadingMovies) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!group) return <p>Group not found</p>;

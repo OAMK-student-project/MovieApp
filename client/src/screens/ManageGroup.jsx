@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
+import "./GroupPage.css";
+
 
 axios.defaults.withCredentials = true; // tärkeitä httpOnly-cookien kanssa
 
@@ -13,6 +16,7 @@ export default function ManageGroup() {
   const [isOwner, setIsOwner] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
+  
   // Hae ownerin id ja liittymispyynnöt
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +45,8 @@ export default function ManageGroup() {
         setRequests(Array.isArray(reqRes.data.requests) ? reqRes.data.requests : []);
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Failed to load data");
+        toast.error("Failed to load data");
+        
       } finally {
         setLoading(false);
       }
@@ -57,43 +62,81 @@ export default function ManageGroup() {
         { status }
       );
 
-      alert(res.data.message || `Request ${status}`);
+      toast.success(res.data.message || `Request ${status}`);
 
       setRequests((prev) =>
         prev.filter((r) => r.request_id !== requestId)
       );
     } catch (err) {
       console.error("Error updating request:", err);
-      alert("Failed to update request.");
+      toast.error("Failed to update request.");
     }
   };
-const handleLeaveGroup = async () => {
-  try {
-    const res = await axios.delete(`${API_URL}/groups/${id}/leave`);
-    alert(res.data.message);
-    
-  } catch (err) {
-    console.error("Error leaving group:", err);
-    alert("Failed to leave group.");
-  }
-};
-// tapahtumakäsitelijä ryhmän poistolle
-const handleDeleteGroup = async () => {
-  if (!window.confirm("Are you sure you want to delete this group? This cannot be undone.")) {
-    return;
-  }
 
-  try {
-    const res = await axios.delete(`${API_URL}/groups/${id}`);
-    alert(res.data.message);
-   
-    window.location.href = "/groups";
-  } catch (err) {
-    console.error("Error deleting group:", err);
-    alert("Failed to delete group.");
-  }
-};
-  if (loading) return <p>Loading...</p>;
+
+const handleLeaveGroup = async () => {
+    toast.custom((t) => (
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+        <div className="toast-modal">
+          <p>Are you sure you want to leave this group?</p>
+          <div className="toast-modal-buttons">
+            <button className="toast-btn cancel-btn" onClick={() => toast.dismiss(t.id)}>Cancel</button>
+            <button
+              className="toast-btn delete-btn"
+              onClick={async () => {
+                try {
+                  const res = await axios.delete(`${API_URL}/groups/${id}/leave`);
+                  toast.success(res.data.message);
+                } catch (err) {
+                  console.error("Error leaving group:", err);
+                  toast.error("Failed to leave group");
+                } finally {
+                  toast.dismiss(t.id);
+                }
+              }}
+            >
+              Leave
+            </button>
+          </div>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  };
+
+  
+const handleDeleteGroup = async () => {
+    toast.custom((t) => (
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+        <div className="toast-modal">
+          <p>Are you sure you want to delete this group? This cannot be undone.</p>
+          <div className="toast-modal-buttons">
+            <button className="toast-btn cancel-btn" onClick={() => toast.dismiss(t.id)}>Cancel</button>
+            <button
+              className="toast-btn delete-btn"
+              onClick={async () => {
+                try {
+                  const res = await axios.delete(`${API_URL}/groups/${id}`);
+                  toast.success(res.data.message);
+                  window.location.href = "/groups";
+                } catch (err) {
+                  console.error("Error deleting group:", err);
+                  toast.error("Failed to delete group");
+                } finally {
+                  toast.dismiss(t.id);
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  };
+ 
+
+
+if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
  
 
