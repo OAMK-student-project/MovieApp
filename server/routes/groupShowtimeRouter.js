@@ -1,4 +1,5 @@
 import express from "express";
+import { auth } from "../helpers/auth.js";
 import {
   getShowtimes,
   addShowtime,
@@ -8,12 +9,12 @@ import {
 const router = express.Router({ mergeParams: true });
 
 // Get all showtimes for a group
-router.get("/", getShowtimes);
+router.get("/",  auth, getShowtimes);
 
 // Add a showtime to a group
-router.post("/", addShowtime);
+router.post("/", auth, addShowtime);
 
 // Delete a specific showtime
-router.delete("/:showtimeId", removeShowtime);
+router.delete("/:showtimeId", auth, removeShowtime);
 
 export default router;
