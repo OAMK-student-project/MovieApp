@@ -148,17 +148,45 @@ export default function GroupPage() {
     }
   };
 
-  // --- Delete showtime from database ---
-  const handleDeleteShowtime = async (showtimeId) => {
-    try {
-      await axios.delete(`${API_URL}/groups/${id}/showtimes/${showtimeId}`, { withCredentials: true });
-      setShowtimes(prev => prev.filter(s => s.id !== showtimeId));
-      toast.success("Showtime deleted");
-    } catch (err) {
-      console.error("Error deleting showtime:", err);
-      toast.error("Failed to delete showtime");
-    }
-  };
+
+const handleDeleteShowtime = (showtimeId) => {
+  toast.custom(t => (
+    <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className="toast-modal">
+        <p>Are you sure you want to delete this showtime?</p>
+        <div className="toast-modal-buttons">
+          <button
+            className="toast-btn cancel-btn"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+          <button
+            className="toast-btn delete-btn"
+            onClick={async () => {
+              try {
+                await axios.delete(
+                  `${API_URL}/groups/${id}/showtimes/${showtimeId}`,
+                  { withCredentials: true }
+                );
+                setShowtimes(prev => prev.filter(s => s.id !== showtimeId));
+                toast.success("Showtime deleted");
+              } catch (err) {
+                console.error("Error deleting showtime:", err);
+                toast.error("Failed to delete showtime");
+              } finally {
+                toast.dismiss(t.id);
+              }
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  ), { duration: Infinity });
+};
+
 
   if (loadingGroup || loadingMovies || loadingShowtimes) return <p>Loading...</p>;
   if (!group) return <p>Group not found</p>;
