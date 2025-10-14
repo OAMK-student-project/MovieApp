@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
     
     const location = useLocation();
       
-    const hideSearchOn = ["/myinfo", "/grouppage","/favorites", "/managegroup"]; // muuttuja joka piilotta serch komponentin tietyillä sivuilla
+    const hideSearchOn = ["/myinfo", "/grouppage","/favorites", "/managegroup", "/groups", "/allgroups"]; // muuttuja joka piilotta serch komponentin tietyillä sivuilla
    
     return (
     <div>

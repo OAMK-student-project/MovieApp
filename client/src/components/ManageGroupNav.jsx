@@ -1,32 +1,23 @@
-
 import { NavLink } from "react-router-dom";
-import "./Header.css";
+import './ManageGroupNav.css';
 
 function ManageGroupNav({ groupId }) {
   return (
-    <div className="header">
-     
-
-      <nav className="nav-area">
-        <NavLink
-          to={`/grouppage/${groupId}`}
-          className={({ isActive }) => (isActive ? "active-link" : "")}
-        >
-          Group Page
-        </NavLink>
-        <NavLink
-          to={`/managegroup/${groupId}`}
-          className={({ isActive }) => (isActive ? "active-link" : "")}
-        >
-          Manage Group
-        </NavLink>
-      </nav>
-
-      
-    </div>
+    <nav className="manageGroups-navArea">
+      <NavLink
+        to={`/grouppage/${groupId}`}
+        className={({ isActive }) => (isActive ? "active" : "")}
+      >
+        Group Page
+      </NavLink>
+      <NavLink
+        to={`/managegroup/${groupId}`}
+        className={({ isActive }) => (isActive ? "active" : "")}
+      >
+        Manage Group
+      </NavLink>
+    </nav>
   );
 }
 
 export default ManageGroupNav;
-
-

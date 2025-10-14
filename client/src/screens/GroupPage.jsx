@@ -120,10 +120,10 @@ export default function GroupPage() {
 };
 
   
-  const handleDeleteMovie = async (groupMovieId) => {
+const handleDeleteMovie = async (groupMovieId) => {
   toast.custom((t) => (
-    <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
-      <div className="toast-modal">
+    <div className="toast-overlay">
+      <div className={`toast-modal ${t.visible ? "show" : "hide"}`}>
         <p>Are you sure you want to remove this movie?</p>
         <div className="toast-modal-buttons">
           <button
@@ -132,6 +132,7 @@ export default function GroupPage() {
           >
             Cancel
           </button>
+
           <button
             className="toast-btn delete-btn"
             onClick={async () => {
@@ -159,7 +160,6 @@ export default function GroupPage() {
   ), { duration: Infinity });
 };
 
-  
   if (loadingGroup || loadingMovies) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!group) return <p>Group not found</p>;
@@ -177,13 +177,13 @@ export default function GroupPage() {
         <div className="group-movies">
           {/* Search Movies */}
           <div className="search-panel">
-            <h3>Search Movies to Add</h3>
-            <input
+            <h3>Search Movies to add</h3>
+            <input className="gp-input"
               placeholder="Enter movie title"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="button" onClick={handleSearch}>
+            <button className="gp-button" type="button" onClick={handleSearch}>
               Search
             </button>
 
@@ -191,14 +191,14 @@ export default function GroupPage() {
               {searchResults.map((movie) => (
                 <div key={`search-${movie.id}`} style={{ position: "relative" }}>
                   <MovieCard movie={movie} />
-                  <button onClick={() => handleAddMovie(movie.id)}>Add</button>
+                  <button className="gp-addButton" onClick={() => handleAddMovie(movie.id)}>Add to {group.name}</button>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Group Movies */}
-          <h3>Group Movies</h3>
+          <h3>Movies added in {group.name}</h3>
           {movies.length > 0 ? (
             <div className="grid">
               {movies.map((movie) => (
@@ -207,8 +207,8 @@ export default function GroupPage() {
                   style={{ position: "relative" }}
                 >
                   <MovieCard movie={movie} />
-                  <button onClick={() => handleDeleteMovie(movie.group_movie_id)}>
-                    Delete
+                  <button className="gp-deleteButton" onClick={() => handleDeleteMovie(movie.group_movie_id)}>
+                    Delete from {group.name}
                   </button>
                 </div>
               ))}

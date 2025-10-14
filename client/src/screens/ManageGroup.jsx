@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "./GroupPage.css";
+import ManageGroupNav from "../components/ManageGroupNav.jsx";
+import "./ManageGroup.css";
 
 
 axios.defaults.withCredentials = true; // tärkeitä httpOnly-cookien kanssa
@@ -76,7 +77,7 @@ export default function ManageGroup() {
 
 const handleLeaveGroup = async () => {
     toast.custom((t) => (
-      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to leave this group?</p>
           <div className="toast-modal-buttons">
@@ -106,7 +107,7 @@ const handleLeaveGroup = async () => {
   
 const handleDeleteGroup = async () => {
     toast.custom((t) => (
-      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to delete this group? This cannot be undone.</p>
           <div className="toast-modal-buttons">
@@ -141,14 +142,15 @@ if (loading) return <p>Loading...</p>;
  
 
   return (
-    <div className="grid-container">
-       {/* Left side */}
-       <div className="container">
+    <div className="manageGroups-container">
       <h2>Manage Group</h2>
+    <div className="manageGroups-navArea"><ManageGroupNav groupId={id} />
+    </div>
+    
+    <div className="manageGroups-grid">
+       {/* Left side */}
+       <div className="manageGroups-left">
       <h3>Group members</h3>
-        
-        
-        
         <button onClick={handleLeaveGroup} style={{ marginBottom: "16px" }}>
     Leave Group
   </button>
@@ -156,7 +158,7 @@ if (loading) return <p>Loading...</p>;
      
       {/* Right side */}
       
-      <div className="container">
+      <div className="manageGroups-right">
       <h3>Join Requests</h3>
   
    {requests.length > 0 ? (
@@ -206,7 +208,7 @@ if (loading) return <p>Loading...</p>;
       )}
     </div>
  {/* Full width bottom */}
-      <div className="container full-width">
+      <div className="manageGroups-fullWidth">
         
         {isOwner && (
 
@@ -215,8 +217,6 @@ if (loading) return <p>Loading...</p>;
         
       </div>
     </div>
- 
- 
- 
+</div>
   );
 }
