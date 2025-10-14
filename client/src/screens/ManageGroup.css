@@ -1,27 +1,128 @@
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* two equal columns */
-  gap: 2rem;
+.manageGroups-container {
   padding: 2rem;
 }
+.manageGroups-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
 
-.container {
-  border: 1px solid #ccc;
-  border-radius: 0.24rem;
+}
+
+.manageGroups-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  padding: 2rem;
+  margin-top: 2rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.manageGroups-left {
+  background-color: var(--bg-second-color);
+  border-radius: 0rem;
   padding: 1.5rem;
-  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.full-width {
-  grid-column: 1 / -1; /* make it span across both columns */
+.manageGroups-left h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
 }
 
-
-p{
- 
+.manageGroups-left h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
+.manageGroups-left button {
+  background-color: var(--bg-third-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  padding: 0.6em 1.2em;
+  border-radius: 0rem;
+  margin:0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-input{
-  margin-top: 10px;
+.manageGroups-left button:hover {
+  background-color: var(--button-color);
+  border: 2px solid var(--effect-color);
+}
+
+.manageGroups-right {
+  background-color: var(--bg-second-color);
+  border-radius: 0rem;
+  padding: 1.5rem;
+}
+
+.manageGroups-right h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.manageGroups-right table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.manageGroups-right th,
+.manageGroups-right td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.manageGroups-right th {
+  background-color: var(--bg-second-color);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.manageGroups-right tr:nth-child(even) {
+  background-color: var(--bg-second-color);
+}
+
+.manageGroups-right button {
+  background-color: var(--bg-third-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  padding: 0.5em 1em;
+  border-radius: 0rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.manageGroups-right button:hover {
+  background-color: var(--button-color);
+  border-color: var(--effect-color);
+}
+
+.manageGroups-fullWidth {
+  grid-column: 1 / -1;
+  margin-top: 2rem;
+  text-align: left;
+  border-radius: 0rem;
+  padding: 0rem;
+}
+
+.manageGroups-fullWidth button {
+  background-color: var(--bg-third-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  padding: 1em 1.2em;
+  border-radius: 0rem;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 12rem;
+  margin:0;
+}
+
+.manageGroups-fullWidth button:hover {
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
 }

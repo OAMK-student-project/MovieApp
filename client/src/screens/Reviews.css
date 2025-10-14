@@ -11,3 +11,26 @@
   width: 100%;
 }
 
+.ctrlSelect {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  height: 2.4rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0 0.5rem;
+  border-radius: 0;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  vertical-align: middle;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+  .ctrlSelect:hover {
+    cursor: pointer;
+  }
+
+.ctrlSelect option {
+  color: var(--text-color);
+  font-size: 0.9rem;
+}

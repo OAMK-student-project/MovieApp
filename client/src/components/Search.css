@@ -89,7 +89,7 @@ button:hover {
 .searchActions input,
 .searchActions select {
   flex: 1;
-  background-color: var(--bg-color);
+  background-color: var(--input-color);
 }
 
 .searchActions button {

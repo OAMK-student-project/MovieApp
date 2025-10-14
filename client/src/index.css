@@ -1,27 +1,29 @@
 :root {
-    --bg-color: #1d1d1d;
-    --bg-second-color:#2c2c2c;
-    --bg-third-color: #4b4b4b;
-    --button-color: #5C5EFF;
-    --effect-color: #5C5EFF;
-    --border-color: #7e7e7e;
-    --text-color: #eeeeee;
+    --bg-color: #202124;
+    --bg-second-color:#2a2a2a;
+    --bg-third-color: #3c3c3c;
+    --button-color: #4F52FF;
+    --effect-color: #4F52FF;
+    --border-color: #5e5e5e;
+    --text-color: #e0e0e0;
     --text-color-alt: #eee;
-    --text-color-muted:#919191;
+    --text-color-muted: #888888;
     --text-color-muted-alt: #b3b3b3;
     --text-font: 'Segoe UI', sans-serif;
     --icon-color: #fff;
-    --warning-color: #ee2400;
+    --warning-color: #FF3D2E;
     --showtime-color: rgb(248, 189, 42);
+    --input-color: #1d1d1d;
+    --input-secondary-color: #2c2c2c;
 }
 
 :root[data-theme="light"] {
-    --bg-color: #F8FAFC;
-    --bg-second-color: #E3E8EF;
-    --bg-third-color: #D1D9E6;
-    --effect-color: #6C63FF;
-    --button-color: #B4C5FF;
-    --border-color: #7e7e7e;
+    --bg-color: #F5F6FA;
+    --bg-second-color: #E4E9F0;
+    --bg-third-color: #D7DEE7;
+    --effect-color: #625AFF;
+    --button-color: #4F52FF;
+    --border-color: #C0C4CC;
     --text-color: #1A1A1A;
     --text-color-alt: #eee;
     --text-color-muted: #5F6368;
@@ -29,7 +31,9 @@
     --text-font: 'Segoe UI', sans-serif;
     --icon-color: #6C63FF;
     --warning-color: #E53935;
-    --showtime-color: #FF9800;
+    --showtime-color: #E67E22;
+    --input-color: #F8FAFC;
+    --input-secondary-color: #E3E8EF;
 }
 
 .page {

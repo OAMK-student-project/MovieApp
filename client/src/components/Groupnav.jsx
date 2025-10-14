@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
-import "./Header.css";
+import './Groupnav.css'
 
 function Groupnav(){
     return(
-        <div className="header">
+        <div>
             <div className="leftSpace"></div>
-            <nav className="navArea">
+            <nav className="groups-navArea">
                 
                 <NavLink to="/groups"> My Groups</NavLink>
                 <NavLink to="/allgroups">All groups</NavLink>
