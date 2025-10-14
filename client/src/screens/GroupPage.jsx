@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MovieCard from "../components/MovieCard.jsx";
-import ManageGroupNav from "../components/ManageGroupNav.jsx";
 import "./GroupPage.css";
 import toast from "react-hot-toast";
 
@@ -98,7 +97,7 @@ export default function GroupPage() {
       setSearchQuery("");
       setSearchResults([]);
       toast.success("Movie added to group!");
-      navigate(`/grouppage/${id}`);
+      navigate(`/groups/${id}`);
     } catch (err) {
       console.error("Error adding movie:", err);
       toast.error("Failed to add movie");
@@ -160,14 +159,14 @@ export default function GroupPage() {
       toast.error("Failed to delete showtime");
     }
   };
-     
+
   if (loadingGroup || loadingMovies || loadingShowtimes) return <p>Loading...</p>;
   if (!group) return <p>Group not found</p>;
 
   return (
     <div className="group-page-container">
       <h2>{group.name}</h2>
-      <ManageGroupNav groupId={group.id} />
+     
 
       <div className="group-content">
         {/* Left column: movies */}
