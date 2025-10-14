@@ -22,7 +22,6 @@ Database runs on PostgreSQL database.
 ## Technologies
 #### Frontend:
 <ol>
-   <li>Node.js</li>
    <li>React (Vite)</li>
    <li>React Router DOM</li>
    <li>React hot toast</li>
@@ -150,6 +149,11 @@ FRONTEND_URL=http://localhost:5173
 #in production this is "production"
 NODE_ENV=false
 
+#This is either "testing" or "production"
+#testing uses local database.
+#production uses Render database
+DB_ENV="production"
+
 # Render Postgres connection
 DB_HOST=xxx
 DB_PORT=xxxx
@@ -158,10 +162,18 @@ DB_PASSWORD=xxxx
 DB_NAME=xxxx
 DUMMY_HASH=xxxx
 
-#JWT
-JWT_SECRET_KEY=Salaisuus
-REFRESH_TOKEN_MS=2592000000
+#Test database connection
+TEST_DB_URL=http://localhost:3001
+TEST_DB_HOST=xxxxx
+TEST_DB_PORT=xxxx
+TEST_DB_USER=xxxxx
+TEST_DB_PASSWORD=xxxx
+TEST_DB_NAME=xxxxx
 
-TEST_DB_NAME = testMovieApp
-TMDB_BEARER_TOKEN=xxxxx
+
+#JWT
+JWT_SECRET_KEY=xxxx
+REFRESH_TOKEN_MS=xxxx
+
+TMDB_BEARER_TOKEN=xxxx
 ```
