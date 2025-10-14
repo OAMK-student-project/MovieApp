@@ -11,7 +11,7 @@ import myGroupsRoutes from "./routes/myGroupsRouter.js";
 import reviewRouter from "./routes/reviewRouter.js"; //  import reviews
 import groupMoviesRouter from "./routes/groupMoviesRouter.js";
 
-
+import groupShowtimeRoutes from "./routes/groupShowtimeRouter.js";
 import favMoviesRouter from "./routes/favMoviesRouter.js";
 import favListRouter from "./routes/favListRouter.js";
 import favSharedRouter from "./routes/favSharedRouter.js";
@@ -41,7 +41,7 @@ app.use("/user", userRouter);
 
 //reitti ryhmän elokuville
 app.use("/groups/:groupId/movies", groupMoviesRouter);
-
+app.use("/groups/:groupId/showtimes", groupShowtimeRoutes); // ✅ ADDED
 app.use("/user/my-groups", myGroupsRoutes);
 app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });

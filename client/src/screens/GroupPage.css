@@ -22,12 +22,44 @@
 /* Right column: showtimes */
 .showtimes {
   flex: 1;
-  border-left: 1px solid #ccc;
+   background: var(--bg-color);
+  color: var(--text-color); 
+  /* border-left: 2px solid #ccc; /*POISTETAAN*/
   padding-left: 2rem;
-margin-top: 2rem; /* move the column down slightly */
+  margin-top: 2rem; /* move the column down slightly */
+
 }
+.showtime-card{
+   border: 2px solid var(--text-color);
+  margin-top: 1rem;
+  padding: 0.42rem;
+  border-radius: 0.42rem;
+  }
+/* Add Showtime Form */
+.showtime-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--text-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 0.42rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease-in-out;
+}
+.showtime-input button {
 
-
+  color: var(--text-color);
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  
+  transition: all 0.2s ease;
+}
 
 /* Modal content */
 .toast-modal {
@@ -52,6 +84,7 @@ margin-top: 2rem; /* move the column down slightly */
   justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
+  cursor: pointer;
 }
 
 .toast-btn {
@@ -80,3 +113,7 @@ margin-top: 2rem; /* move the column down slightly */
 .delete-btn:hover {
   background: #c53030;
 }
+
+
+
+

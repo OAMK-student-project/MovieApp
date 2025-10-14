@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "./GroupPage.css";
-
+import "./ManageGroup.css";
 
 axios.defaults.withCredentials = true; // tärkeitä httpOnly-cookien kanssa
 
