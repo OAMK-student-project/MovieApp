@@ -18,7 +18,7 @@
     padding: 2rem; 
     gap: 1rem;
     border: 1px solid var(--effect-color);
-    border-radius: 0px;
+    border-radius: 12px;
     max-width: 420px; 
     width: min(90vw, 420px);
 }
@@ -26,91 +26,26 @@
 .modal form{
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.modal label {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  font-weight: 500;
+  gap: 12px;
 }
 
 .modal input[type="email"],
-.modal input[type="password"] {
+.modal input[type="password"]{
   width: 100%;
   box-sizing: border-box;
-  padding: 0.5em 0.75em;
-  border: 2px solid var(--bg-second-color);
-  border-radius: 4px;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+  display: block;
 }
 
-.modal input:focus {
-  outline: none;
-  border-color: var(--effect-color);
-  background-color: var(--bg-second-color);
-}
-
-/* Checkbox row styling (e.g., remember me) */
-.modal form > label:last-of-type {
-  flex-direction: row;
-  justify-content: flex-start;
+.modal form > label:last-of-type{
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 400;
-  font-size: 0.9rem;
+  gap: 8px;
 }
 
 .modal button[type="submit"]{
-    background-color: var(--bg-second-color);
-    margin: auto;
-    padding: 0.5em 0.5em;
-    border: none;
-    border: 2px solid var(--bg-second-color);
-    border-radius: 0px;
-    transition-duration: 0.3s;
-    width:100%;
-    color: var(--text-color);
-}
-  .modal button:hover {
-    border: 2px solid var(--effect-color);
-  }
-  
-.modal a {
-  display: block;
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--effect-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
+  align-self: stretch;
 }
 
-.modal a:hover {
-  text-decoration: underline;
-  color: var(--text-color); /* optional: hover to text color */
-}
-
-/* For the checkbox row only */
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--text-color);
-  cursor: pointer;
-  user-select: none;
-}
-
-.checkbox-label input[type="checkbox"] {
-  margin: 0;
-  transform: translateY(1px); /* vertical alignment */
+.modal a{
+  align-self: center;
 }

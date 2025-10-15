@@ -38,17 +38,12 @@ function Login(){
                     <label>Login</label>
                     <input type="email" placeholder="enter email" onChange={e=>setEmail(e.target.value)}></input>
                     <input type="password" placeholder="enter password" onChange={e=>setPassword(e.target.value)}></input>
-                    <label className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        checked={remember}
-                        onChange={(e) => setRemember(e.target.checked)}
-                    />
-                    Remember me
-                    </label>
                     <button type="submit" onClick={e=>handleClick(e)}>Submit</button>
-
-                    <NavLink to="/signup">No account? Sign up</NavLink>
+                    <NavLink to="/signup">No account? Sign in</NavLink>
+                    <label>
+                        <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/>
+                        Remember me
+                    </label>
                 </form>
             </div>
         </div>

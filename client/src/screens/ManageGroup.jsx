@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import "./GroupPage.css";
 import "./ManageGroup.css";
 
 axios.defaults.withCredentials = true; // tärkeitä httpOnly-cookien kanssa
@@ -75,7 +76,7 @@ export default function ManageGroup() {
 
 const handleLeaveGroup = async () => {
     toast.custom((t) => (
-      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to leave this group?</p>
           <div className="toast-modal-buttons">
@@ -105,7 +106,7 @@ const handleLeaveGroup = async () => {
   
 const handleDeleteGroup = async () => {
     toast.custom((t) => (
-      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to delete this group? This cannot be undone.</p>
           <div className="toast-modal-buttons">
@@ -140,12 +141,14 @@ if (loading) return <p>Loading...</p>;
  
 
   return (
-    <div className="manageGroups-container">
-    <h2>Manage Group</h2>
-    <div className="manageGroups-grid">
+    <div className="grid-container">
        {/* Left side */}
-       <div className="manageGroups-left">
+       <div className="container">
+      <h2>Manage Group</h2>
       <h3>Group members</h3>
+        
+        
+        
         <button onClick={handleLeaveGroup} style={{ marginBottom: "16px" }}>
     Leave Group
   </button>
@@ -153,7 +156,7 @@ if (loading) return <p>Loading...</p>;
      
       {/* Right side */}
       
-      <div className="manageGroups-right">
+      <div className="container">
       <h3>Join Requests</h3>
   
    {requests.length > 0 ? (
@@ -203,7 +206,7 @@ if (loading) return <p>Loading...</p>;
       )}
     </div>
  {/* Full width bottom */}
-      <div className="manageGroups-fullWidth">
+      <div className="container full-width">
         
         {isOwner && (
 
@@ -212,6 +215,8 @@ if (loading) return <p>Loading...</p>;
         
       </div>
     </div>
-</div>
+ 
+ 
+ 
   );
 }

@@ -32,15 +32,15 @@
 .signUpForm input[type="text"],
 .signUpForm input[type="email"],
 .signUpForm input[type="password"]{
+  appearance: none;
   width: 100%;
-  box-sizing: border-box;
-  padding: 0.5em 0.75em;
-  border: 2px solid var(--bg-second-color);
-  border-radius: 4px;
-  background-color: var(--bg-color);
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--button-color);
+  border-radius: 10px;
+  background: var(--bg-color);
   color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+  font-size: 0.95rem;
+  line-height: 1.25rem;
 }
 
 .signUpForm input:hover{

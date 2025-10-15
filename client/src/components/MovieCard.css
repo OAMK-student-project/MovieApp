@@ -3,8 +3,7 @@
   align-items: flex-start;
   gap: 16px;
   background: var(--bg-second-color);
-  border-radius: 0px;
-  border: 5px solid var(--bg-second-color);
+  border-radius: 10px;
   padding: 16px;
   width: 100%;
 
@@ -15,7 +14,7 @@
   min-width: 220px;
   height: 330px;
   object-fit: cover;
-  border-radius: 0px;
+  border-radius: 8px;
 }
 
 .mc-body {
@@ -54,63 +53,41 @@
 }
 
 .mc-btn {
-  margin: 0;
+  margin-top: auto;
   display: inline-block;
-  padding: 12px 12px;
-  background-color: var(--bg-third-color);
+  padding: 8px 12px;
+  background: var(--effect-color);
   color: var(--text-color);
-  border: 2px solid var(--bg-second-color);
-  border-radius: 0px;
+  border: 0;
+  border-radius: 8px;
   cursor: pointer;
-  transition-duration: 0.3s;
 }
 
 .mc-btn:hover { 
-    background: var(--bg-color);
-    border: 2px solid var(--effect-color);
+  filter: brightness(1.07); 
 }
 
 .mc-btn-secondary {
-  margin: auto;
-  box-sizing: border-box;
-  width: 100%;
-  display: inline-block;
-  padding: 0.7em 1em;
-  background-color: var(--bg-third-color);
-  color: var(--text-color);
-  border: 2px solid var(--bg-second-color);
-  border-radius: 0px;
-  cursor: pointer;
-  transition-duration: 0.3s;
+  background: var(--button-color);
 }
 
 .mc-expand {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0px;
-  margin-top: 1rem;
-  background-color: rgba(0, 0, 0, 0.6); /* fallback for no image */
-}
- .mc-expand-content {
-  position: relative;
-  z-index: 2;
-  padding: 1.5rem;
-  color: white;
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--bg-color);
+  border-radius: 10px;
 }
 
 .mc-hero {
-  position: absolute;
-  inset: 0;
+  height: 140px;
   background-size: cover;
   background-position: center;
-  filter: blur(12px);
-  z-index: 0;
-  opacity: 0.3;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
-
 .mc-meta .mc-sub, .mc-meta .mc-genres {
-  color: var(--text-color-alt);
+  color: var(--text-color);
   margin: 4px 0;
 }
 
@@ -123,30 +100,8 @@
 }
 
 .mc-muted { 
-    color: var(--text-color-muted-alt); 
+    color: var(--text-color-muted); 
 }
-
-.mc-reviewBtn {
-  cursor: pointer;
-  display: block;
-  text-decoration: none;
-  color: var(--text-color);
-  background-color: var(--bg-third-color);
-  border: 2px solid var(--bg-third-color);
-  border-radius: 0;
-  white-space: nowrap;
-  transition-duration: 0.3s;
-  height: 3rem;
-  padding: 0 2rem;
-  line-height: 3rem;
-  margin:0.5em 0em;
-}
-
-  .mc-reviewBtn:hover {
-    border: 2px solid var(--effect-color);
-    border-radius: 0;
-    background-color: var(--bg-color)
-  }
 
 @media (max-width: 640px) {
   .mc-card {

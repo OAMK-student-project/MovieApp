@@ -38,7 +38,7 @@ export default function Myinfo() {
 
   const deleteUser = async () => {
     toast.custom((t) => (
-      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to delete your account it is permanent</p>
           <div className="toast-modal-buttons">
@@ -74,10 +74,15 @@ export default function Myinfo() {
     <div className="grid-container">
       {/* Left side */}
       <div className="container">
-        <h3>My info</h3>
-        <p><b>Email: </b> {userData?.email || "N/A"}</p>
-        <p><b>First Name: </b> {userData?.firstname || "Not available"}</p>
-        <p><b>Last Name: </b>{userData?.lastname || "Not available"}</p>
+        <h3>Myinfo</h3>
+
+     
+       
+        <p>Email: {userData?.email || "N/A"}</p>
+        <p>First Name: {userData?.firstname || "Not available"}</p>
+        <p>Last Name: {userData?.lastname || "Not available"}</p>
+
+        
       </div>
 
       {/* Right side */}
@@ -89,7 +94,7 @@ export default function Myinfo() {
         <input type="password" placeholder="New password" />
         <p>Confirm password</p>
         <input type="password" placeholder="Confirm new password" />
-        <button className="mi-passButton" type="button">Change password</button>
+        <button type="button">Change password</button>
       </div>
 
       {/* Full width bottom */}
@@ -100,7 +105,6 @@ export default function Myinfo() {
           lose access to all of your data on your account including favourites, groups, and reviews.
         </p>
         <button
-          className="mi-deleteButton"
           type="button"
           onClick={deleteUser}>
           Delete my profile

@@ -1,42 +1,40 @@
-.mygroups-container {
-  padding: 1rem;
+.allgroups-container {
+  padding: 20px;
 }
 
 .mygroups-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-  gap: 1rem;
+  gap: 10px;
+  border: 0.42rem solid;
+  border-radius: 0.42rem;
+  padding: 10px;
 }
 
 .mygroups-card {
-  background-color: var(--bg-second-color);
-  color: var(--text-color);
+  background-color: #f1f1f1;
+  text-decoration: none; 
+  color: #000;
   padding: 2rem;
-  border: 2px solid var(--border-color);
-  border-radius: 0rem;
+  border-radius: 0.42rem;
   font-size: 2rem;
   text-align: center;
-  transition-duration: 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  cursor: pointer;
 }
 
 .mygroups-card:hover {
-  border-color: var(--effect-color);
+  background-color: var(--effect-color); 
  
 }
 .mygroups-button {
-  margin-top: auto;
   padding: 1em 2em;
   border: none;
-  border-radius: 0rem;
-  background-color: var(--bg-third-color); 
-  color: var(--text-color);
+  border-radius: 0.42rem;
+  background-color: #0077cc; /* lisäsin taustavärin */
+  color: white;
   cursor: pointer;
-  transition-duration: 0.3s;
 }
 
 .mygroups-button:hover {
-  background-color: var(--button-color);
+  background-color: #005fa3;
 }

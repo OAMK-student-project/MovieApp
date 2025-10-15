@@ -66,7 +66,7 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
         <div className="mc-rating">
           {renderStars(movie.avg_rating)}
           <span className="mc-muted"> ({movie.review_count})</span>
-          <button className="mc-reviewBtn" onClick={() => setShowReviews(!showReviews)}>Show reviews</button>
+          <button onClick={() => setShowReviews(!showReviews)}>Show reviews</button>
 
           {showReviews && (
             <ReviewsCard
@@ -83,7 +83,7 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
       return (
         <div>
           <div>No reviews</div>
-          <button className="mc-reviewBtn" onClick={() => setShowReviews(!showReviews)}>Add review</button>
+          <button onClick={() => setShowReviews(!showReviews)}>Add review</button>
           {showReviews && (
             <ReviewsCard
               movie_id={movie.id}
@@ -97,44 +97,41 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
   }
 
   /** mc = moviecard*/
- return (
-  <div className="mc-card">
-    <img
-      className="mc-poster"
-      src={posterUrl(movie.poster_path)}  
-      alt={movie.title}
-      loading="lazy"
-    />
+  return (
+    <div className="mc-card">
+      
+      <img
+        className="mc-poster"
+        src={posterUrl(movie.poster_path)}  
+        alt={movie.title}
+        loading="lazy"
+      />
 
-    <AddFavoriteBtn movie={movie} />
+      <AddFavoriteBtn movie={movie} />
 
-    <div className="mc-body">
-      <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
-      {handleReviews()}
-      <p className="mc-year">{movie.release_date?.slice(0, 4) || "-"}</p>
-      <p className="mc-overview">{movie.overview || "No description."}</p>
+      <div className="mc-body">
+        <h3 className="mc-title" title={movie.title}>{movie.title}</h3>
+          {handleReviews()}
+        <p className="mc-year">{movie.release_date?.slice(0, 4) || "-"}</p>
+        <p className="mc-overview">{movie.overview || "No description."}</p>
 
-      {!isOpen ? (
-        <button className="mc-btn" onClick={toggle}>Read more</button>
-      ) : (
-        <div className="mc-expand">
-          {details?.backdrop_path && (
-            <>
-              <div
-                className="mc-hero"
-                style={{
-                  backgroundImage: `url(${backdropUrl(details.backdrop_path)})`,
-                }}
-              />
-              <div className="mc-hero-overlay" />
-            </>
-          )}
 
-          <div className="mc-expand-content">
+
+        {!isOpen ? (
+          <button className="mc-btn" onClick={toggle}>Read more</button>
+        ) : (
+          <div className="mc-expand">
             {loading && <p>Loading details...</p>}
 
             {!loading && details && (
               <>
+                {details.backdrop_path && (
+                  <div
+                    className="mc-hero"
+                    style={{ backgroundImage: `url(${backdropUrl(details.backdrop_path)})` }}
+                  />
+                )}
+
                 <div className="mc-meta">
                   <p className="mc-sub">
                     {(details.release_date || "-").slice(0, 4)} • {details.runtime ? `${details.runtime} min` : "-"}
@@ -143,6 +140,7 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
                     {(details.genres || []).map((g) => g.name).join(" • ")}
                   </p>
                   {director && <p><strong>Director:</strong> {director.name}</p>}
+                  
                 </div>
 
                 <div className="mc-cast">
@@ -162,8 +160,8 @@ export default function MovieCard({ movie, onMovieUpdated  }) {
 
             <button className="mc-btn mc-btn-secondary" onClick={toggle}>Read less</button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
-)}
+  )
+}

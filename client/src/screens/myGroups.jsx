@@ -28,7 +28,7 @@ export default function MyGroups() {
 
   if (!user) return <p>You need to login to see your groups</p>;
   if (loading) return <p>Loading your groups...</p>;
-  if (groups.length === 0) return <p>You are not a member of any group.</p>;
+  if (groups.length === 0) return <p>You are not yet a member of any groups.</p>;
 
   return (
     <div className="mygroups-container">

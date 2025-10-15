@@ -75,7 +75,7 @@ function AllGroups() {
 
   return (
     <div className="allgroups-container">
-      <h2>Add a group</h2>
+      <h3>Add a group</h3>
       <div className="allgroups-add">
         <input
           type="text"

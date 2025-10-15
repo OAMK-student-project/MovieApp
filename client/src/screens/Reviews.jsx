@@ -85,7 +85,7 @@ function Reviews(){
     return (
     <div id="reviews" className="page">
         <div id="controlArea">
-        <select className="ctrlSelect" value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="all">Show all</option>
             <option value="mine">Show mine</option>
         </select>
