@@ -41,10 +41,30 @@
     width: 100%;
     max-width: 200px;
     height: auto;
-    border-radius: 0.5rem;
+    border-radius: 0rem;
 }
 
 .photo:hover {
     transform: scale(1.02);
     transition: transform 150ms ease;
+}
+
+.inputArea select,
+.inputArea input {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  height: 2.4rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0 0.5rem;
+  border-radius: 0;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  vertical-align: middle;
+  margin-top: 2rem;
+}
+
+.inputArea input {
+  margin-right: 1rem;
+  margin-left: 1rem;
 }

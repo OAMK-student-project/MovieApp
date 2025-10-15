@@ -107,7 +107,7 @@ export default function GroupPage() {
   // --- Delete movie ---
   const handleDeleteMovie = async (groupMovieId) => {
     toast.custom(t => (
-      <div className={`toast-modal-overlay ${t.visible ? "show" : "hide"}`}>
+      <div className={`toast-overlay ${t.visible ? "show" : "hide"}`}>
         <div className="toast-modal">
           <p>Are you sure you want to remove this movie?</p>
           <div className="toast-modal-buttons">
@@ -161,6 +161,7 @@ const handleDeleteShowtime = (showtimeId) => {
           >
             Cancel
           </button>
+
           <button
             className="toast-btn delete-btn"
             onClick={async () => {
@@ -207,19 +208,19 @@ const handleDeleteShowtime = (showtimeId) => {
               {searchResults.map(movie => (
                 <div key={`search-${movie.id}`} style={{ position: "relative" }}>
                   <MovieCard movie={movie} />
-                  <button onClick={() => handleAddMovie(movie.id)}>Add</button>
+                  <button className="gp-addButton" onClick={() => handleAddMovie(movie.id)}>Add to {group.name}</button>
                 </div>
               ))}
             </div>
           </div>
 
-          <h3>Group Movies</h3>
+          <h3>Movies added in {group.name}</h3>
           {movies.length === 0 ? <p>No movies added to this group yet.</p> : (
             <div className="grid">
               {movies.map(movie => (
                 <div key={`group-${movie.group_movie_id}`} style={{ position: "relative" }}>
                   <MovieCard movie={movie} />
-                  <button onClick={() => handleDeleteMovie(movie.group_movie_id)}>Delete</button>
+                  <button className="gp-deleteButton" onClick={() => handleDeleteMovie(movie.group_movie_id)}>Delete</button>
 
                   {/* Add showtime input */}
                   <div className="showtime-input">

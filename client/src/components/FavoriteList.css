@@ -23,6 +23,7 @@
     display: flex;
     gap: 0.5em;
     align-items: center;
+    margin-top:2rem;
 }
 
 .favListHeader {
@@ -65,7 +66,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* change this to a transparent variable */
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
   justify-content: center;
   align-items: center;
   display: flex;
@@ -92,15 +94,16 @@
     align-items: center;
     gap: 0.4em;
     padding: 0.5em 1em;
-    border-color: var(--effect-color);
+    border-color: var(--button-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    background: var(--effect-color);
+    background: var(--button-color);
     color: white;
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
+    margin:0;
 }
 
     .addBtn p {
@@ -125,14 +128,16 @@
     display:inline-flex;
     margin: auto;
     padding: 0.5em 0em;
-    border-color: var(--effect-color);
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
-    color: white;
+    background-color: var(--bg-second-color);
+    color: var(--icon-color);
     cursor: pointer;
     border-radius: 0px;
     transition-duration: 0.1s;
+    
 }
 
     .expandBtn:hover {
@@ -149,9 +154,10 @@
 
 .shareBtn {
     display:inline-flex;
+    background-color: var(--bg-second-color);
     margin: auto;
     padding: 0.5em 1em;
-    border-color: var(--effect-color);
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
@@ -171,9 +177,10 @@
 
 .trashBtn {
     display:inline-flex;
+    background-color: var(--bg-second-color);
     margin: auto;
     padding: 0.5em 1em;
-    border-color: var(--effect-color);
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
@@ -192,9 +199,10 @@
 
 .editBtn {
     display:inline-flex;
+    background-color: var(--bg-second-color);
     margin: auto;
     padding: 0.5em 1em;
-    border-color: var(--effect-color);
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 0.5em;
@@ -254,14 +262,23 @@
 /***************** Favourite list *****************/
 
 .listInput {
-    max-height: 2.5em;
-    height: 2em;
-    width: 100%;
-    margin: 0;
-    background-color: var(--bg-second-color);
-    border-style: none;
-    color: var(--text-color);
-    font-size: medium;
+  color: var(--text-color);
+  background-color: var(--bg-second-color);
+  height: 2.4rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0 0.5rem;
+  border-radius: 0;
+  margin: auto;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  vertical-align: middle;
+  width: 100%;
+}
+    .listInput:focus {
+  background-color: var(--bg-color);
+  border-color: var(--effect-color);
+  outline: none;
 }
 
 .favListUl {

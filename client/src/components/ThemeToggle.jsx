@@ -35,11 +35,12 @@ function nextTheme() {
 const label = theme === "dark" ? "Dark" : "Light";
 
 return (
-    <button className="toggle-button"
+    <button
+        className="login-link toggle-button"
         onClick={nextTheme}
         aria-label={`Switch theme (current: ${label})`}
         >
-        {theme === "light" ? "Light" : "Dark"}
+        {label}
     </button>
 );
 }

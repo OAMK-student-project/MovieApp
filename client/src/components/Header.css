@@ -1,80 +1,104 @@
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  background-color: var(--bg-second-color);
+  height: auto;
 }
 
 .navArea {
   display: flex;
-  border: 1px solid var(--bg-second-color);
-  border-radius: 6px;
-  overflow: hidden;
-  background-color: var(--effect-color);
-  flex: 0 1 auto;
-  min-width: 0;
+  align-items: center;
+  gap: 0.1em;
+  flex: 1;
 }
 
 .navArea a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 2rem;
   text-decoration: none;
-  color: var(--color-text);
-  border-left: 1px solid var(--bg-second-color);
+  color: var(--text-color);
+  border-bottom: 2px solid var(--bg-third-color);
   white-space: nowrap;
+  transition: 0.3s;
+  box-sizing: border-box;
+  height: 3rem;
 }
 
-.navArea a:first-child {
-  border-left: none;
+.navArea a:hover {
+  background: var(--bg-color);
+  border-bottom: 2px solid var(--effect-color);
 }
 
 .navArea a.active {
   background-color: var(--bg-second-color);
+  border-bottom: 2px solid var(--effect-color);
 }
 
-.loginArea{
+.loginArea {
   display: flex;
-  border: 1px solid var(--bg-second-color);
-  border-radius: 6px;
-  overflow: hidden;
-  background-color: var(--effect-color);
-  flex: 0 1 auto;
-  min-width: 0;
+  align-items: center;
+  margin-left: auto;
 }
 
 .loginArea a {
-  display: block;
-  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
   text-decoration: none;
   color: var(--text-color);
-  border-left: 1px solid var(--bg-second-color);
-  white-space: nowrap;
+  border-bottom: 2px solid var(--bg-third-color);
+  box-sizing: border-box;
+  height: 3rem;
+  transition: 0.3s;
 }
 
-.loginArea a.active{
-    background-color: var(--bg-second-color);
+.loginArea a:hover {
+  background: var(--bg-color);
+  border-bottom: 2px solid var(--effect-color);
 }
 
+.loginArea a.active {
+  background-color: var(--bg-second-color);
+  border-bottom: 2px solid var(--effect-color);
+}
+
+/* Responsiveness, not perfect as the search section will fall under it due to fixed nav */
 @media (max-width: 640px) {
   .header {
-    justify-content: end;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .navArea {
-    width:100%
-  }
-
-  .navArea a{
-    padding: 0.65rem 0.4rem;
-    flex: 1 1 auto;
+  .header h1 {
     text-align: center;
+    margin-bottom: 0.5rem;
   }
+
+  .navArea,
+  .loginArea {
+    width: 100%;
+    justify-content: space-around;
+    margin: 0.25rem 0;
+  }
+
+  .navArea a,
   .loginArea a {
-    padding: 0.65rem 0.85rem;
     flex: 1 1 auto;
-    text-align: end;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    height: auto;
+    line-height: normal;
   }
 }

@@ -132,6 +132,7 @@ useEffect(() => {
 
   return (
     <div className="favorite-list-container">
+      <h2>My favorite lists</h2>
       {/* Add new list */}
       <div className="favourite-list-row">
         <button className="addBtn" onClick={handleAddList}>
@@ -181,7 +182,7 @@ useEffect(() => {
                 {showModal && editingListId === list.id && (
                   <div className="modal-overlay">
                     <div className="favList-modal">
-                      <h3>Edit List</h3>
+                      <h3>Rename favorite list</h3>
                       <input
                         className="listInput"
                         type="text"

@@ -43,43 +43,52 @@ const searchByGenre = () => {
 
   return (
     <div className="searchContainer">
-      <h3>Search movies</h3>
 
       {/* Hakusana */}
-      <input
-        placeholder="Search by title..."
-        value={titleQuery}
-        onChange={(e) => setTitleQuery(e.target.value)}
-      />
-      <button type="button" onClick={searchByTitle}>
-        Search
-      </button>
+        <div className="searchActions">
+          <div className="searchTitle">
+            <input
+              placeholder="Search by title..."
+              value={titleQuery}
+              onChange={(e) => setTitleQuery(e.target.value)}
+            />
+            <button type="button" onClick={searchByTitle}>
+              Search
+            </button>
+          </div>
 
-      {/* Ohjaajahaku */}
-      <input
-        placeholder="Search by director..."
-        value={directorQuery}
-        onChange={(e) => setDirectorQuery(e.target.value)}
-      />
-      <button type="button" onClick={searchByDirector}>
-        Search by Director
-      </button>
+          {/* Ohjaajahaku */}
+          <div className="searchDirector">
+            <input
+              placeholder="Search by director..."
+              value={directorQuery}
+              onChange={(e) => setDirectorQuery(e.target.value)}
+            />
+            <button type="button" onClick={searchByDirector}>
+              Search by Director
+            </button>
+          </div>
 
-      {/* Genrehaku */}
-      <select value={genre} onChange={(e) => setGenre(e.target.value)}>
-        <option value="28">Action</option>
-        <option value="35">Comedy</option>
-        <option value="18">Drama</option>
-        <option value="27">Horror</option>
-      </select>
-      <button type="button" onClick={searchByGenre}>
-        Search by Genre
-      </button>
-
-      {/* Suositut */}
-      <button type="button" onClick={getPopular}>
-        Popular
-      </button>
+          {/* Genrehaku */}
+          <div className="searchGenre">
+            <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+              <option value="28">Action</option>
+              <option value="35">Comedy</option>
+              <option value="18">Drama</option>
+              <option value="27">Horror</option>
+            </select>
+            <button type="button" onClick={searchByGenre}>
+              Search by Genre
+            </button>
+          </div>
+          <br></br>
+          {/* Suositut */}
+          <div className="searchPopular">
+            <button type="button" onClick={getPopular}>
+              Popular
+            </button>
+          </div>
+        </div>
     </div>
   );
 }

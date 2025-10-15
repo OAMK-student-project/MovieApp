@@ -203,68 +203,69 @@ function ReviewCard({ movie_id, onClose, onStatsChange }) {
 return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={onClose}>Close</button>
         {renderStatus()}
 
         {canAdd && !adding && (
           <div className="rc-toolbar">
-            <button type="button" onClick={() => setAdding(true)} disabled={loading || submitting || saving || deleting}>Add review</button>
+            <button type="button" onClick={() => setAdding(true)} disabled={loading || submitting || saving || deleting}>
+              Add review
+            </button>
           </div>
         )}
 
         {canAdd && adding && (
           <div className="rc-form">
-            <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)} disabled={submitting || loading}/>
-            <input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} disabled={submitting || loading}/>
+            <div className="rc-form-row">
+              <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)} disabled={submitting || loading} />
+              <input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} disabled={submitting || loading} />
+            </div>
             <div className="rc-actions">
               <button type="button" onClick={postReview} disabled={submitting || reviewText.trim() === "" || Number.isNaN(rating) || rating < 1 || rating > 5}>Submit</button>
-              <button type="button" onClick={() => { setAdding(false); setReviewText(""); setRating(3); }}>Cancel</button>
+              <button type="button" onClick={() => { setAdding(false); setReviewText(""); setRating(3); }}>Close</button>
             </div>
           </div>
         )}
 
         {reviews.length > 0 ? (
-          <div className="rc-list">
+          <div className="rc-reviews-section rc-list">
             {reviews.map((review) => (
               <div key={review.id} className="rc-item">
-                <strong>
-                  {(review.email ??
-                    `${review.firstname ?? ""} ${review.lastname ?? ""}`).trim()}
-                </strong>{" "}
-                – {review.rating}/5
-                <div>
+                <div className="rc-item-header">
+                  <span className="rc-author">{(review.email ?? `${review.firstname ?? ""} ${review.lastname ?? ""}`).trim()}</span>
+                  <span className="rc-rating">{review.rating}/5</span>
+                </div>
+
+                <div className="rc-item-content">
                   {editingId === review.id ? (
                     <>
-                      <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={3}/>
-                      <input type="number" min={1} max={5} value={editRating} onChange={(e) => setEditRating(Number(e.target.value))}/>
+                      <textarea className="rc-edit-form" value={editText} onChange={(e) => setEditText(e.target.value)} rows={3} />
+                      <input type="number" min={1} max={5} value={editRating} onChange={(e) => setEditRating(Number(e.target.value))} />
                       <div className="rc-actions">
                         <button type="button" disabled={saving || editText.trim() === "" || Number.isNaN(editRating) || editRating < 1 || editRating > 5} onClick={() => saveEdit(review.id)}>
-                          {saving ? "Saving..." : "Save"}</button>
+                          {saving ? "Saving..." : "Save"}
+                        </button>
                         <button type="button" onClick={cancelEdit}>Cancel</button>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div>{review.review_text}</div>
-                      {isOwner(review) ? (
+                      <div className="rc-review-text">{review.review_text}</div>
+                      {isOwner(review) && (
                         <div className="rc-actions">
                           <button type="button" onClick={() => startEdit(review)}>Edit</button>
-                          <button type="button" onClick={() => deleteReview(review.id, review.movie_id)} disabled={deleting || saving || submitting || loading} >Delete</button>
+                          <button type="button" onClick={() => deleteReview(review.id, review.movie_id)} disabled={deleting || saving || submitting || loading}>Delete</button>
                         </div>
-                      ) : null}
+                      )}
                     </>
                   )}
                 </div>
-                <small>{new Date(review.created_at).toLocaleString()}</small>
+
+                <div className="rc-item-footer"><small>{new Date(review.created_at).toLocaleString()}</small></div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rc-form">
-            <input type="text" placeholder="What did you think?" value={reviewText} onChange={(e) => setReviewText(e.target.value)} disabled={submitting || loading}/>
-            <input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} disabled={submitting || loading}/>
-            <button type="button" onClick={() => postReview()} disabled={submitting || reviewText.trim() === "" || Number.isNaN(rating) || rating < 1 || rating > 5}>{submitting ? "Submitting…" : "Submit"}</button>
-          </div>
+          <div className="rc-empty-state">No reviews yet. Add one!</div>
         )}
       </div>
     </div>
