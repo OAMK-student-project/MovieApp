@@ -1,0 +1,48 @@
+.members { 
+    list-style:none; 
+    padding:0; 
+    margin:8px 0; 
+}
+
+.member-row { 
+    display:grid; 
+    grid-template-columns: 1fr 1fr auto; 
+    gap:8px; align-items:center; 
+    padding:8px 0; border-bottom:1px solid var(--border, #e5e5e5); 
+}
+
+.member-name { 
+    font-weight:600; }
+
+.member-email { 
+    color:#888; 
+}
+
+.role-badge { 
+    padding:2px 8px; 
+    border-radius:999px; 
+    font-size:.75rem; 
+    text-transform:uppercase; 
+    border:1px solid var(--text-color); 
+}
+
+.role-owner  { 
+    background: var(--bg-color); 
+    border-color: var(--showtime-color); 
+}
+
+.owner-crown { 
+    color: var(--showtime-color);
+}
+
+.role-member { 
+    background: var(--bg-color); 
+    border-color: var(--text-color); 
+}
+
+.btn-remove {
+    color: var(--bg-color);
+}
+.btn-remove:hover {
+    color: var(--warning-color);
+}

@@ -43,6 +43,8 @@ app.use("/user", userRouter);
 app.use("/groups/:groupId/movies", groupMoviesRouter);
 app.use("/groups/:groupId/showtimes", groupShowtimeRoutes);
 app.use("/user/my-groups", myGroupsRoutes);
+
+
 app.use((req, res, next) => {
   next({ status: 404, message: "Not found" });
 });

@@ -9,23 +9,45 @@
 }
 
 .mygroups-card {
-  background-color: var(--bg-second-color);
-  color: var(--text-color);
-  padding: 2rem;
-  border: 2px solid var(--border-color);
-  border-radius: 0rem;
-  font-size: 2rem;
-  text-align: center;
-  transition-duration: 0.3s;
+  position: relative;
+  display: block;
+  padding: 1.25rem 1.25rem 1.75rem;
+  background: var(--bg-second-color);
+  border: 1px solid (--bg-color);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  align-items: center;
+  z-index: 0;
+  min-height: clamp(130px, 20vw, 130px);
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+
+.mygroups-card::before {
+  content: attr(data-emoji);
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(140px, 14vw, 140px);
+  line-height: 1;
+  opacity: 0.59;             
+  transform: rotate(-12deg) translateY(6%);
+  pointer-events: none;
+  z-index: -1;   
 }
 
 .mygroups-card:hover {
-  border-color: var(--effect-color);
- 
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.06);
+  transition: box-shadow .15s ease, transform .15s ease;
 }
+
 .mygroups-button {
   margin-top: auto;
   padding: 1em 2em;

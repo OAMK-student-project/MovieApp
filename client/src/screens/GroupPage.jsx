@@ -16,6 +16,12 @@ export default function GroupPage() {
   const [loadingGroup, setLoadingGroup] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const [loadingShowtimes, setLoadingShowtimes] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
+  const [editingNote, setEditingNote] = useState(false);
+  const [noteDraft, setNoteDraft] = useState("");
+  const [colorDraft, setColorDraft] = useState("#908888ff");
+  const [emojiDraft, setEmojiDraft] = useState("👽");
+  const [ui, setUi] = useState({ theme_color: "#908888ff", emoji: "👽", note: ""})
   const API_URL = import.meta.env.VITE_API_URL;
 
   // --- Fetch group info ---
@@ -34,31 +40,150 @@ export default function GroupPage() {
     fetchGroup();
   }, [id]);
 
-  // --- Fetch group movies ---
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/groups/${id}/movies`, { withCredentials: true });
-        const moviesWithDetails = await Promise.all(
-          res.data.map(async (m) => {
-            try {
-              const movieRes = await axios.get(`${API_URL}/api/movies/${m.movie_id}`, { withCredentials: true });
-              return { ...movieRes.data, group_movie_id: m.id, newShowtime: "" };
-            } catch {
-              return { ...m, group_movie_id: m.id, newShowtime: "" };
-            }
-          })
-        );
-        setMovies(moviesWithDetails);
-      } catch (err) {
-        console.error("Error fetching group movies:", err);
-        toast.error("Failed to fetch group movies");
-      } finally {
-        setLoadingMovies(false);
-      }
-    };
-    fetchMovies();
-  }, [id]);
+  // --- Group customize settings ---
+useEffect(() => {
+  const controller = new AbortController();
+
+  (async () => {
+    try {
+      const res = await axios.get(`${API_URL}/groups/${id}/customize`, {
+        withCredentials: true,
+        signal: controller.signal,
+      });
+      setUi({
+        theme_color: res.data?.theme_color || "#b3b3b3",
+        emoji:       res.data?.emoji       || "👽",
+        note:        res.data?.note        || "",
+      });
+    } catch (e) {
+      if (e?.name === "CanceledError" || e?.code === "ERR_CANCELED") return;
+      const msg =
+        e?.response?.data?.error ||
+        e?.response?.data?.message ||
+        e?.message ||
+        "Failed to load group settings";
+      toast.error(msg);
+      console.error(e);
+    }
+  })();
+
+  return () => controller.abort();
+}, [id, API_URL]);
+
+// --- Ryhmän ownerin tarkistus ---
+useEffect(() => {
+  (async () => {
+    try {
+      const [ownerRes, meRes] = await Promise.all([
+        axios.get(`${API_URL}/groups/${id}/owner`, { withCredentials: true }),
+        axios.get(`${API_URL}/user/me`,            { withCredentials: true }),
+      ]);
+      setIsOwner(ownerRes.data?.ownerId === meRes.data?.id);
+    } catch (_e) {
+      
+      setIsOwner(false);
+    }
+  })();
+}, [id, API_URL]);
+
+// --- Note ---
+useEffect(() => {
+  setNoteDraft(ui.note || "");
+}, [ui.note]);
+
+async function saveNote() {
+  try {
+    const res = await axios.put(
+      `${API_URL}/groups/${id}/customize`,
+      { note: noteDraft },
+      { withCredentials: true }
+    );
+    setEditingNote(false);
+    setUi(prev => ({ ...prev, note: res.data?.note ?? noteDraft }));
+    toast.success("Note saved");
+  } catch (e) {
+    const msg =
+      e?.response?.data?.error ||
+      e?.response?.data?.message ||
+      (e?.response?.status === 403
+        ? "Only owner can update the note"
+        : "Failed to save note");
+    toast.error(msg);
+  }
+}
+// --- väri ---
+async function saveColor() {
+  try {
+    const res = await axios.put(
+      `${API_URL}/groups/${id}/customize`,
+      { theme_color: colorDraft },
+      { withCredentials: true }
+    );
+    setUi(prev => ({ ...prev, theme_color: res.data?.theme_color ?? colorDraft }));
+    toast.success("Theme color saved");
+  } catch (e) {
+    const msg =
+      e?.response?.data?.error ||
+      e?.response?.data?.message ||
+      (e?.response?.status === 403
+        ? "Only owner can update the color"
+        : "Failed to save color");
+    toast.error(msg);
+  }
+}
+
+// --- emoji ---
+async function saveEmoji() {
+  try {
+    // Perusvalidointi: yksi emoji/merkki riittää tähän
+    if (!emojiDraft?.trim()) return toast.error("Emoji cannot be empty");
+    const res = await axios.put(
+      `${API_URL}/groups/${id}/customize`,
+      { emoji: emojiDraft },
+      { withCredentials: true }
+    );
+    setUi(prev => ({ ...prev, emoji: res.data?.emoji ?? emojiDraft }));
+    toast.success("Emoji saved");
+  } catch (e) {
+    const msg =
+      e?.response?.data?.error ||
+      e?.response?.data?.message ||
+      (e?.response?.status === 403
+        ? "Only owner can update the emoji"
+        : "Failed to save emoji");
+    toast.error(msg);
+  }
+}
+useEffect(() => {
+  setColorDraft(ui.theme_color || "#34d960");
+  setEmojiDraft(ui.emoji || "👽");
+}, [ui.theme_color, ui.emoji]);
+
+    // --- Fetch group movies ---
+    useEffect(() => {
+      const fetchMovies = async () => {
+        try {
+          const res = await axios.get(`${API_URL}/groups/${id}/movies`, { withCredentials: true });
+          const moviesWithDetails = await Promise.all(
+            res.data.map(async (m) => {
+              try {
+                const movieRes = await axios.get(`${API_URL}/api/movies/${m.movie_id}`, { withCredentials: true });
+                return { ...movieRes.data, group_movie_id: m.id, newShowtime: "" };
+              } catch {
+                return { ...m, group_movie_id: m.id, newShowtime: "" };
+              }
+            })
+          );
+          setMovies(moviesWithDetails);
+        } catch (err) {
+          console.error("Error fetching group movies:", err);
+          toast.error("Failed to fetch group movies");
+        } finally {
+          setLoadingMovies(false);
+        }
+      };
+      fetchMovies();
+    }, [id]);
 
   // --- Fetch group showtimes ---
   useEffect(() => {
@@ -193,9 +318,102 @@ const handleDeleteShowtime = (showtimeId) => {
   if (!group) return <p>Group not found</p>;
 
   return (
-    <div className="group-page-container">
-      <h2>{group.name}</h2>
-     
+    <div className="group-page-container"
+      style={{ "--group-color": ui.theme_color }}>
+      <header className="group-hero">
+        <div className="hero-emoji" aria-hidden="true">{ui.emoji}</div>
+        <div className="hero-text">
+          <h2 className="hero-title">{group.name}</h2>
+          {!editingNote && ui.note && <p className="hero-note">{ui.note}</p>}
+
+          {isOwner && (
+  <div className="hero-customize">
+    {/* Emoji editori */}
+    <div className="emoji-row">
+      <label htmlFor="emoji-input" className="label">Group emoji</label>
+      <div className="emoji-edit">
+        <input
+          id="emoji-input"
+          className="emoji-input"
+          type="text"
+          maxLength={4}
+          value={emojiDraft}
+          onChange={(e) => setEmojiDraft(e.target.value)}
+          placeholder="🙂"
+        />
+        <button
+          className="btn-save-emoji"
+          onClick={saveEmoji}
+          disabled={emojiDraft === ui.emoji}
+        >
+          Save Emoji
+        </button>
+      </div>
+    </div>
+
+    {/* Väri editori */}
+    <div className="color-row">
+      <label htmlFor="color-input" className="label">Theme color</label>
+      <div className="color-edit">
+        <input
+          id="color-input"
+          className="color-input"
+          type="color"
+          value={colorDraft}
+          onChange={(e) => setColorDraft(e.target.value)}
+          aria-label="Pick theme color"
+        />
+        <div className="color-swatches">
+          {["#34d960","#ff4757","#ffa502","#5352ed","#2ed573","#1e90ff","#ff7f50"].map(c => (
+            <button
+              key={c}
+              type="button"
+              className={`color-swatch ${colorDraft === c ? "active" : ""}`}
+              onClick={() => setColorDraft(c)}
+              aria-label={`Use ${c}`}
+              style={{ backgroundColor: c }} 
+            />
+          ))}
+        </div>
+        <button
+          className="btn-save-color"
+          onClick={saveColor}
+          disabled={colorDraft === ui.theme_color}
+        >
+          Save Color
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+        {isOwner && !editingNote && (
+          <button className="btn-noteEditor" onClick={() => setEditingNote(true)}>
+            {ui.note ? "Edit note" : "Add note"}
+          </button>
+        )}
+        {isOwner && editingNote && (
+          <div className="note-editor">
+            <textarea
+              value={noteDraft}
+              onChange={(e) => setNoteDraft(e.target.value)}
+              placeholder="Write a short note for the group..."
+              rows={3}
+            />
+            <div className="note-actions">
+              <button className="btn-save-note" onClick={saveNote} disabled={noteDraft === ui.note}>
+                Save
+              </button>
+              <button
+                className="btn-cancel"
+                onClick={() => { setEditingNote(false); setNoteDraft(ui.note || ""); }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
 
       <div className="group-content">
         {/* Left column: movies */}
@@ -216,7 +434,7 @@ const handleDeleteShowtime = (showtimeId) => {
 
           <h3>Movies added in {group.name}</h3>
           {movies.length === 0 ? <p>No movies added to this group yet.</p> : (
-            <div className="grid">
+            <div className="movie-list">
               {movies.map(movie => (
                 <div key={`group-${movie.group_movie_id}`} style={{ position: "relative" }}>
                   <MovieCard movie={movie} />

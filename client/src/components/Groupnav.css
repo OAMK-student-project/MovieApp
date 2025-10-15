@@ -25,3 +25,15 @@
 .groups-navArea a.active {
   border-color: var(--effect-color);
 }
+
+@media (max-width: 909px) {
+  .groups-navArea {
+  padding-top: 50px;
+  }
+}
+
+@media (max-width: 640px) {
+  .groups-navArea {
+  padding-top: 100px;
+  }
+}

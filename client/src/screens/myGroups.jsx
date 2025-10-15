@@ -35,13 +35,15 @@ export default function MyGroups() {
       <h2>My Groups</h2>
       <div className="mygroups-grid">
         {groups.map((group) => (
-          <Link
+          <Link 
             to={`/groups/${group.id}`}
             key={group.id}
             className="mygroups-card"
-          >
-            {group.name}
-          </Link>
+            data-emoji={group.emoji || "👽"}
+            >
+              <span className="group-title">{group.name}</span>
+            </Link>
+
         ))}
       </div>
     </div>

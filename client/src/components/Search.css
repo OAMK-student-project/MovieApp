@@ -134,11 +134,12 @@ button:hover {
 
 @media (max-width: 900px) {
   .searchActions {
+    margin-top: 40px;
     flex-wrap: wrap;
     justify-content: center;
   }
 
   .searchActions > div {
-    flex: 1 1 100%;
+    flex: 1 1 75%;
   }
 }

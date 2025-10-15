@@ -71,6 +71,7 @@ export default function Myinfo() {
   if (loading) return <p>Loading user data...</p>;
 
   return (
+  <div className="page-wrap">
     <div className="grid-container">
       {/* Left side */}
       <div className="container">
@@ -79,6 +80,7 @@ export default function Myinfo() {
         <p><b>First Name: </b> {userData?.firstname || "Not available"}</p>
         <p><b>Last Name: </b>{userData?.lastname || "Not available"}</p>
       </div>
+    
 
       {/* Right side */}
       <div className="container">
@@ -106,6 +108,7 @@ export default function Myinfo() {
           Delete my profile
         </button>
       </div>
+    </div>
     </div>
   );
 }

@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSun as faSunRegular } from "@fortawesome/free-regular-svg-icons"
+import { faMoon as faMoonSolid } from "@fortawesome/free-solid-svg-icons"
 import "./ThemeToggle.css" 
 import { useEffect, useState } from "react"
 
@@ -33,14 +36,21 @@ function nextTheme() {
 }
 
 const label = theme === "dark" ? "Dark" : "Light";
-
+const isMoon = theme === "dark";
 return (
     <button
         className="login-link toggle-button"
         onClick={nextTheme}
         aria-label={`Switch theme (current: ${label})`}
+        title={`Switch theme (current: ${label})`}
+        type="button"
         >
-        {label}
+        <FontAwesomeIcon
+            icon={isMoon ? faMoonSolid : faSunRegular}
+            className="theme-toggle_icon"
+            size="lg"
+            />
+            
     </button>
 );
 }

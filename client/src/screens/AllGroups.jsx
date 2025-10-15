@@ -94,7 +94,9 @@ function AllGroups() {
       ) : (
         <div className="allgroups-grid">
           {groups.map(group => (
-            <div key={group.id} className="allgroups-card">
+            <div key={group.id} className="allgroups-card"
+             data-emoji={group.emoji || "👽"}
+             >
               {group.name}{" "}
               <button
                 className="allgroups-button"

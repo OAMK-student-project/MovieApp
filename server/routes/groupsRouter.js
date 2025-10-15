@@ -1,6 +1,7 @@
 
 import express from 'express';
 import { fetchAllGroups, createGroup } from '../controllers/groupsController.js';
+import { getGroupSettings, updateGroupSettings } from "../controllers/groupSettingController.js"
 import {
   requestJoinGroup,
   getGroupRequests,
@@ -12,6 +13,7 @@ import {
 import { getGroupsByUserId } from '../models/groupsModel.js';
 import { auth } from '../helpers/auth.js';
 import db from '../helpers/db.js';
+import groupMembersRouter from "./groupMembersRouter.js";
 const router = express.Router();
 
 // --- Kaikki ryhmät ---
@@ -57,5 +59,12 @@ router.delete('/:id/leave', auth, leaveGroup);
 
 // --- Poista ryhmä vain owner voi poistaa ---
 router.delete('/:id', auth, deleteGroup);
+
+// Näkee ryhmän jäsenet
+router.use("/:id/members", groupMembersRouter);
+
+// Reitit kustomointiin
+router.get('/:id/customize', auth, getGroupSettings);
+router.put('/:id/customize', auth, updateGroupSettings);
 
 export default router;

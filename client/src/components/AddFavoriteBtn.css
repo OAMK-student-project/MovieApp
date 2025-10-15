@@ -13,11 +13,16 @@
 .fav-icon {
   transition: color 0.2s ease;
   position: absolute;
-  margin-left: 10em;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  transition: color .2s ease, transform .2s ease;
+  font-size: 20px;
   cursor: pointer;
   transition-duration: 0.2s;
-  height: 1.2em;
-  width: 1.2em;
+  height: 27px;
+  width: 27px;
+  margin: 0;
 }
 
 /* Default favorited color */
@@ -128,4 +133,11 @@
         border-width: 2px;
     }
 
+@media (max-width: 640px) {
+  .fav-icon { 
+    top: 8px; 
+    right: 8px; 
+    font-size: 18px; 
+  }
+}
 
