@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "./ManageGroup.css";
+import GroupMembers from "../components/GroupMembers.jsx";
+
 
 axios.defaults.withCredentials = true; // tärkeitä httpOnly-cookien kanssa
 
@@ -157,6 +159,7 @@ if (loading) return <p>Loading...</p>;
        {/* Left side */}
        <div className="manageGroups-left">
       <h3>Group members</h3>
+      <GroupMembers groupId={id} isOwner={isOwner}/>
       {!isOwner && (
   <button onClick={handleLeaveGroup}>Leave Group</button>
 )}

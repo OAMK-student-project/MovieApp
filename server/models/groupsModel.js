@@ -49,7 +49,7 @@ const deleteGroup = async (id) => {
 // Hae kaikki ryhmät, joissa käyttäjä on jäsen
 const getGroupsByUserId = async (userId) => {
   const query = `
-    SELECT g.id, g.name, g.created_by, g.created_at
+    SELECT g.id, g.name, g.emoji, g.created_by, g.created_at
     FROM "Groups" g
     JOIN "Group_members" gm ON gm.group_id = g.id
     WHERE gm.user_id = $1

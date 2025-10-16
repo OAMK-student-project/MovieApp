@@ -6,6 +6,7 @@ import {
   removeMovieFromGroup
 } from "../controllers/groupMoviesController.js";
 
+
 const router = express.Router({ mergeParams: true }); // mergeParams allows :groupId from parent route
 
 // GET /groups/:groupId/movies
@@ -16,5 +17,7 @@ router.post("/", auth, addMovieToGroup);
 
 // DELETE /groups/:groupId/movies/:id
 router.delete("/:movieId", auth, removeMovieFromGroup);
+
+
 
 export default router;

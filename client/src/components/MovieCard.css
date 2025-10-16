@@ -3,11 +3,11 @@
   align-items: flex-start;
   gap: 16px;
   background: var(--bg-second-color);
-  border-radius: 0px;
   border: 5px solid var(--bg-second-color);
   padding: 16px;
-  width: 100%;
-
+  position: relative;
+  padding-right: 56px;
+  box-sizing: border-box;
 }
 
 .mc-poster {
@@ -152,14 +152,33 @@
   .mc-card {
     flex-direction: column;
     align-items: center;
+
   }
 
   .mc-poster {
-    width: 100%;
+    width: 85%;
+    min-width: 0;
     height: auto;
+
+  }
+  .mc-body {
+    width: 85%;
+  }
+}
+@media (max-width: 400px) {
+  .mc-card {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .mc-poster {
+    width: 65%;
+    height: auto;
+    min-width: 0;
   }
 
   .mc-body {
-    width: 100%;
+    width: 65%;
   }
 }
