@@ -1,6 +1,7 @@
 # MovieApp
 Student project – Fullstack
 Course name: *Web programming app project*.
+Link to application: [MovieApp](https://movieapp-r1hx.onrender.com)
 
 Web application for movie enthusiasts. 
 Users can browse movies, write reviews, join groups, search showtimes and add favorites.
@@ -18,6 +19,17 @@ along with example requests, responses and error cases.
 ### Database
 Database runs on PostgreSQL database. 
 ![Database diagram](docs/ERD.png)
+
+
+### UI
+![Home](docs/Final%20UI/Home.png)
+![Favorites](docs/Final%20UI/Favorites.png)
+![MyGroups](docs/Final%20UI/MyGroups.png)
+![GroupPage](docs/Final%20UI/GroupPage.png)
+![ManageGroup](docs/Final%20UI/ManageGroup.png)
+![AllGroups](docs/Final%20UI/AllGroups.png)
+![Reviews](docs/Final%20UI/ReviewsPage.png)
+![Theater](docs/Final%20UI/Theater.png)
 
 ## Technologies
 #### Frontend:
@@ -50,8 +62,9 @@ Database runs on PostgreSQL database.
    <li>nodemon</li>
 </ol>
 
-- Dokumentaatio: OpenAPI (Swagger), dbdiagram.io
-- Versionhallinta: GitHub
+### Documentation and Version Control
+- Documentation: OpenAPI (Swagger), dbdiagram.io
+- Version Control: GitHub
 
 ## Project structure
 ```
@@ -88,25 +101,25 @@ Defined frontend routes
    /theater/locations/
 
 ## Cloning and initalization
-1. Kloonaa repo omalle koneellesi:
+1. Clone repo to your computer:
    ```bash
    git clone <repo-url>
    cd MovieApp
    ```
 
-2. Asenna frontendin (React) riippuvuudet:
+2. Install frontend dependencies:
    ```bash
    cd client
    npm install
    ```
 
-3. Asenna backendin (Express) riippuvuudet:
+3. Install backend dependencies:
    ```bash
    cd ../server
    npm install
    ```
 
-4. Käynnistä palvelut:
+4. Start services:
    - Frontend:
      ```bash
      cd client
